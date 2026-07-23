@@ -11,8 +11,6 @@
     {{-- <link rel="icon" href="{{ asset('aset/logo/.png') }}" type="image/png"> --}}
 </head>
 
-<body class="bg-black flex flex-col w-full">
-    <div class="flex flex-col justify-center items-center">
-        @yield('content')
-    </div>
+<body class="flex flex-col w-full  justify-center items-center">
+    @yield('content')
 </body>
