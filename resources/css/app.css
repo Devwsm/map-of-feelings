@@ -68,3 +68,13 @@
         opacity: 0;
     }
 }
+
+/* Press-con: mesh gradient background dipakai di landing & guest */
+.presscon-bg {
+    background:
+        radial-gradient(circle at 12% 12%, #1e81fe55, transparent 24%),
+        radial-gradient(circle at 85% 15%, #dd4e6a55, transparent 28%),
+        radial-gradient(circle at 50% 55%, #ffaf2540, transparent 36%),
+        radial-gradient(circle at 18% 84%, #e1fa3550, transparent 28%),
+        radial-gradient(circle at 86% 88%, #3a9c3450, transparent 28%), #f3efe8;
+}
