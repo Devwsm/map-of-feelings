@@ -1,4 +1,6 @@
 @extends('template.layout')
+
+@section('container-class', 'bg-black')
 @section('content')
     <div class="min-h-screen flex flex-col uppercase items-center justify-center text-center px-4">
         <h1 class="text-8xl font-bold text-white">500</h1>

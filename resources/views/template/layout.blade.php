@@ -11,6 +11,6 @@
     <link rel="icon" href="{{ asset('assets/logo/logo-wsm.svg') }}" type="image/svg+xml">
 </head>
 
-<body class="flex flex-col w-full  justify-center items-center">
+<body class="flex flex-col w-full justify-center items-center @yield('container-class')">
     @yield('content')
 </body>
