@@ -19,6 +19,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@yield('title', 'Map of Feelings — Press Conference & Listening Session')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="icon" href="{{ asset('assets/logo/logo-wsm.svg') }}" type="image/svg+xml">
 </head>
 
 <body class="min-h-screen presscon-bg font-sans text-neutral-900">
