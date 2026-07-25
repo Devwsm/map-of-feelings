@@ -1,20 +1,18 @@
 @extends('template.layout')
 @section('content')
-    <section id="landing" data-screen="landing"
-        class="w-full font-[Arial,Helvetica,sans-serif] text-[#050505] overflow-x-hidden">
-        <div class="min-h-screen flex flex-col items-center justify-center overflow-hidden px-[4.5vw] pt-10.5 pb-6">
-            <p class="m-0 mb-1.5 text-[clamp(20px,2.2vw,32px)] font-extrabold">WELCOME TO</p>
-            <h1 class="z-3 flex items-center gap-[clamp(6px,1.1vw,18px)] m-0 -mb-16 text-[clamp(72px,10.8vw,162px)] font-normal leading-[0.9] tracking-[-0.08em] whitespace-nowrap max-[760px]:text-[clamp(50px,16vw,86px)] max-[760px]:-mb-9"
+    {{-- PAGE 1 — LANDING --}}
+    <section id="landing" data-screen="landing" class="w-full font-sans text-black overflow-x-hidden">
+        <div class="min-h-screen flex flex-col items-center justify-center overflow-hidden px-6 sm:px-16 pt-10 pb-6">
+            <p class="m-0 mb-1.5 text-xl sm:text-3xl font-extrabold">WELCOME TO</p>
+            <h1 class="z-3 flex items-center gap-2 sm:gap-4 m-0 -mb-9 sm:-mb-16 text-6xl sm:text-8xl lg:text-9xl font-normal leading-none tracking-tighter whitespace-nowrap"
                 aria-label="Map of Feelings">
                 <span>Map</span><span
                     class="font-['Brush_Script_MT','Segoe_Script',cursive] text-[0.68em] italic -rotate-12 translate-y-1.5 tracking-[-0.13em]">of</span><span>Feelings</span>
             </h1>
-            <div id="moodBars"
-                class="z-1 grid grid-cols-[repeat(10,minmax(58px,1fr))] gap-2.5 items-stretch w-[min(1120px,94vw)] h-[min(50vh,402px)] max-[760px]:h-[48vh] max-[760px]:gap-1.25 max-[760px]:grid-cols-[repeat(10,minmax(25px,1fr))]"
+            <div id="moodBars" class="z-1 grid grid-cols-10 gap-1 sm:gap-2.5 items-stretch w-full max-w-6xl h-72 sm:h-96"
                 aria-label="Choose a feeling"></div>
-            <h2 class="m-0 mt-7.5 mb-2 text-center text-[clamp(27px,3vw,43px)] leading-none">HOW ARE YOU FEELING TODAY?
-            </h2>
-            <p class="m-0 text-[clamp(14px,1.25vw,18px)] font-bold">Choose the symbol</p>
+            <h2 class="m-0 mt-8 mb-2 text-center text-2xl sm:text-4xl leading-none">HOW ARE YOU FEELING TODAY?</h2>
+            <p class="m-0 text-sm sm:text-lg font-bold">Choose the symbol</p>
         </div>
     </section>
 
@@ -25,7 +23,7 @@
         <div class="relative min-h-screen grid place-items-center p-8">
             <div id="mappingField" class="absolute inset-0" aria-hidden="true"></div>
             <h2 id="mappingText"
-                class="z-2 m-0 max-w-155 text-center whitespace-pre-line font-semibold text-[clamp(34px,4vw,58px)] leading-[1.05] after:content-[''] after:inline-block after:w-[.09em] after:h-[.9em] after:ml-[.12em] after:bg-current after:align-[-.08em] after:animate-[caret_.75s_steps(1)_infinite] motion-reduce:after:animate-none">
+                class="z-2 m-0 max-w-xl text-center whitespace-pre-line font-semibold text-4xl sm:text-6xl leading-none after:content-[''] after:inline-block after:w-[.09em] after:h-[.9em] after:ml-[.12em] after:bg-current after:align-[-.08em] after:animate-[caret_.75s_steps(1)_infinite] motion-reduce:after:animate-none">
             </h2>
         </div>
     </section>
@@ -34,52 +32,48 @@
     <section id="coordinate" data-screen="coordinate" class="w-full relative min-h-screen [background:var(--page-gradient)]"
         style="display:none">
         <div class="min-h-screen flex flex-col items-center justify-center px-6 py-10 text-center">
-            <h2 class="m-0 mb-11 font-semibold text-[clamp(35px,4vw,58px)] leading-[1.02]">FOUND YOUR<br />COORDINATE!</h2>
-            <div class="mb-10 w-9.5 h-9.5 rounded-full border border-black grid place-items-center bg-white/45 shadow-[0_0_0_4px_transparent,0_0_0_5px_#000,0_0_0_9px_transparent,0_0_0_10px_#000] animate-[markerPulse_1.25s_ease-in-out_infinite_alternate] motion-reduce:animate-none"
+            <h2 class="m-0 mb-11 font-semibold text-4xl sm:text-6xl leading-none">FOUND YOUR<br />COORDINATE!</h2>
+            <div class="mb-10 w-10 h-10 rounded-full border border-black grid place-items-center bg-white/45 shadow-[0_0_0_4px_transparent,0_0_0_5px_#000,0_0_0_9px_transparent,0_0_0_10px_#000] animate-[markerPulse_1.25s_ease-in-out_infinite_alternate] motion-reduce:animate-none"
                 aria-hidden="true">
-                <span id="coordinateEmoji" class="text-[22px]"></span>
+                <span id="coordinateEmoji" class="text-2xl"></span>
             </div>
             <button id="coordinateButton" type="button"
-                class="min-w-[min(590px,82vw)] min-h-24 rounded-[30px] bg-black text-white px-10.5 py-6.5 font-extrabold text-[clamp(20px,2.2vw,31px)] transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1.5 hover:shadow-[0_18px_34px_rgba(0,0,0,.2)] focus-visible:outline-none focus-visible:-translate-y-1.5 focus-visible:shadow-[0_18px_34px_rgba(0,0,0,.2)]">
+                class="w-full max-w-xl min-h-24 rounded-3xl bg-black text-white px-10 py-6 font-extrabold text-xl sm:text-3xl transition hover:-translate-y-1.5 hover:shadow-2xl focus-visible:outline-none focus-visible:-translate-y-1.5 focus-visible:shadow-2xl">
                 <span id="coordinateName">The Quiet Breaking Point</span>
             </button>
-            <p class="mt-4.5 mb-0 font-bold opacity-70">Click the coordinate to continue</p>
+            <p class="mt-4 mb-0 font-bold opacity-70">Click the coordinate to continue</p>
         </div>
     </section>
 
     {{-- PAGE 4 — SONG RESULT --}}
     <section id="result" data-screen="result" class="w-full relative min-h-screen [background:var(--page-gradient)]"
         style="display:none">
-        <div class="min-h-screen px-5.5 pt-13.5 pb-17.5 text-center">
-            <h2 class="mx-auto mb-8.5 font-semibold text-[clamp(29px,3.5vw,48px)]">YOUR FEELING REMINDS US OF..</h2>
-            <article
-                class="w-[min(680px,92vw)] mx-auto rounded-[42px] bg-black text-white px-12 pt-12 pb-10.5 shadow-[0_24px_70px_rgba(0,0,0,.2)]">
+        <div class="min-h-screen px-6 pt-14 pb-16 text-center">
+            <h2 class="mx-auto mb-8 font-semibold text-3xl sm:text-5xl">YOUR FEELING REMINDS US OF..</h2>
+            <article class="w-full max-w-2xl mx-auto rounded-3xl bg-black text-white px-12 pt-12 pb-10 shadow-2xl">
                 <img id="resultArtwork" src="" alt="Song artwork"
-                    class="block w-[min(320px,72vw)] aspect-square object-cover mx-auto mb-9.5 bg-white" />
+                    class="block w-full max-w-xs aspect-square object-cover mx-auto mb-10 bg-white" />
                 <div class="text-center">
-                    <p class="mt-7 mb-1.75 text-[12px] font-extrabold tracking-[.14em] opacity-[.66]">REKOMENDASI</p>
-                    <h3 id="resultSong" class="m-0 text-[clamp(29px,3.3vw,44px)]">Aku Harus Pergi</h3>
-                    <p class="mt-7 mb-1.75 text-[12px] font-extrabold tracking-[.14em] opacity-[.66]">COORDINATE</p>
-                    <h4 id="resultCoordinate" class="m-0 text-[clamp(21px,2.4vw,31px)]">The Quiet Breaking Point</h4>
-                    <p id="resultMood" class="mt-2.25 mb-0 opacity-[.72]"></p>
-                    <p class="mt-7 mb-1.75 text-[12px] font-extrabold tracking-[.14em] opacity-[.66]">KENAPA LAGU INI?</p>
-                    <p id="resultWhy" class="max-w-135 mx-auto leading-[1.55] text-[clamp(16px,1.6vw,20px)]"></p>
+                    <p class="mt-7 mb-2 text-xs font-extrabold tracking-widest opacity-70">REKOMENDASI</p>
+                    <h3 id="resultSong" class="m-0 text-3xl sm:text-5xl">Aku Harus Pergi</h3>
+                    <p class="mt-7 mb-2 text-xs font-extrabold tracking-widest opacity-70">COORDINATE</p>
+                    <h4 id="resultCoordinate" class="m-0 text-xl sm:text-3xl">The Quiet Breaking Point</h4>
+                    <p id="resultMood" class="mt-2 mb-0 opacity-70"></p>
+                    <p class="mt-7 mb-2 text-xs font-extrabold tracking-widest opacity-70">KENAPA LAGU INI?</p>
+                    <p id="resultWhy" class="max-w-lg mx-auto leading-normal text-base sm:text-xl"></p>
                     <p id="resultAffirmation"
-                        class="max-w-135 mx-auto mt-7.5 italic opacity-[.86] leading-[1.55] text-[clamp(16px,1.6vw,20px)]">
-                    </p>
-
-                    <div class="flex flex-wrap justify-center gap-2.5 mt-8.5">
+                        class="max-w-lg mx-auto mt-8 italic opacity-90 leading-normal text-base sm:text-xl"></p>
+                    <div class="flex flex-wrap justify-center gap-2.5 mt-8">
                         <a id="spotifyLink" href="#" target="_blank" rel="noopener"
-                            class="rounded-full border border-white bg-white text-black font-extrabold no-underline px-5 py-3.25 transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5">Spotify</a>
+                            class="rounded-full border border-white bg-white text-black font-extrabold no-underline px-5 py-3.5 transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5">Spotify</a>
                         <a id="youtubeLink" href="#" target="_blank" rel="noopener"
-                            class="rounded-full border border-white bg-white text-black font-extrabold no-underline px-5 py-3.25 transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5">YouTube</a>
+                            class="rounded-full border border-white bg-white text-black font-extrabold no-underline px-5 py-3.5 transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5">YouTube</a>
                         <button id="saveCoordinate" type="button"
-                            class="rounded-full border border-white bg-white text-black font-extrabold px-5 py-3.25 transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5">Save
+                            class="rounded-full border border-white bg-white text-black font-extrabold px-5 py-3.5 transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5">Save
                             Coordinate</button>
                     </div>
-
                     <button id="restartButton" type="button"
-                        class="mt-4 rounded-full border border-white bg-transparent text-white font-extrabold px-5 py-3.25">Map
+                        class="mt-4 rounded-full border border-white bg-transparent text-white font-extrabold px-5 py-3.5">Map
                         Another Feeling</button>
                 </div>
             </article>
@@ -255,9 +249,9 @@
                         'group relative border-0 p-0',
                         '[background:var(--bar-gradient)]',
                         'origin-bottom',
-                        'transition-[filter,scale] duration-200 ease-out',
-                        'hover:saturate-[1.18] hover:brightness-[1.03] hover:scale-[1.035] hover:z-[4]',
-                        'focus-visible:outline-none focus-visible:saturate-[1.18] focus-visible:brightness-[1.03] focus-visible:scale-[1.035] focus-visible:z-[4]',
+                        'transition duration-200 ease-out',
+                        'hover:saturate-125 hover:brightness-105 hover:scale-105 hover:z-4',
+                        'focus-visible:outline-none focus-visible:saturate-125 focus-visible:brightness-105 focus-visible:scale-105 focus-visible:z-4',
                         'animate-[barFloat_var(--float-duration)_ease-in-out_var(--float-delay)_infinite_alternate]',
                         'motion-reduce:animate-none'
                     ].join(' ');
@@ -270,14 +264,14 @@
                     button.setAttribute('aria-label', `${mood.feeling}: ${mood.song}`);
 
                     button.innerHTML = `
-                    <span
-                        aria-hidden="true"
-                        class="absolute left-1/2 top-[46%] -translate-x-1/2 -translate-y-1/2 grid place-items-center w-[clamp(42px,4.2vw,64px)] h-[clamp(42px,4.2vw,64px)] rounded-full border-2 border-black bg-white/[.86] text-[clamp(23px,2.35vw,35px)] shadow-[0_8px_18px_rgba(0,0,0,.13)] animate-[emojiFloat_2.3s_ease-in-out_var(--emoji-delay)_infinite_alternate] motion-reduce:animate-none max-[760px]:w-[34px] max-[760px]:h-[34px] max-[760px]:text-[18px]"
-                    >${mood.emoji}</span>
-                    <span
-                        class="absolute left-1/2 bottom-3 -translate-x-1/2 w-full text-center font-extrabold text-[11px] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 max-[760px]:hidden"
-                    >${mood.feeling}</span>
-                `;
+                        <span
+                            aria-hidden="true"
+                            class="absolute left-1/2 top-[46%] -translate-x-1/2 -translate-y-1/2 grid place-items-center w-10 sm:w-16 h-10 sm:h-16 rounded-full border-2 border-black bg-white/86 text-2xl sm:text-4xl shadow-md animate-[emojiFloat_2.3s_ease-in-out_var(--emoji-delay)_infinite_alternate] motion-reduce:animate-none"
+                        >${mood.emoji}</span>
+                        <span
+                            class="hidden sm:block absolute left-1/2 bottom-3 -translate-x-1/2 w-full text-center font-extrabold text-xs opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+                        >${mood.feeling}</span>
+                    `;
 
                     button.addEventListener('click', () => beginJourney(mood));
 
@@ -364,8 +358,8 @@
                     if (isSelected) {
                         dot.className = [
                             'absolute left-[var(--x)] top-[var(--y)] -translate-x-1/2 -translate-y-1/2',
-                            'grid place-items-center w-[clamp(48px,4.3vw,68px)] h-[clamp(48px,4.3vw,68px)]',
-                            'rounded-full bg-white/90 border border-black text-[clamp(24px,2.3vw,36px)]',
+                            'grid place-items-center w-12 sm:w-16 h-12 sm:h-16',
+                            'rounded-full bg-white/90 border border-black text-2xl sm:text-4xl',
                             'shadow-[0_0_0_5px_#fff,0_0_0_6px_#000,0_0_0_10px_#fff,0_0_0_11px_#000]',
                             'animate-[selectedBlink_.62s_ease-in-out_infinite_alternate]',
                             'motion-reduce:animate-none'
@@ -374,7 +368,7 @@
                     } else {
                         dot.className = [
                             'absolute left-[var(--x)] top-[var(--y)] -translate-x-1/2 -translate-y-1/2',
-                            'w-[clamp(18px,1.7vw,26px)] h-[clamp(18px,1.7vw,26px)] rounded-full bg-black',
+                            'w-5 sm:w-6 h-5 sm:h-6 rounded-full bg-black',
                             'animate-[dotPulse_1.05s_ease-in-out_var(--delay)_infinite_alternate]',
                             'motion-reduce:animate-none'
                         ].join(' ');
