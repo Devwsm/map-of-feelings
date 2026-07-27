@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\homeController;
 use App\Http\Controllers\pressconController;
+use App\Http\Controllers\pressconGuestController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/')->group(function () {
@@ -9,6 +10,7 @@ Route::prefix('/')->group(function () {
 });
 
 Route::prefix('/presscon-inv')->group(function () {
-    Route::get('/', [pressconController::class, 'landing'])->name('landing');
-    Route::get('/guest', [pressconController::class, 'guest'])->name('guest');
+    Route::get('/', [pressconController::class, 'landing'])->name('presscon-inv.landing');
+    Route::get('/{guest}', [pressconGuestController::class, 'show'])->name('presscon-inv.guest');
+    Route::post('/{guest}/rsvp', [pressconGuestController::class, 'rsvp'])->name('presscon-inv.rsvp');
 });
