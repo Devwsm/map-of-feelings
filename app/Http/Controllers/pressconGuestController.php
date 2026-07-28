@@ -9,7 +9,90 @@ use Illuminate\View\View;
 
 class pressconGuestController extends Controller
 {
-    //
+    /**
+     * Daftar kategori tetap — dipakai buat dropdown & validasi. Kalau kategori
+     * baru ditambah, cukup update array ini + enum di migration.
+     */
+    private const CATEGORIES = [
+        'Crew',
+        'Media',
+        'Partner',
+        'Venue',
+        'Colleague',
+        'DJ/Musician Colleague',
+        'Artist/Production Team',
+        'Inner Circle',
+    ];
+
+    /**
+     * GET /dashboard/tamu (admin only, lewat middleware role:admin di route)
+     */
+    public function index(Request $request): View
+    {
+        $guests = pressconGuest::query()
+            ->when($request->filled('search'), fn($q) => $q->where('name', 'like', '%' . $request->search . '%'))
+            ->when($request->filled('category'), fn($q) => $q->where('category', $request->category))
+            ->orderBy('name')
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('pages.dashboard.tamu.index', [
+            'guests' => $guests,
+            'categories' => self::CATEGORIES,
+            'active' => 'tamu',
+        ]);
+    }
+
+    /**
+     * GET /dashboard/tamu/{guest}/edit
+     */
+    public function edit(pressconGuest $guest): View
+    {
+        return view('pages.dashboard.tamu.edit', [
+            'guest' => $guest,
+            'categories' => self::CATEGORIES,
+            'active' => 'tamu',
+        ]);
+    }
+
+    /**
+     * PUT /dashboard/tamu/{guest}
+     */
+    public function update(Request $request, pressconGuest $guest): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'category' => ['required', 'in:' . implode(',', self::CATEGORIES)],
+            'group' => ['nullable', 'string', 'max:255'],
+            'max_pax' => ['required', 'integer', 'min:1'],
+            'details' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $guest->update([
+            ...$validated,
+            'requires_name' => $request->boolean('requires_name'),
+        ]);
+
+        return redirect()
+            ->route('dashboard.tamu')
+            ->with('status', 'Data ' . $guest->name . ' berhasil diperbarui.');
+    }
+
+    /**
+     * DELETE /dashboard/tamu/{guest}
+     */
+    public function destroy(pressconGuest $guest): RedirectResponse
+    {
+        $name = $guest->name;
+        $guest->delete();
+
+        return redirect()
+            ->route('dashboard.tamu')
+            ->with('status', $name . ' berhasil dihapus.');
+    }
+ 
+    // ===== Halaman publik (guest page) =====
+
     /**
      * GET /presscon-inv/{guest}
      * Laravel otomatis nyari row berdasarkan kolom slug (lihat getRouteKeyName() di model).

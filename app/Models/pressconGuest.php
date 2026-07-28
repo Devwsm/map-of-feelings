@@ -65,6 +65,26 @@ class pressconGuest extends Model
     }
 
     /**
+     * Warna aksen per kategori (dipakai di dashboard & nanti halaman Tamu).
+     * Class Tailwind harus ditulis lengkap di sini (bukan digabung string) supaya
+     * ke-scan sama Tailwind content scanner.
+     */
+    public static function categoryColor(string $category): string
+    {
+        return match ($category) {
+            'Crew' => 'bg-sky-400',
+            'Media' => 'bg-rose-400',
+            'Partner' => 'bg-amber-400',
+            'Venue' => 'bg-emerald-400',
+            'Colleague' => 'bg-violet-400',
+            'DJ/Musician Colleague' => 'bg-lime-400',
+            'Artist/Production Team' => 'bg-cyan-400',
+            'Inner Circle' => 'bg-yellow-300',
+            default => 'bg-neutral-400',
+        };
+    }
+
+    /**
      * Generate slug unik format WSM-{KODE}-{NAMA}. Kalau nama kembar (mis. 2 tamu
      * bernama "Bang Kimo"), otomatis nambahin angka di belakang: WSM-COL-BANG-KIMO-2.
      */
