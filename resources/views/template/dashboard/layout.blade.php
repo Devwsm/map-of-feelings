@@ -21,8 +21,7 @@
         <header class="border-b border-white/10">
             <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <span
-                        class="grid place-items-center w-9 h-9 rounded-full bg-white text-black font-['Brush_Script_MT','Segoe_Script',cursive] italic text-lg">of</span>
+                    <span class="grid place-items-center w-9 h-9 rounded-full bg-white text-black font-['Brush_Script_MT','Segoe_Script',cursive] italic text-lg">of</span>
                     <div>
                         <p class="text-[11px] font-bold uppercase tracking-widest text-white/50">Map of Feelings</p>
                         <p class="text-sm font-bold">@yield('title', 'Press Conference Dashboard')</p>
@@ -32,13 +31,11 @@
                 <div class="flex items-center gap-4">
                     <div class="text-right">
                         <p class="text-sm font-bold">{{ auth()->user()->name }}</p>
-                        <p class="text-[11px] font-bold uppercase tracking-widest text-white/40">{{ auth()->user()->role }}
-                        </p>
+                        <p class="text-[11px] font-bold uppercase tracking-widest text-white/40">{{ auth()->user()->role }}</p>
                     </div>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
-                        <button type="submit"
-                            class="rounded-full border border-white/20 px-4 py-2 text-xs font-bold uppercase tracking-widest hover:bg-white/10 transition-colors">Keluar</button>
+                        <button type="submit" class="rounded-full border border-white/20 px-4 py-2 text-xs font-bold uppercase tracking-widest hover:bg-white/10 transition-colors">Keluar</button>
                     </form>
                 </div>
             </div>
@@ -48,22 +45,17 @@
         @php $active = $active ?? 'home'; @endphp
         <nav class="border-b border-white/10">
             <div class="max-w-6xl mx-auto px-6 flex gap-8 text-xs font-bold uppercase tracking-widest overflow-x-auto">
-                <a href="{{ route('dashboard') }}"
-                    class="py-4 border-b-2 {{ $active === 'home' ? 'border-white text-white' : 'border-transparent text-white/40 hover:text-white/70' }} transition-colors whitespace-nowrap">Home</a>
+                <a href="{{ route('dashboard') }}" class="py-4 border-b-2 {{ $active === 'home' ? 'border-white text-white' : 'border-transparent text-white/40 hover:text-white/70' }} transition-colors whitespace-nowrap">Home</a>
 
                 @if (auth()->user()->role === 'admin')
-                    <a href="{{ route('dashboard.tamu') }}"
-                        class="py-4 border-b-2 {{ $active === 'tamu' ? 'border-white text-white' : 'border-transparent text-white/40 hover:text-white/70' }} transition-colors whitespace-nowrap">Tamu</a>
-                    <a href="#"
-                        class="py-4 border-b-2 border-transparent text-white/40 hover:text-white/70 transition-colors whitespace-nowrap">Tambah</a>
+                    <a href="{{ route('dashboard.tamu') }}" class="py-4 border-b-2 {{ $active === 'tamu' ? 'border-white text-white' : 'border-transparent text-white/40 hover:text-white/70' }} transition-colors whitespace-nowrap">Tamu</a>
+                    <a href="{{ route('dashboard.tamu.create') }}" class="py-4 border-b-2 {{ $active === 'tambah' ? 'border-white text-white' : 'border-transparent text-white/40 hover:text-white/70' }} transition-colors whitespace-nowrap">Tambah</a>
                 @endif
 
-                <a href="#"
-                    class="py-4 border-b-2 border-transparent text-white/40 hover:text-white/70 transition-colors whitespace-nowrap">Check-in</a>
+                <a href="#" class="py-4 border-b-2 border-transparent text-white/40 hover:text-white/70 transition-colors whitespace-nowrap">Check-in</a>
 
                 @if (auth()->user()->role === 'admin')
-                    <a href="#"
-                        class="py-4 border-b-2 border-transparent text-white/40 hover:text-white/70 transition-colors whitespace-nowrap">Export/Import</a>
+                    <a href="#" class="py-4 border-b-2 border-transparent text-white/40 hover:text-white/70 transition-colors whitespace-nowrap">Export/Import</a>
                 @endif
             </div>
         </nav>
