@@ -19,13 +19,17 @@ Route::prefix('/')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [dashboardController::class, 'index'])->name('dashboard');
+
     // Cuma admin
     Route::middleware('role:admin')->group(function () {
         Route::get('/dashboard/tamu', [pressconGuestController::class, 'index'])->name('dashboard.tamu');
+        Route::get('/dashboard/tamu/create', [pressconGuestController::class, 'create'])->name('dashboard.tamu.create');
+        Route::post('/dashboard/tamu', [pressconGuestController::class, 'store'])->name('dashboard.tamu.store');
         Route::get('/dashboard/tamu/{guest}/edit', [pressconGuestController::class, 'edit'])->name('dashboard.tamu.edit');
         Route::put('/dashboard/tamu/{guest}', [pressconGuestController::class, 'update'])->name('dashboard.tamu.update');
         Route::delete('/dashboard/tamu/{guest}', [pressconGuestController::class, 'destroy'])->name('dashboard.tamu.destroy');
     });
+
     // Admin & staff berdua boleh
     Route::middleware('role:admin,staff')->group(function () {
         // Route::get('/dashboard/checkin', [...])->name('dashboard.checkin');

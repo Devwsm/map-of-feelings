@@ -24,8 +24,10 @@ class pressconGuestController extends Controller
         'Inner Circle',
     ];
 
+    // ===== Admin: CRUD tamu (semua di bawah middleware role:admin) =====
+
     /**
-     * GET /dashboard/tamu (admin only, lewat middleware role:admin di route)
+     * GET /dashboard/tamu
      */
     public function index(Request $request): View
     {
@@ -41,6 +43,41 @@ class pressconGuestController extends Controller
             'categories' => self::CATEGORIES,
             'active' => 'tamu',
         ]);
+    }
+
+    /**
+     * GET /dashboard/tamu/create
+     */
+    public function create(): View
+    {
+        return view('pages.dashboard.tamu.create', [
+            'categories' => self::CATEGORIES,
+            'active' => 'tambah',
+        ]);
+    }
+
+    /**
+     * POST /dashboard/tamu
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'category' => ['required', 'in:' . implode(',', self::CATEGORIES)],
+            'group' => ['nullable', 'string', 'max:255'],
+            'max_pax' => ['required', 'integer', 'min:1'],
+            'details' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $guest = pressconGuest::create([
+            ...$validated,
+            'slug' => pressconGuest::generateSlug($validated['name'], $validated['category']),
+            'requires_name' => $request->boolean('requires_name'),
+        ]);
+
+        return redirect()
+            ->route('dashboard.tamu')
+            ->with('status', $guest->name . ' berhasil ditambahkan.');
     }
 
     /**

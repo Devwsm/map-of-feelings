@@ -11,7 +11,7 @@
             <p class="text-xs font-bold uppercase tracking-widest text-white/40 mb-2">Kelola Data</p>
             <h1 class="text-3xl font-bold">Tamu</h1>
         </div>
-        <a href="#"
+        <a href="{{ route('dashboard.tamu.create') }}"
             class="rounded-full bg-white text-black font-bold px-5 py-3 text-sm hover:bg-neutral-200 transition-colors">+
             Tambah Tamu</a>
     </div>
