@@ -66,7 +66,6 @@
 
                 <div class="flex items-center gap-3 text-xs shrink-0">
                     <span class="font-mono text-white/50">{{ $guest->slug }}</span>
-
                     @if ($guest->checked_in)
                         <span
                             class="rounded-full bg-emerald-500/15 text-emerald-300 px-3 py-1 font-bold whitespace-nowrap">Checked
@@ -83,7 +82,6 @@
                 <div class="flex items-center gap-2 shrink-0">
                     <a href="{{ route('dashboard.tamu.edit', $guest->slug) }}"
                         class="rounded-full border border-white/20 px-4 py-2 text-xs font-bold hover:bg-white/10 transition-colors">Edit</a>
-
                     <form action="{{ route('dashboard.tamu.destroy', $guest->slug) }}" method="POST"
                         onsubmit="return confirm('Hapus {{ $guest->name }}? Aksi ini gak bisa dibatalin.');">
                         @csrf
@@ -92,6 +90,7 @@
                             class="rounded-full border border-rose-500/30 text-rose-300 px-4 py-2 text-xs font-bold hover:bg-rose-500/10 transition-colors">Hapus</button>
                     </form>
                 </div>
+
             </div>
         @empty
             <div class="rounded-3xl border border-dashed border-white/15 p-10 text-center">

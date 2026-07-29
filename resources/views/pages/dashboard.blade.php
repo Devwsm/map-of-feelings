@@ -44,7 +44,7 @@
 
     {{-- EMPTY STATE --}}
     <div class="rounded-3xl border border-dashed border-white/15 p-10 text-center">
-        <p class="font-bold mb-1">Belum ada aktivitas</p>
+        <p class="font-bold mb-1">Belum ada aktivitas (belum sinkron data)</p>
         <p class="text-sm text-white/50">RSVP dan check-in tamu bakal muncul di sini begitu mulai masuk.</p>
     </div>
 @endsection
