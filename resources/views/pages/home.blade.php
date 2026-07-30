@@ -1,234 +1,410 @@
 @extends('template.layout')
+
 @section('content')
-    {{-- PAGE 1 — LANDING --}}
-    <section id="landing" data-screen="landing" class="w-full font-sans text-black overflow-x-hidden">
-        <div class="min-h-screen flex flex-col items-center justify-center overflow-hidden px-6 sm:px-16 pt-10 pb-6">
-            <p class="m-0 mb-1.5 text-xl sm:text-3xl font-extrabold">WELCOME TO</p>
-            <h1 class="z-3 flex items-center gap-2 sm:gap-4 m-0 -mb-9 sm:-mb-16 text-6xl sm:text-8xl lg:text-9xl font-normal leading-none tracking-tighter whitespace-nowrap"
-                aria-label="Map of Feelings">
-                <span>Map</span><span
-                    class="font-['Brush_Script_MT','Segoe_Script',cursive] text-[0.68em] italic -rotate-12 translate-y-1.5 tracking-[-0.13em]">of</span><span>Feelings</span>
-            </h1>
-            <div id="moodBars" class="z-1 grid grid-cols-10 gap-1 sm:gap-2.5 items-stretch w-full max-w-6xl h-72 sm:h-96"
-                aria-label="Choose a feeling"></div>
-            <h2 class="m-0 mt-8 mb-2 text-center text-2xl sm:text-4xl leading-none">HOW ARE YOU FEELING TODAY?</h2>
-            <p class="m-0 text-sm sm:text-lg font-bold">Choose the symbol</p>
-        </div>
-    </section>
+    <div class="mof-body w-full" id="mofRoot">
+        <div class="mof-noise" aria-hidden="true"></div>
+        <div class="mof-cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 
-    {{-- PAGE 2 — MAPPING / FINDING --}}
-    {{-- Catatan: grid dipindah ke div dalam, section luar cuma urus visibility (dikontrol JS via style.display) --}}
-    <section id="mapping" data-screen="mapping" class="w-full relative min-h-screen overflow-hidden" style="display:none"
-        aria-live="polite">
-        <div class="relative min-h-screen grid place-items-center p-8">
-            <div id="mappingField" class="absolute inset-0" aria-hidden="true"></div>
-            <h2 id="mappingText"
-                class="z-2 m-0 max-w-xl text-center whitespace-pre-line font-semibold text-4xl sm:text-6xl leading-none after:content-[''] after:inline-block after:w-[.09em] after:h-[.9em] after:ml-[.12em] after:bg-current after:align-[-.08em] after:animate-[caret_.75s_steps(1)_infinite] motion-reduce:after:animate-none">
-            </h2>
-        </div>
-    </section>
-
-    {{-- PAGE 3 — COORDINATE --}}
-    <section id="coordinate" data-screen="coordinate" class="w-full relative min-h-screen [background:var(--page-gradient)]"
-        style="display:none">
-        <div class="min-h-screen flex flex-col items-center justify-center px-6 py-10 text-center">
-            <h2 class="m-0 mb-11 font-semibold text-4xl sm:text-6xl leading-none">FOUND YOUR<br />COORDINATE!</h2>
-            <div class="mb-10 w-10 h-10 rounded-full border border-black grid place-items-center bg-white/45 shadow-[0_0_0_4px_transparent,0_0_0_5px_#000,0_0_0_9px_transparent,0_0_0_10px_#000] animate-[markerPulse_1.25s_ease-in-out_infinite_alternate] motion-reduce:animate-none"
-                aria-hidden="true">
-                <span id="coordinateEmoji" class="text-2xl"></span>
-            </div>
-            <button id="coordinateButton" type="button"
-                class="w-full max-w-xl min-h-24 rounded-3xl bg-black text-white px-10 py-6 font-extrabold text-xl sm:text-3xl transition hover:-translate-y-1.5 hover:shadow-2xl focus-visible:outline-none focus-visible:-translate-y-1.5 focus-visible:shadow-2xl">
-                <span id="coordinateName">The Quiet Breaking Point</span>
+        <header
+            class="fixed inset-x-0 top-0 z-[70] flex items-center justify-between px-6 py-5 sm:px-8 backdrop-blur-md bg-white/70 border-b border-black/5">
+            <button id="brandHome" type="button" aria-label="Kembali ke awal"
+                class="flex items-center border-0 bg-transparent p-0 cursor-pointer">
+                <img src="{{ asset('assets/logo/logo-map-of-feelings.svg') }}" alt="Map of Feelings"
+                    class="block h-[18px] sm:h-[22px] w-auto" />
             </button>
-            <p class="mt-4 mb-0 font-bold opacity-70">Click the coordinate to continue</p>
-        </div>
-    </section>
 
-    {{-- PAGE 4 — SONG RESULT --}}
-    <section id="result" data-screen="result" class="w-full relative min-h-screen [background:var(--page-gradient)]"
-        style="display:none">
-        <div class="min-h-screen px-6 pt-14 pb-16 text-center">
-            <h2 class="mx-auto mb-8 font-semibold text-3xl sm:text-5xl">YOUR FEELING REMINDS US OF..</h2>
-            <article class="w-full max-w-2xl mx-auto rounded-3xl bg-black text-white px-12 pt-12 pb-10 shadow-2xl">
-                <img id="resultArtwork" src="" alt="Song artwork"
-                    class="block w-full max-w-xs aspect-square object-cover mx-auto mb-10 bg-white" />
-                <div class="text-center">
-                    <p class="mt-7 mb-2 text-xs font-extrabold tracking-widest opacity-70">REKOMENDASI</p>
-                    <h3 id="resultSong" class="m-0 text-3xl sm:text-5xl">Aku Harus Pergi</h3>
-                    <p class="mt-7 mb-2 text-xs font-extrabold tracking-widest opacity-70">COORDINATE</p>
-                    <h4 id="resultCoordinate" class="m-0 text-xl sm:text-3xl">The Quiet Breaking Point</h4>
-                    <p id="resultMood" class="mt-2 mb-0 opacity-70"></p>
-                    <p class="mt-7 mb-2 text-xs font-extrabold tracking-widest opacity-70">KENAPA LAGU INI?</p>
-                    <p id="resultWhy" class="max-w-lg mx-auto leading-normal text-base sm:text-xl"></p>
-                    <p id="resultAffirmation"
-                        class="max-w-lg mx-auto mt-8 italic opacity-90 leading-normal text-base sm:text-xl"></p>
-                    <div class="flex flex-wrap justify-center gap-2.5 mt-8">
-                        <a id="spotifyLink" href="#" target="_blank" rel="noopener"
-                            class="rounded-full border border-white bg-white text-black font-extrabold no-underline px-5 py-3.5 transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5">Spotify</a>
-                        <a id="youtubeLink" href="#" target="_blank" rel="noopener"
-                            class="rounded-full border border-white bg-white text-black font-extrabold no-underline px-5 py-3.5 transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5">YouTube</a>
-                        <button id="saveCoordinate" type="button"
-                            class="rounded-full border border-white bg-white text-black font-extrabold px-5 py-3.5 transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5">Save
-                            Coordinate</button>
-                    </div>
-                    <button id="restartButton" type="button"
-                        class="mt-4 rounded-full border border-white bg-transparent text-white font-extrabold px-5 py-3.5">Map
-                        Another Feeling</button>
+            <div class="flex items-center gap-4 sm:gap-5">
+                <div class="hidden sm:flex gap-5 font-mono tracking-widest text-[10px] text-black/60">
+                    <span id="liveCoordinate">LINTANG 00.0000 / BUJUR 00.0000</span>
+                    <span id="atlasStatus">AREA 01 &middot; SIAGA</span>
                 </div>
-            </article>
-        </div>
-    </section>
+                <a href="{{ route('login') }}"
+                    class="font-mono tracking-widest rounded-full border border-black/20 bg-white/80 px-4 py-2.5 text-[10px] hover:bg-white transition-colors">MASUK
+                    PENGELOLA</a>
+            </div>
+        </header>
+
+        <main id="mofApp" class="w-full">
+
+            {{-- LANDING / HERO --}}
+            <section id="landing" data-screen="landing"
+                class="mof-screen place-items-center text-center overflow-hidden px-6 pt-[110px] pb-10 sm:pt-[140px]">
+                <div class="relative z-[4] max-w-3xl">
+                    <img src="{{ asset('assets/logo/logo-map-of-feelings.svg') }}" alt="Map of Feelings"
+                        class="block w-[min(520px,74vw)] h-auto mx-auto mb-8" />
+                    <p class="max-w-xl mx-auto mb-8 text-black/60 text-base sm:text-lg leading-relaxed">Setiap perasaan
+                        punya tempatnya sendiri. Temukan koordinat emosimu dan lagu yang sedang berbicara paling dekat
+                        denganmu.</p>
+                    <button id="enterMap" type="button"
+                        class="font-mono tracking-widest rounded-full border border-black bg-black text-white px-6 py-4 text-[11px] hover:-translate-y-0.5 hover:shadow-lg transition">MULAI
+                        PERJALANAN</button>
+                </div>
+
+                <div class="absolute w-[min(70vmin,760px)] aspect-square" aria-hidden="true">
+                    <div class="mof-orbit-ring"></div>
+                    <div class="mof-orbit-ring mof-orbit-b"></div>
+                    <div class="mof-orbit-ring mof-orbit-c"></div>
+                    <div class="mof-moon"></div>
+                </div>
+            </section>
+
+            {{-- ATLAS --}}
+            <section id="atlas" data-screen="atlas" class="mof-screen px-5 pt-[110px] pb-16 sm:px-8">
+                <div class="max-w-[1400px] mx-auto mb-8 text-center">
+                    <img src="{{ asset('assets/logo/logo-map-of-feelings.svg') }}" alt="Map of Feelings"
+                        class="block w-[min(340px,62vw)] h-auto mx-auto mb-3" />
+                    <h2 class="text-4xl sm:text-6xl font-light tracking-tight">Bagaimana perasaanmu hari ini?</h2>
+                    <p class="font-mono tracking-widest mt-4 text-[10px] text-black/50">SOROT &middot; RASAKAN &middot;
+                        PILIH</p>
+                </div>
+
+                <div class="mof-map-shell max-w-[1400px] mx-auto min-h-[600px] sm:min-h-[680px]" id="mapShell">
+                    <div class="mof-grid-lines"></div>
+                    <div class="mof-map-glow"></div>
+                    <div id="emotionNodes"></div>
+                    <div class="mof-map-caption font-mono tracking-widest">
+                        <span>AREA 01</span><span class="hidden sm:inline">KEDALAMAN: BATIN</span><span>VISIBILITAS:
+                            BERUBAH</span>
+                    </div>
+                </div>
+            </section>
+
+            {{-- QUESTION --}}
+            <section id="question" data-screen="question" class="mof-screen place-items-center px-5 pt-[100px] pb-16">
+                <div class="relative w-[min(920px,92vw)] text-center">
+                    <button id="questionBack" type="button"
+                        class="font-mono tracking-widest absolute left-0 -top-12 border-0 bg-transparent p-0 text-black/50 hover:text-black/80 transition-colors cursor-pointer">&larr;
+                        KEMBALI</button>
+
+                    <p id="questionFeeling"
+                        class="font-mono tracking-widest mb-4 text-[11px] text-[color:rgb(var(--mof-mood-rgb,122,174,247))]">
+                        SEDIH</p>
+                    <h2 id="questionTitle" class="mb-10 text-3xl sm:text-6xl font-normal leading-tight tracking-tight"></h2>
+                    <div id="questionChoices" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5"></div>
+                    <p class="font-mono tracking-widest mt-6 text-[10px] text-black/50">Pilih jawaban yang terasa paling
+                        dekat denganmu.</p>
+                </div>
+            </section>
+
+            {{-- MAPPING --}}
+            <section id="mapping" data-screen="mapping"
+                class="mof-screen mof-mapping-screen place-items-center overflow-hidden" aria-live="polite">
+                <div id="mappingField" class="mof-mapping-field" aria-hidden="true"></div>
+                <div class="relative z-[3] w-[min(650px,85vw)] text-center">
+                    <p class="font-mono tracking-widest mb-2 text-[11px] text-black/50">MEMETAKAN PERASAANMU</p>
+                    <h2 id="mappingText"
+                        class="whitespace-pre-line text-4xl sm:text-7xl font-light leading-none tracking-tight"></h2>
+                    <div class="mof-mapping-progress-bar"><span id="mappingProgress"></span></div>
+                </div>
+            </section>
+
+            {{-- COORDINATE --}}
+            <section id="coordinate" data-screen="coordinate"
+                class="mof-screen mof-coordinate-screen place-items-center overflow-hidden">
+                <div class="mof-coordinate-aura"></div>
+                <div class="relative z-[2] flex flex-col items-center text-center px-6">
+                    <p class="font-mono tracking-widest mb-5 text-[11px]">PERASAANMU PUNYA TEMPAT</p>
+                    <h2 class="m-0 text-4xl sm:text-7xl font-light leading-none tracking-tight">Kami
+                        menemukan<br />koordinatmu.</h2>
+
+                    <div class="mof-coordinate-marker my-11"></div>
+
+                    <button id="coordinateButton" type="button" class="mof-coordinate-button">
+                        <small id="coordinateFeeling"
+                            class="font-mono tracking-widest text-[10px] text-white/72">PERASAAN</small>
+                        <strong id="coordinateName">Titik Patah yang Sunyi</strong>
+                    </button>
+
+                    <p class="font-mono tracking-widest mt-6 text-[10px] text-black/60">Klik koordinat untuk melihat lagu
+                        yang terhubung</p>
+                </div>
+            </section>
+        </main>
+
+        {{-- RESULT PANEL --}}
+        <aside id="emotionPanel" class="mof-emotion-panel" aria-hidden="true">
+            <button id="panelClose" type="button" aria-label="Tutup"
+                class="fixed right-6 top-6 z-[5] w-12 h-12 rounded-full border border-black/10 bg-white/90 text-2xl shadow-lg">&times;</button>
+
+            <div class="grid place-items-center relative px-6 py-[90px] sm:px-[6vw]">
+                <div class="mof-artwork-frame">
+                    <img id="resultArtwork" src="" alt="Artwork lagu" />
+                </div>
+                <div class="font-mono tracking-widest absolute left-8 bottom-7 text-[10px] text-black/50" id="panelIndex">
+                    01 / 10</div>
+            </div>
+
+            <div class="self-center w-[min(760px,86%)] py-16 sm:py-[100px]">
+                <p id="panelCoordinate" class="font-mono tracking-widest mb-2 text-[11px] text-black/50">TITIK PATAH YANG
+                    SUNYI</p>
+                <h2 id="resultSong" class="m-0 text-5xl sm:text-8xl font-light leading-[0.9] tracking-tighter">Aku Harus
+                    Pergi</h2>
+                <p id="resultMood" class="mt-7 mb-8 text-lg text-black/55"></p>
+
+                <div class="grid grid-cols-2 border-y border-black/10 mb-8">
+                    <div class="py-4"><span
+                            class="font-mono tracking-widest block mb-1.5 text-[9px] text-black/50">KONDISI
+                            EMOSI</span><strong id="panelState" class="text-xl"></strong></div>
+                    <div class="py-4"><span
+                            class="font-mono tracking-widest block mb-1.5 text-[9px] text-black/50">CUACA
+                            ATLAS</span><strong id="panelWeather" class="text-xl"></strong></div>
+                </div>
+
+                <p class="font-mono tracking-widest mb-2 text-[9px] text-black/50">KENAPA LAGU INI?</p>
+                <p id="resultWhy" class="mb-7 text-black/55 leading-loose"></p>
+                <p id="resultAffirmation" class="my-7 italic text-lg text-black"></p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 my-7">
+                    <label class="grid gap-2">
+                        <span class="font-mono tracking-widest text-[9px] text-black/50">NAMA</span>
+                        <input id="visitorName" type="text" maxlength="40" autocomplete="name"
+                            placeholder="Tulis nama kamu"
+                            class="w-full min-h-[50px] rounded-2xl border border-black/15 bg-white/80 px-4 py-3.5 text-sm outline-none focus:border-[color:rgb(var(--mof-panel-accent-rgb,122,174,247))]" />
+                    </label>
+                    <label class="grid gap-2">
+                        <span class="font-mono tracking-widest text-[9px] text-black/50">NAMA INSTAGRAM</span>
+                        <input id="visitorInstagram" type="text" maxlength="40" autocapitalize="none"
+                            spellcheck="false" placeholder="@username"
+                            class="w-full min-h-[50px] rounded-2xl border border-black/15 bg-white/80 px-4 py-3.5 text-sm outline-none focus:border-[color:rgb(var(--mof-panel-accent-rgb,122,174,247))]" />
+                    </label>
+                    <p id="coordinateFormError" class="sm:col-span-2 min-h-4 text-xs text-red-600" aria-live="polite">
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap gap-2.5">
+                    <a id="spotifyLink" href="#" target="_blank" rel="noopener"
+                        class="font-mono tracking-widest rounded-full border border-black/15 bg-white/80 px-4.5 py-3.5 text-[10px] hover:bg-white hover:-translate-y-0.5 transition">DENGARKAN
+                        DI SPOTIFY</a>
+                    <a id="youtubeLink" href="#" target="_blank" rel="noopener"
+                        class="font-mono tracking-widest rounded-full border border-black/15 bg-white/80 px-4.5 py-3.5 text-[10px] hover:bg-white hover:-translate-y-0.5 transition">TONTON
+                        DI YOUTUBE</a>
+                    <button id="saveCoordinate" type="button"
+                        class="font-mono tracking-widest rounded-full border border-black/15 bg-white/80 px-4.5 py-3.5 text-[10px] hover:bg-white hover:-translate-y-0.5 transition disabled:opacity-50 disabled:cursor-wait">SIMPAN
+                        KOORDINAT</button>
+                </div>
+
+                <button id="restartButton" type="button"
+                    class="font-mono tracking-widest mt-7 border-0 border-b border-black/15 bg-transparent pb-2.5 text-[10px] text-black/55 cursor-pointer">PETAKAN
+                    PERASAAN LAIN</button>
+            </div>
+        </aside>
+
+        <footer
+            class="flex flex-col sm:flex-row justify-between gap-1 px-6 py-6 sm:px-8 sm:py-7 border-t border-black/10 bg-white/90 font-mono tracking-widest text-[9px] text-black/55">
+            <span>MAP OF FEELINGS &middot; SETIAP PERASAAN PUNYA KOORDINAT</span>
+            <span>&copy; WAHSUDAH MONDAY 2026</span>
+        </footer>
+    </div>
 
     <script>
         // Data lagu lengkap.
         window.MAP_OF_FEELINGS = [{
-                id: "heartbroken",
-                emoji: "😭",
-                feeling: "Heartbroken",
-                nuance: "Trying to let go",
+                id: "sedih",
+                feeling: "Sedih",
+                nuance: "Memilih pergi demi diri sendiri",
                 song: "Aku Harus Pergi",
-                coordinate: "The Quiet Breaking Point",
-                barGradient: "linear-gradient(180deg,#6eb8ff 0%,#1f80f0 48%,#0640d8 100%)",
-                pageGradient: "radial-gradient(circle at 82% 5%,#ffffff 0%,#c9ddf8 31%,#6f9ee9 58%,#187cf0 100%)",
+                question: "Apa yang paling berat saat kamu memilih pergi demi dirimu sendiri?",
+                choices: [
+                    "Meninggalkan seseorang yang masih disayangi",
+                    "Menerima bahwa hubungan telah selesai",
+                    "Berhenti mengharapkan perubahan",
+                    "Meyakini bahwa pergi adalah keputusan yang tepat"
+                ],
+                coordinate: "Titik Patah yang Sunyi",
+                barGradient: "linear-gradient(180deg,#DCEBFF 0%,#6FA6F5 50%,#0954E3 100%)",
+                pageGradient: "radial-gradient(circle at 18% 22%,#DCEBFF 0%,#6FA6F5 48%,#0954E3 100%)",
                 artwork: "{{ asset('assets/artwork/aku-harus-pergi.svg') }}",
-                why: "Rekomendasi lagu karena Aku Harus Pergi bicara tentang menerima bahwa melepas juga bisa menjadi bentuk cinta.",
-                affirmation: "Some goodbyes are not proof that love failed. Sometimes leaving is the first way you protect what is left of you.",
+                why: "Aku Harus Pergi berbicara tentang keberanian memilih pergi, bukan karena rasa sudah hilang, tetapi karena diri sendiri juga perlu diselamatkan.",
+                affirmation: "Pergi tidak selalu berarti menyerah. Kadang itu adalah cara pertama untuk kembali memilih dirimu sendiri.",
                 spotify: "#",
                 youtube: "#"
             },
             {
-                id: "anxious",
-                emoji: "😟",
-                feeling: "Anxious",
-                nuance: "Misunderstood",
+                id: "serba-salah",
+                feeling: "Serba Salah",
+                nuance: "Tidak memahami keinginan pasangan",
                 song: "Tak Peka",
-                coordinate: "The Unread Signal",
-                barGradient: "linear-gradient(180deg,#f18c9e 0%,#e8405d 48%,#df123f 100%)",
-                pageGradient: "radial-gradient(circle at 80% 6%,#ffe7eb 0%,#ef8799 34%,#d92d49 67%,#b80727 100%)",
+                question: "Apa yang paling sering membuatmu merasa serba salah dalam hubungan?",
+                choices: [
+                    "Takut tidak memahami keinginan pasangan",
+                    "Merasa apa pun yang dilakukan tetap salah",
+                    "Lelah menebak tanpa mendapat penjelasan",
+                    "Bingung antara salah paham atau tidak lagi sejalan"
+                ],
+                coordinate: "Sinyal yang Tak Terbaca",
+                barGradient: "linear-gradient(180deg,#3EAD9C 0%,#8DB36E 50%,#FCA547 100%)",
+                pageGradient: "radial-gradient(circle at 18% 22%,#3EAD9C 0%,#8DB36E 48%,#FCA547 100%)",
                 artwork: "{{ asset('assets/artwork/tak-peka.svg') }}",
-                why: "Tak Peka cocok untuk rasa capek karena tidak dimengerti dan komunikasi yang meleset.",
-                affirmation: "Sometimes you are not hard to love. You are just tired of translating your heart.",
+                why: "Tak Peka mewakili rasa lelah ketika niat baik terus meleset dan kamu merasa selalu salah karena tidak memahami sesuatu yang tak pernah benar-benar dijelaskan.",
+                affirmation: "Kamu tidak harus terus menerjemahkan sesuatu yang tidak pernah disampaikan dengan jujur.",
                 spotify: "#",
                 youtube: "#"
             },
             {
-                id: "angry",
-                emoji: "😡",
-                feeling: "Angry",
-                nuance: "Accused",
+                id: "curiga",
+                feeling: "Curiga",
+                nuance: "Menguji kesetiaan",
                 song: "Tak Mendua",
-                coordinate: "The Trust Checkpoint",
-                barGradient: "linear-gradient(180deg,#9bd8bd 0%,#d5ca8d 47%,#ff9b58 100%)",
-                pageGradient: "radial-gradient(circle at 87% 7%,#00c7db 0%,#79d5ca 24%,#ffbe43 59%,#ff6f91 100%)",
+                question: "Ketika memilih tetap setia, apa yang paling ingin kamu jaga?",
+                choices: [
+                    "Kepercayaan dalam hubungan",
+                    "Komitmen yang telah disepakati",
+                    "Perasaan yang hanya ditujukan kepada satu orang",
+                    "Keyakinan bahwa cinta tidak perlu terbagi"
+                ],
+                coordinate: "Titik Uji Kepercayaan",
+                barGradient: "linear-gradient(180deg,#F8DDD0 0%,#F2A17A 50%,#BCC59A 100%)",
+                pageGradient: "radial-gradient(circle at 18% 22%,#F8DDD0 0%,#F2A17A 48%,#BCC59A 100%)",
                 artwork: "{{ asset('assets/artwork/tak-mendua.svg') }}",
-                why: "Lagu ini masuk saat kamu merasa dituduh, tidak dipercaya, atau terus-menerus harus membela diri.",
-                affirmation: "Being loyal should not feel like standing in court. The heart also needs to be believed.",
+                why: "Tak Mendua adalah penegasan bahwa kesetiaan bukan sekadar ucapan, tetapi keputusan untuk menjaga kepercayaan dan tetap memilih satu orang.",
+                affirmation: "Kesetiaan tidak seharusnya terasa seperti pembelaan tanpa akhir. Hati juga perlu dipercaya.",
                 spotify: "#",
                 youtube: "#"
             },
             {
-                id: "betrayed",
-                emoji: "💔",
-                feeling: "Betrayed",
-                nuance: "Trust cracking",
+                id: "lelah",
+                feeling: "Lelah",
+                nuance: "Terjebak dalam hubungan yang tidak sehat",
                 song: "Hilang Warasnya",
-                coordinate: "The Fracture Line",
-                barGradient: "linear-gradient(180deg,#ffd7a2 0%,#ffb348 50%,#ff9e22 100%)",
-                pageGradient: "radial-gradient(circle at 84% 8%,#fff3d9 0%,#ffc46f 41%,#ff9d2d 72%,#ef7b00 100%)",
+                question: "Apa yang paling sulit saat terjebak dalam hubungan yang tidak sehat?",
+                choices: [
+                    "Melepaskan seseorang yang terus menyakiti",
+                    "Menyadari bahwa hubungan ini tidak lagi sehat",
+                    "Kehilangan diri sendiri secara perlahan",
+                    "Tidak mengetahui kapan keadaan mulai berubah"
+                ],
+                coordinate: "Garis Retak",
+                barGradient: "linear-gradient(180deg,#7D351F 0%,#A6503C 50%,#C48773 100%)",
+                pageGradient: "radial-gradient(circle at 18% 22%,#7D351F 0%,#A6503C 48%,#C48773 100%)",
                 artwork: "{{ asset('assets/artwork/hilang-warasnya.svg') }}",
-                why: "Hilang Warasnya cocok untuk fase ketika kepercayaan runtuh pelan-pelan dan kehangatan mulai terasa asing.",
-                affirmation: "Some hearts do not break all at once. They crack quietly, one disappointment at a time.",
+                why: "Hilang Warasnya menggambarkan kelelahan ketika hubungan perlahan mengikis ketenangan, kepercayaan, dan rasa mengenali diri sendiri.",
+                affirmation: "Kamu tidak harus kehilangan dirimu sendiri untuk mempertahankan sebuah hubungan.",
                 spotify: "#",
                 youtube: "#"
             },
             {
-                id: "numb",
-                emoji: "😶",
-                feeling: "Numb",
-                nuance: "Still not enough",
+                id: "kesepian",
+                feeling: "Kesepian",
+                nuance: "Pencapaian yang terasa kosong",
                 song: "Sumpah Percuma",
-                coordinate: "The Empty Trophy Room",
-                barGradient: "linear-gradient(180deg,#cbc2ff 0%,#aaa4ff 47%,#7789f2 100%)",
-                pageGradient: "radial-gradient(circle at 76% 9%,#6797ff 0%,#a78ef4 39%,#d498f0 72%,#8c80e7 100%)",
+                question: "Kapan terakhir kali kamu memiliki banyak hal, tetapi tetap merasa kosong?",
+                choices: [
+                    "Saat seluruh pencapaian terasa biasa saja",
+                    "Saat dikelilingi banyak hal tetapi tetap kesepian",
+                    "Saat berhasil memperoleh hal yang dahulu diinginkan",
+                    "Saat menyadari bahwa kebahagiaan tidak selalu menyertai pencapaian"
+                ],
+                coordinate: "Ruang Trofi yang Kosong",
+                barGradient: "linear-gradient(180deg,#7695FB 0%,#A29BFC 50%,#C69FF8 100%)",
+                pageGradient: "radial-gradient(circle at 18% 22%,#7695FB 0%,#A29BFC 48%,#C69FF8 100%)",
                 artwork: "{{ asset('assets/artwork/sumpah-percuma.svg') }}",
-                why: "Lagu ini menjadi jawaban untuk rasa hampa meski dari luar semuanya terlihat cukup.",
-                affirmation: "You can have everything people clap for and still need something no one sees.",
+                why: "Sumpah Percuma hadir untuk momen ketika pencapaian terlihat penuh dari luar, tetapi tidak menjawab ruang kosong di dalam diri.",
+                affirmation: "Tidak semua yang dirayakan orang lain mampu mengisi bagian dalam dirimu.",
                 spotify: "#",
                 youtube: "#"
             },
             {
-                id: "grief",
-                emoji: "😢",
-                feeling: "Grief",
-                nuance: "Missing someone",
+                id: "berduka",
+                feeling: "Berduka",
+                nuance: "Merindukan seseorang yang telah tiada",
                 song: "Pesan Rindu",
-                coordinate: "The Message That Stayed",
-                barGradient: "linear-gradient(180deg,#ffd5a2 0%,#ffb233 49%,#ff9700 100%)",
-                pageGradient: "radial-gradient(circle at 17% 82%,#ffd400 0%,#ffac20 39%,#ff6d0b 77%,#ff6500 100%)",
+                question: "Apabila dapat mengulang satu momen, apa yang paling ingin kamu lakukan?",
+                choices: [
+                    "Mengucapkan selamat tinggal dengan lebih baik",
+                    "Mendengar suaranya sekali lagi",
+                    "Memeluknya lebih lama",
+                    "Mengatakan bahwa kerinduan itu masih ada"
+                ],
+                coordinate: "Pesan yang Tetap Tinggal",
+                barGradient: "linear-gradient(180deg,#FFF0C9 0%,#FDD374 50%,#F7B94D 100%)",
+                pageGradient: "radial-gradient(circle at 18% 22%,#FFF0C9 0%,#FDD374 48%,#F7B94D 100%)",
                 artwork: "{{ asset('assets/artwork/pesan-rindu.svg') }}",
-                why: "Pesan Rindu menjadi soundtrack untuk rindu yang tidak selesai, terutama setelah kehilangan.",
-                affirmation: "Not every message needs a reply. Some messages stay because love still knows the way home.",
+                why: "Pesan Rindu menjadi ruang untuk rindu yang tidak lagi dapat disampaikan langsung, tetapi tetap hidup dalam ingatan.",
+                affirmation: "Sebagian pesan tidak membutuhkan balasan. Ia tinggal karena rasa sayang masih mengingat jalan pulang.",
                 spotify: "#",
                 youtube: "#"
             },
             {
-                id: "flirty",
-                emoji: "🥰",
-                feeling: "Flirty",
-                nuance: "Private love",
-                song: "Yang Tau Tau Aja",
-                coordinate: "The Hidden Corner",
-                barGradient: "linear-gradient(180deg,#d5f1df 0%,#eeefad 49%,#f6ec72 100%)",
-                pageGradient: "radial-gradient(circle at 9% 43%,#e18fe9 0%,#9dd7ef 26%,#d9efba 51%,#fff37b 78%,#ffc65a 100%)",
+                id: "nyaman",
+                feeling: "Nyaman",
+                nuance: "Hubungan intim yang cukup diketahui berdua",
+                song: "Yang Tau-Tau Aja",
+                question: "Apa yang paling berharga dari hubungan yang cukup diketahui oleh kalian berdua?",
+                choices: [
+                    "Percakapan yang hanya dipahami berdua",
+                    "Tatapan sederhana yang memiliki banyak arti",
+                    "Momen pribadi yang terasa dekat dan intim",
+                    "Kenyamanan tanpa perlu diketahui semua orang"
+                ],
+                coordinate: "Sudut yang Tersembunyi",
+                barGradient: "linear-gradient(180deg,#9EC9AE 0%,#33CADB 50%,#FC8D80 100%)",
+                pageGradient: "radial-gradient(circle at 18% 22%,#9EC9AE 0%,#33CADB 48%,#FC8D80 100%)",
                 artwork: "{{ asset('assets/artwork/yang-tau-tau-aja.svg') }}",
-                why: "Yang Tau Tau Aja cocok untuk hubungan yang ringan, rahasia, dan cukup diketahui lingkar terdekat.",
-                affirmation: "Some feelings do not need an announcement. Sometimes the sweetest thing is knowing only a few people know.",
+                why: "Yang Tau-Tau Aja merayakan hubungan yang intim, hangat, dan tidak membutuhkan pengumuman untuk terasa nyata.",
+                affirmation: "Tidak semua perasaan harus diumumkan. Beberapa justru tumbuh paling jujur dalam ruang yang hanya dipahami berdua.",
                 spotify: "#",
                 youtube: "#"
             },
             {
-                id: "longing",
-                emoji: "🥺",
-                feeling: "Longing",
-                nuance: "Growing apart",
+                id: "terharu",
+                feeling: "Terharu",
+                nuance: "Belajar menerima perpisahan",
                 song: "Sedih Harus Kau Buang",
-                coordinate: "The Last Day of Somewhere",
-                barGradient: "linear-gradient(180deg,#d6fa72 0%,#c5f000 49%,#a8d900 100%)",
-                pageGradient: "radial-gradient(circle at 30% 78%,#d6ff23 0%,#c6f000 48%,#9fd000 100%)",
+                question: "Dalam proses melepaskan, apa yang paling ingin kamu pelajari?",
+                choices: [
+                    "Mengikhlaskan bahwa tidak semua hal dapat dipertahankan",
+                    "Berdamai dengan kenangan yang tersisa",
+                    "Menerima perpisahan sebagai bagian dari kehidupan",
+                    "Tetap melangkah meskipun belum sepenuhnya pulih"
+                ],
+                coordinate: "Hari Terakhir di Suatu Tempat",
+                barGradient: "linear-gradient(180deg,#A6E67A 0%,#7CE46A 50%,#62B158 100%)",
+                pageGradient: "radial-gradient(circle at 18% 22%,#A6E67A 0%,#7CE46A 48%,#62B158 100%)",
                 artwork: "{{ asset('assets/artwork/sedih-harus-kau-buang.svg') }}",
-                why: "Lagu ini pas untuk nostalgia, perpisahan masa sekolah atau kampus, dan rasa yang harus dilepas.",
-                affirmation: "Some sadness asks to be thanked, folded neatly, and left behind.",
+                why: "Sedih Harus Kau Buang menemani proses melepaskan: bukan menghapus kenangan, melainkan belajar berjalan bersama apa yang pernah ada.",
+                affirmation: "Sebagian kesedihan perlu dipeluk, diberi terima kasih, lalu perlahan dilepaskan.",
                 spotify: "#",
                 youtube: "#"
             },
             {
-                id: "hopeful",
-                emoji: "🥹",
-                feeling: "Hopeful",
-                nuance: "Waiting for timing",
+                id: "penuh-harap",
+                feeling: "Penuh Harap",
+                nuance: "Percaya bahwa cinta akan menemukan jalan",
                 song: "Fatamorgana",
-                coordinate: "The Distant Light",
-                barGradient: "linear-gradient(180deg,#fff7b4 0%,#fff04a 51%,#ffea00 100%)",
-                pageGradient: "radial-gradient(circle at 48% 50%,#fff9c8 0%,#fff367 38%,#ffe500 80%,#ffd900 100%)",
+                question: "Apa yang masih membuatmu percaya bahwa cinta yang nyata akan datang?",
+                choices: [
+                    "Harapan yang terus dijaga",
+                    "Seseorang yang masih didoakan",
+                    "Keyakinan bahwa waktu yang tepat akan tiba",
+                    "Kepercayaan bahwa ketulusan akan menemukan jalannya"
+                ],
+                coordinate: "Cahaya di Kejauhan",
+                barGradient: "linear-gradient(180deg,#DE842D 0%,#EDAB49 50%,#A89C42 100%)",
+                pageGradient: "radial-gradient(circle at 18% 22%,#DE842D 0%,#EDAB49 48%,#A89C42 100%)",
                 artwork: "{{ asset('assets/artwork/fatamorgana.svg') }}",
-                why: "Fatamorgana cocok untuk kamu yang sedang menunggu, berdoa, dan percaya pada waktu yang tepat.",
-                affirmation: "Hope is not always loud. Sometimes it is just you still looking at the horizon.",
+                why: "Fatamorgana adalah tentang harapan, doa, dan perjalanan mencari tempat pulang yang terasa nyata.",
+                affirmation: "Harapan tidak selalu bersuara keras. Kadang ia hanya membuatmu tetap memandang ke arah cahaya.",
                 spotify: "#",
                 youtube: "#"
             },
             {
-                id: "peaceful",
-                emoji: "🙂",
-                feeling: "Peaceful",
-                nuance: "Lonely in a crowd",
+                id: "hampa",
+                feeling: "Hampa",
+                nuance: "Sepi di tengah keramaian",
                 song: "Sorak Sepi",
-                coordinate: "The Silent Stage",
-                barGradient: "linear-gradient(180deg,#bfe7c8 0%,#45b865 48%,#00a52d 100%)",
-                pageGradient: "radial-gradient(circle at 21% 82%,#50c653 0%,#31973a 46%,#1b5b2a 100%)",
+                question: "Kapan kamu paling merasa sepi di tengah keramaian?",
+                choices: [
+                    "Saat banyak orang hadir tetapi tidak ada yang benar-benar memahami",
+                    "Saat suasana ramai tetapi pikiran tetap kosong",
+                    "Saat tertawa bersama tetapi hati terasa jauh",
+                    "Saat kembali sendiri setelah keramaian berakhir"
+                ],
+                coordinate: "Panggung yang Sunyi",
+                barGradient: "linear-gradient(180deg,#4CB69C 0%,#3DAA8C 50%,#2F776B 100%)",
+                pageGradient: "radial-gradient(circle at 18% 22%,#4CB69C 0%,#3DAA8C 48%,#2F776B 100%)",
                 artwork: "{{ asset('assets/artwork/sorak-sepi.svg') }}",
-                why: "Sorak Sepi menjadi penutup: kesepian yang sunyi, dewasa, dan tidak perlu dilawan keras-keras.",
-                affirmation: "The loudest room can still leave space for silence. You are allowed to rest after being seen.",
+                why: "Sorak Sepi menggambarkan ruang kosong yang tetap terasa meski suara, tawa, dan banyak orang berada di sekelilingmu.",
+                affirmation: "Ruangan paling ramai pun dapat menyisakan sunyi. Perasaanmu tetap nyata, bahkan ketika tidak terlihat.",
                 spotify: "#",
                 youtube: "#"
             }
@@ -236,239 +412,317 @@
 
         (function() {
             const MOODS = window.MAP_OF_FEELINGS;
-            const moodBars = document.getElementById('moodBars');
+            const root = document.getElementById('mofRoot');
 
-            function renderLanding() {
-                moodBars.innerHTML = '';
+            const screens = Object.fromEntries(
+                ['landing', 'atlas', 'question', 'mapping', 'coordinate'].map((id) => [id, document.getElementById(
+                    id)])
+            );
 
-                MOODS.forEach((mood, index) => {
-                    const button = document.createElement('button');
-                    button.type = 'button';
+            const emotionNodes = document.getElementById('emotionNodes');
+            const mappingField = document.getElementById('mappingField');
+            const mappingText = document.getElementById('mappingText');
+            const panel = document.getElementById('emotionPanel');
+            const liveCoordinate = document.getElementById('liveCoordinate');
+            const atlasStatus = document.getElementById('atlasStatus');
+            const mapShell = document.getElementById('mapShell');
+            const questionFeeling = document.getElementById('questionFeeling');
+            const questionTitle = document.getElementById('questionTitle');
+            const questionChoices = document.getElementById('questionChoices');
 
-                    button.className = [
-                        'group relative border-0 p-0',
-                        '[background:var(--bar-gradient)]',
-                        'origin-bottom',
-                        'transition duration-200 ease-out',
-                        'hover:saturate-125 hover:brightness-105 hover:scale-105 hover:z-4',
-                        'focus-visible:outline-none focus-visible:saturate-125 focus-visible:brightness-105 focus-visible:scale-105 focus-visible:z-4',
-                        'animate-[barFloat_var(--float-duration)_ease-in-out_var(--float-delay)_infinite_alternate]',
-                        'motion-reduce:animate-none'
-                    ].join(' ');
+            let selectedMood = null;
+            let selectedAnswer = '';
+            let timers = [];
+            let orbitInterval = null;
 
-                    button.style.setProperty('--bar-gradient', mood.barGradient);
-                    button.style.setProperty('--float-duration', `${2.8 + (index % 4) * .42}s`);
-                    button.style.setProperty('--float-delay', `${index * -.19}s`);
-                    button.style.setProperty('--float-y', `${index % 2 === 0 ? -10 : 12}px`);
-                    button.style.setProperty('--emoji-delay', `${index * -.14}s`);
-                    button.setAttribute('aria-label', `${mood.feeling}: ${mood.song}`);
+            const positions = [
+                [16, 24],
+                [34, 29],
+                [53, 20],
+                [72, 31],
+                [87, 22],
+                [11, 64],
+                [30, 71],
+                [52, 56],
+                [70, 72],
+                [86, 61]
+            ];
 
-                    button.innerHTML = `
-                        <span
-                            aria-hidden="true"
-                            class="absolute left-1/2 top-[46%] -translate-x-1/2 -translate-y-1/2 grid place-items-center w-10 sm:w-16 h-10 sm:h-16 rounded-full border-2 border-black bg-white/86 text-2xl sm:text-4xl shadow-md animate-[emojiFloat_2.3s_ease-in-out_var(--emoji-delay)_infinite_alternate] motion-reduce:animate-none"
-                        >${mood.emoji}</span>
-                        <span
-                            class="hidden sm:block absolute left-1/2 bottom-3 -translate-x-1/2 w-full text-center font-extrabold text-xs opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
-                        >${mood.feeling}</span>
-                    `;
+            const coords = [
+                'LINTANG -06.2088 / BUJUR 106.8456',
+                'LINTANG -07.7956 / BUJUR 110.3695',
+                'LINTANG 01.3521 / BUJUR 103.8198',
+                'LINTANG -08.3405 / BUJUR 115.0920',
+                'LINTANG -02.5489 / BUJUR 118.0149',
+                'LINTANG -06.9147 / BUJUR 107.6098',
+                'LINTANG -07.2575 / BUJUR 112.7521',
+                'LINTANG 03.5952 / BUJUR 98.6722',
+                'LINTANG -05.1477 / BUJUR 119.4327',
+                'LINTANG 00.7893 / BUJUR 113.9213'
+            ];
 
-                    button.addEventListener('click', () => beginJourney(mood));
+            const weather = [
+                'Waktu biru', 'Hujan statis', 'Senja elektrik', 'Hangat yang memudar', 'Kabut sunyi',
+                'Cahaya sore', 'Angin rahasia', 'Cahaya hari terakhir', 'Matahari dari kejauhan', 'Sorak yang sunyi'
+            ];
 
-                    moodBars.appendChild(button);
-                });
+            function getHexMatches(text) {
+                return text.match(/#([0-9a-f]{6})/gi) || [];
             }
 
-            // ===== Screen management =====
-            // Dikontrol lewat inline style.display, BUKAN class Tailwind "hidden" —
-            // supaya gak bentrok sama class display lain (grid/flex) yang ada di elemen yang sama.
-            const screens = document.querySelectorAll('[data-screen]');
+            function hexToRgb(hex) {
+                const clean = (hex || '#7aaef7').replace('#', '');
+                return `${parseInt(clean.slice(0, 2), 16)}, ${parseInt(clean.slice(2, 4), 16)}, ${parseInt(clean.slice(4, 6), 16)}`;
+            }
+
+            function getMoodPrimaryHex(mood) {
+                const colors = getHexMatches(mood.barGradient);
+                return colors[0] || '#7aaef7';
+            }
+
+            function getMoodSecondaryHex(mood) {
+                const colors = getHexMatches(mood.barGradient);
+                return colors[colors.length - 1] || colors[0] || '#4b82eb';
+            }
+
+            function setMoodTheme(mood) {
+                document.documentElement.style.setProperty('--mof-mood-rgb', hexToRgb(getMoodPrimaryHex(mood)));
+            }
+
+            function setOrbitColors(primaryHex, secondaryHex) {
+                document.documentElement.style.setProperty('--mof-orbit-primary-rgb', hexToRgb(primaryHex));
+                document.documentElement.style.setProperty('--mof-orbit-secondary-rgb', hexToRgb(secondaryHex));
+            }
+
+            function applyMoodHover(mood) {
+                document.documentElement.style.setProperty('--mof-hover-rgb', hexToRgb(getMoodPrimaryHex(mood)));
+                document.documentElement.style.setProperty('--mof-map-hover-gradient', mood.pageGradient || mood
+                    .barGradient);
+                root.classList.add('mood-hover');
+                if (mapShell) mapShell.classList.add('active-hover');
+            }
+
+            function clearMoodHover() {
+                root.classList.remove('mood-hover');
+                if (mapShell) mapShell.classList.remove('active-hover');
+                document.documentElement.style.setProperty('--mof-hover-rgb', '115, 173, 255');
+                document.documentElement.style.setProperty(
+                    '--mof-map-hover-gradient',
+                    'radial-gradient(circle at 50% 50%, rgba(115,173,255,.16), transparent 32%), linear-gradient(180deg, #ffffff 0%, #f8f9fb 100%)'
+                );
+            }
+
+            function startOrbitCycle() {
+                let orbitIndex = 0;
+                const applyOrbitColor = () => {
+                    const mood = MOODS[orbitIndex];
+                    setOrbitColors(getMoodPrimaryHex(mood), getMoodSecondaryHex(mood));
+                    orbitIndex = (orbitIndex + 1) % MOODS.length;
+                };
+                applyOrbitColor();
+                clearInterval(orbitInterval);
+                orbitInterval = setInterval(applyOrbitColor, 2200);
+            }
 
             function setScreen(name) {
-                screens.forEach((screen) => {
-                    const isActive = screen.dataset.screen === name;
-
-                    if (isActive) {
-                        screen.style.opacity = '0';
-                        screen.style.display = '';
-                        void screen.offsetWidth; // force reflow biar animasi fade selalu re-trigger
-                        screen.style.animation = 'pageIn .45s ease forwards';
-                    } else {
-                        screen.style.display = 'none';
-                        screen.style.animation = '';
-                    }
+                root.classList.toggle('journey-landing', name === 'landing');
+                Object.entries(screens).forEach(([key, screen]) => {
+                    if (screen) screen.classList.toggle('active', key === name);
                 });
+                if (name !== 'atlas') clearMoodHover();
                 window.scrollTo(0, 0);
             }
 
-            // ===== Timers =====
-            let timerIds = [];
-
             function clearTimers() {
-                timerIds.forEach(clearTimeout);
-                timerIds = [];
+                timers.forEach(clearTimeout);
+                timers = [];
             }
 
-            function wait(ms, fn) {
-                const id = setTimeout(fn, ms);
-                timerIds.push(id);
+            function wait(ms, callback) {
+                const id = setTimeout(callback, ms);
+                timers.push(id);
                 return id;
             }
 
-            // ===== Typewriter text (mapping screen) =====
-            const mappingText = document.getElementById('mappingText');
-
-            function typeText(text, speed = 54, onDone) {
+            function typeText(text, speed = 45) {
                 mappingText.textContent = '';
                 let index = 0;
                 const tick = () => {
-                    mappingText.textContent = text.slice(0, index + 1);
-                    index += 1;
+                    mappingText.textContent = text.slice(0, ++index);
                     if (index < text.length) wait(speed, tick);
-                    else if (onDone) onDone();
                 };
                 tick();
             }
 
-            // ===== Map dots (mapping screen) =====
-            const mappingField = document.getElementById('mappingField');
-            const dotPositions = [
-                [15, 24],
-                [34, 26],
-                [52, 34],
-                [70, 36],
-                [88, 32],
-                [6, 50],
-                [43, 66],
-                [61, 66],
-                [79, 78],
-                [24, 78]
-            ];
+            function renderAtlas() {
+                emotionNodes.innerHTML = '';
 
-            function renderMapDots(selected, finding = false) {
+                MOODS.forEach((mood, index) => {
+                    const button = document.createElement('button');
+                    const rgb = hexToRgb(getMoodPrimaryHex(mood));
+
+                    button.type = 'button';
+                    button.className = 'mof-emotion-node';
+                    button.style.setProperty('--x', `${positions[index][0]}%`);
+                    button.style.setProperty('--y', `${positions[index][1]}%`);
+                    button.style.setProperty('--node-rgb', rgb);
+
+                    button.innerHTML = `
+                    <span class="mof-pulse"></span>
+                    <span class="mof-node-core"></span>
+                    <span class="mof-node-label">${String(index + 1).padStart(2, '0')} &middot; ${mood.feeling.toUpperCase()}</span>
+                `;
+
+                    const handleHover = () => {
+                        liveCoordinate.textContent = coords[index];
+                        atlasStatus.textContent =
+                            `AREA ${String(index + 1).padStart(2, '0')} \u00b7 ${mood.feeling.toUpperCase()}`;
+                        setMoodTheme(mood);
+                        applyMoodHover(mood);
+                    };
+
+                    button.addEventListener('mouseenter', handleHover);
+                    button.addEventListener('focus', handleHover);
+                    button.addEventListener('click', () => openQuestion(mood, index));
+
+                    emotionNodes.appendChild(button);
+                });
+            }
+
+            function renderMapDots(selectedMoodData, selectedIndex, finding = false) {
                 mappingField.innerHTML = '';
 
                 MOODS.forEach((mood, index) => {
-                    const isSelected = finding && mood.id === selected.id;
                     const dot = document.createElement('span');
-                    dot.style.setProperty('--x', `${dotPositions[index][0]}%`);
-                    dot.style.setProperty('--y', `${dotPositions[index][1]}%`);
-                    dot.style.setProperty('--delay', `${(index % 5) * -.21}s`);
+                    dot.className = `mof-map-dot${finding && index === selectedIndex ? ' selected' : ''}`;
+                    dot.style.setProperty('--x', `${positions[index][0]}%`);
+                    dot.style.setProperty('--y', `${positions[index][1]}%`);
+                    dot.style.setProperty('--delay', `${(index % 5) * -0.21}s`);
+                    dot.style.setProperty('--dot-rgb', hexToRgb(getMoodPrimaryHex(mood)));
 
-                    if (isSelected) {
-                        dot.className = [
-                            'absolute left-[var(--x)] top-[var(--y)] -translate-x-1/2 -translate-y-1/2',
-                            'grid place-items-center w-12 sm:w-16 h-12 sm:h-16',
-                            'rounded-full bg-white/90 border border-black text-2xl sm:text-4xl',
-                            'shadow-[0_0_0_5px_#fff,0_0_0_6px_#000,0_0_0_10px_#fff,0_0_0_11px_#000]',
-                            'animate-[selectedBlink_.62s_ease-in-out_infinite_alternate]',
-                            'motion-reduce:animate-none'
-                        ].join(' ');
-                        dot.textContent = mood.emoji;
-                    } else {
-                        dot.className = [
-                            'absolute left-[var(--x)] top-[var(--y)] -translate-x-1/2 -translate-y-1/2',
-                            'w-5 sm:w-6 h-5 sm:h-6 rounded-full bg-black',
-                            'animate-[dotPulse_1.05s_ease-in-out_var(--delay)_infinite_alternate]',
-                            'motion-reduce:animate-none'
-                        ].join(' ');
+                    if (finding && index === selectedIndex) {
+                        dot.setAttribute('aria-label', selectedMoodData.feeling);
                     }
 
                     mappingField.appendChild(dot);
                 });
             }
 
-            // ===== Journey: landing -> mapping -> coordinate =====
-            let selectedMood = null;
-
-            function beginJourney(mood) {
+            function openQuestion(mood, index) {
                 clearTimers();
-                selectedMood = mood;
+                selectedMood = {
+                    ...mood,
+                    index
+                };
+                selectedAnswer = '';
+                setMoodTheme(mood);
+
+                questionFeeling.textContent = mood.feeling.toUpperCase();
+                questionTitle.textContent = mood.question;
+
+                questionChoices.innerHTML = '';
+                mood.choices.forEach((choice, choiceIndex) => {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'mof-question-choice';
+                    button.innerHTML =
+                        `<span>${String(choiceIndex + 1).padStart(2, '0')}</span><strong>${choice}</strong>`;
+                    button.addEventListener('click', () => {
+                        selectedAnswer = choice;
+                        beginJourney(mood, index);
+                    });
+                    questionChoices.appendChild(button);
+                });
+
+                atlasStatus.textContent = `REFLEKSI \u00b7 ${mood.feeling.toUpperCase()}`;
+                setScreen('question');
+            }
+
+            function beginJourney(mood, index) {
+                clearTimers();
+                selectedMood = {
+                    ...mood,
+                    index
+                };
+                setMoodTheme(mood);
+                atlasStatus.textContent = 'MEMINDAI \u00b7 00%';
                 setScreen('mapping');
 
-                // Total loading time: sekitar 5 detik.
-                renderMapDots(mood, false);
-                typeText('Mapping\nyour feelings', 48);
+                renderMapDots(mood, index, false);
+                typeText('Memetakan\nperasaanmu', 48);
 
                 wait(2500, () => {
-                    renderMapDots(mood, true);
-                    typeText('Finding\nyour place..', 50);
+                    renderMapDots(mood, index, true);
+                    typeText('Mencari\ntempatmu', 50);
+                    atlasStatus.textContent = 'MEMINDAI \u00b7 50%';
                 });
 
                 wait(5000, () => {
-                    prepareCoordinate(mood);
+                    prepareCoordinate(selectedMood);
+                    atlasStatus.textContent = 'KOORDINAT DITEMUKAN';
                     setScreen('coordinate');
                 });
             }
 
             function prepareCoordinate(mood) {
-                document.documentElement.style.setProperty('--page-gradient', mood.pageGradient);
+                document.documentElement.style.setProperty('--mof-coordinate-gradient', mood.pageGradient);
+                document.documentElement.style.setProperty('--mof-panel-accent-rgb', hexToRgb(getMoodPrimaryHex(mood)));
+                document.documentElement.style.setProperty('--mof-panel-gradient', mood.pageGradient);
 
                 document.getElementById('coordinateName').textContent = mood.coordinate;
-                document.getElementById('coordinateEmoji').textContent = mood.emoji;
+                document.getElementById('coordinateFeeling').textContent =
+                    `${mood.feeling.toUpperCase()} \u00b7 ${mood.nuance.toUpperCase()}`;
 
+                document.getElementById('panelIndex').textContent = `${String(mood.index + 1).padStart(2, '0')} / 10`;
+                document.getElementById('panelCoordinate').textContent = mood.coordinate;
                 document.getElementById('resultSong').textContent = mood.song;
-                document.getElementById('resultCoordinate').textContent = mood.coordinate;
-                document.getElementById('resultMood').textContent = `${mood.feeling} · ${mood.nuance}`;
-                document.getElementById('resultWhy').textContent = mood.why;
+                document.getElementById('resultMood').textContent = `${mood.feeling} \u2014 ${mood.nuance}`;
+                document.getElementById('panelState').textContent = mood.nuance;
+                document.getElementById('panelWeather').textContent = weather[mood.index];
+                document.getElementById('resultWhy').textContent = selectedAnswer ?
+                    `${mood.why} Jawabanmu: \u201c${selectedAnswer}\u201d.` : mood.why;
                 document.getElementById('resultAffirmation').textContent = mood.affirmation;
-                document.getElementById('resultArtwork').src = mood.artwork;
-                document.getElementById('resultArtwork').alt = `${mood.song} artwork`;
+
+                const artwork = document.getElementById('resultArtwork');
+                artwork.src = mood.artwork;
+                artwork.alt = `${mood.song} artwork`;
+
                 document.getElementById('spotifyLink').href = mood.spotify || '#';
                 document.getElementById('youtubeLink').href = mood.youtube || '#';
+                liveCoordinate.textContent = coords[mood.index];
             }
 
-            document.getElementById('coordinateButton').addEventListener('click', () => setScreen('result'));
+            function openPanel() {
+                panel.classList.add('open');
+                panel.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
 
-            document.getElementById('restartButton').addEventListener('click', () => {
+            function closePanel() {
+                panel.classList.remove('open');
+                panel.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+
+            function reset() {
                 clearTimers();
                 selectedMood = null;
+                selectedAnswer = '';
+                closePanel();
+
+                const visitorName = document.getElementById('visitorName');
+                const visitorInstagram = document.getElementById('visitorInstagram');
+                const formError = document.getElementById('coordinateFormError');
+                if (visitorName) visitorName.value = '';
+                if (visitorInstagram) visitorInstagram.value = '';
+                if (formError) formError.textContent = '';
+
+                setMoodTheme(MOODS[0]);
+                clearMoodHover();
+                liveCoordinate.textContent = 'LINTANG 00.0000 / BUJUR 00.0000';
+                atlasStatus.textContent = 'AREA 01 \u00b7 SIAGA';
                 setScreen('landing');
-            });
-
-            // ===== Save Coordinate (export gambar hasil) =====
-            document.getElementById('saveCoordinate').addEventListener('click', () => {
-                if (!selectedMood) return;
-
-                const canvas = document.createElement('canvas');
-                canvas.width = 1080;
-                canvas.height = 1350;
-                const ctx = canvas.getContext('2d');
-
-                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-                gradient.addColorStop(0, '#ffffff');
-                gradient.addColorStop(.38, selectedMood.id === 'heartbroken' ? '#9dc6f6' : '#dddddd');
-                gradient.addColorStop(1, getFallbackColor(selectedMood.id));
-                ctx.fillStyle = gradient;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                ctx.textAlign = 'center';
-                ctx.fillStyle = '#000';
-                ctx.font = '800 42px Arial';
-                ctx.fillText('MAP OF FEELINGS', 540, 115);
-                ctx.font = '800 34px Arial';
-                ctx.fillText('YOUR CURRENT COORDINATE', 540, 225);
-
-                roundedRect(ctx, 110, 315, 860, 340, 44);
-                ctx.fillStyle = '#000';
-                ctx.fill();
-                ctx.fillStyle = '#fff';
-                ctx.font = '800 58px Arial';
-                wrapText(ctx, selectedMood.coordinate, 540, 455, 760, 70);
-                ctx.font = '400 34px Arial';
-                ctx.fillText(`${selectedMood.feeling} · ${selectedMood.song}`, 540, 590);
-
-                ctx.fillStyle = '#000';
-                ctx.font = 'italic 36px Arial';
-                wrapText(ctx, selectedMood.affirmation, 540, 810, 840, 52);
-                ctx.font = '800 27px Arial';
-                ctx.fillText('EVERY FEELING HAS A PLACE.', 540, 1240);
-
-                const link = document.createElement('a');
-                link.download = `map-of-feelings-${selectedMood.id}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
+            }
 
             function roundedRect(ctx, x, y, width, height, radius) {
                 ctx.beginPath();
@@ -480,6 +734,7 @@
                     ctx.arcTo(x + width, y + height, x, y + height, radius);
                     ctx.arcTo(x, y + height, x, y, radius);
                     ctx.arcTo(x, y, x + width, y, radius);
+                    ctx.closePath();
                 }
             }
 
@@ -500,22 +755,198 @@
                 lines.forEach((item, index) => ctx.fillText(item, x, y + index * lineHeight));
             }
 
-            function getFallbackColor(id) {
-                return ({
-                    heartbroken: '#136fe8',
-                    anxious: '#c51f3d',
-                    angry: '#ff8b62',
-                    betrayed: '#ef9a2e',
-                    numb: '#9d87ef',
-                    grief: '#ff8d00',
-                    flirty: '#f3dc77',
-                    longing: '#b6e400',
-                    hopeful: '#ffe500',
-                    peaceful: '#238c39'
-                })[id] || '#7ca2e5';
+            function showDownloadFeedback(message) {
+                let feedback = document.querySelector('.mof-download-feedback');
+                if (!feedback) {
+                    feedback = document.createElement('div');
+                    feedback.className =
+                        'mof-download-feedback font-mono tracking-widest fixed right-7 bottom-7 z-[130] rounded-full bg-black text-white px-4.5 py-3.5 text-[10px] opacity-0 translate-y-2.5 pointer-events-none transition-all';
+                    document.body.appendChild(feedback);
+                }
+                feedback.textContent = message || 'KOORDINAT TERSIMPAN';
+                feedback.classList.remove('opacity-0', 'translate-y-2.5');
+                setTimeout(() => feedback.classList.add('opacity-0', 'translate-y-2.5'), 1800);
             }
 
-            renderLanding();
+            // Gambar artwork sama origin (di-serve dari public/assets), jadi canvas gak
+            // butuh embedded base64 fallback lagi kayak versi standalone prototype dulu.
+            function loadImage(src) {
+                return new Promise((resolve, reject) => {
+                    const image = new Image();
+                    image.onload = () => resolve(image);
+                    image.onerror = reject;
+                    image.src = src;
+                });
+            }
+
+            function normalizeInstagram(value) {
+                const clean = value.trim().replace(/^@+/, '').replace(/\s+/g, '');
+                return clean ? `@${clean}` : '';
+            }
+
+            function canvasToBlob(canvas) {
+                return new Promise((resolve, reject) => {
+                    if (!canvas.toBlob) {
+                        try {
+                            const dataUrl = canvas.toDataURL('image/png');
+                            const binary = atob(dataUrl.split(',')[1]);
+                            const bytes = new Uint8Array(binary.length);
+                            for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+                            resolve(new Blob([bytes], {
+                                type: 'image/png'
+                            }));
+                        } catch (error) {
+                            reject(error);
+                        }
+                        return;
+                    }
+                    canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error('PNG gagal dibuat'))),
+                        'image/png', 1);
+                });
+            }
+
+            async function saveCoordinateCard() {
+                if (!selectedMood) return;
+
+                const nameInput = document.getElementById('visitorName');
+                const instagramInput = document.getElementById('visitorInstagram');
+                const errorText = document.getElementById('coordinateFormError');
+                const saveButton = document.getElementById('saveCoordinate');
+                const visitorName = nameInput.value.trim();
+                const visitorInstagram = normalizeInstagram(instagramInput.value);
+
+                if (!visitorName || !visitorInstagram) {
+                    errorText.textContent = 'Isi Nama dan Nama Instagram terlebih dahulu.';
+                    (!visitorName ? nameInput : instagramInput).focus();
+                    return;
+                }
+
+                errorText.textContent = '';
+                saveButton.disabled = true;
+                saveButton.textContent = 'MENYIAPKAN PNG...';
+
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 1080;
+                    canvas.height = 1350;
+                    const ctx = canvas.getContext('2d');
+
+                    const colors = getHexMatches(selectedMood.pageGradient);
+                    const bg = ctx.createLinearGradient(0, 0, 1080, 1350);
+                    bg.addColorStop(0, colors[0] || '#ffffff');
+                    bg.addColorStop(.55, colors[1] || getMoodPrimaryHex(selectedMood));
+                    bg.addColorStop(1, colors[colors.length - 1] || getMoodSecondaryHex(selectedMood));
+                    ctx.fillStyle = bg;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    ctx.fillStyle = 'rgba(255,255,255,.92)';
+                    roundedRect(ctx, 70, 70, 940, 1210, 50);
+                    ctx.fill();
+
+                    ctx.textAlign = 'center';
+                    ctx.fillStyle = '#0c0d0f';
+                    ctx.font = '24px monospace';
+                    ctx.fillText('MAP OF FEELINGS', 540, 125);
+
+                    try {
+                        const artwork = await loadImage(selectedMood.artwork);
+                        ctx.save();
+                        roundedRect(ctx, 180, 170, 720, 720, 24);
+                        ctx.clip();
+                        ctx.drawImage(artwork, 180, 170, 720, 720);
+                        ctx.restore();
+                    } catch (error) {
+                        ctx.strokeStyle = `rgba(${hexToRgb(getMoodPrimaryHex(selectedMood))}, .75)`;
+                        ctx.lineWidth = 4;
+                        ctx.beginPath();
+                        ctx.arc(540, 530, 84, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.fillStyle = '#0c0d0f';
+                        ctx.font = '600 42px Arial';
+                        ctx.fillText(selectedMood.feeling, 540, 555);
+                    }
+
+                    ctx.font = '20px monospace';
+                    ctx.fillText(selectedMood.coordinate.toUpperCase(), 540, 940);
+                    ctx.font = '700 60px Arial';
+                    wrapText(ctx, selectedMood.song, 540, 1020, 780, 66);
+                    ctx.font = '25px Arial';
+                    ctx.fillText(`${selectedMood.feeling} \u00b7 ${selectedMood.nuance}`, 540, 1122);
+                    if (selectedAnswer) {
+                        ctx.fillStyle = '#55585e';
+                        ctx.font = '17px Arial';
+                        wrapText(ctx, `\u201c${selectedAnswer}\u201d`, 540, 1152, 760, 22);
+                    }
+
+                    ctx.fillStyle = '#6d6d73';
+                    ctx.font = '20px Arial';
+                    ctx.fillText(visitorName, 540, 1194);
+                    ctx.font = '18px monospace';
+                    ctx.fillText(visitorInstagram, 540, 1224);
+
+                    ctx.fillStyle = '#0c0d0f';
+                    ctx.font = '18px monospace';
+                    ctx.fillText('SETIAP PERASAAN PUNYA KOORDINAT.', 540, 1262);
+
+                    const blob = await canvasToBlob(canvas);
+                    const objectUrl = URL.createObjectURL(blob);
+                    const safeName = visitorName.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') ||
+                        'coordinate';
+                    const link = document.createElement('a');
+                    link.download = `map-of-feelings-${safeName}-${selectedMood.id}.png`;
+                    link.href = objectUrl;
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    setTimeout(() => URL.revokeObjectURL(objectUrl), 1500);
+                    showDownloadFeedback('KOORDINAT BERHASIL DISIMPAN');
+                } catch (error) {
+                    console.error(error);
+                    errorText.textContent =
+                    'Gagal menyimpan PNG. Coba buka melalui Chrome atau Safari lalu ulangi.';
+                    showDownloadFeedback('GAGAL MENYIMPAN');
+                } finally {
+                    saveButton.disabled = false;
+                    saveButton.textContent = 'SIMPAN KOORDINAT';
+                }
+            }
+
+            window.addEventListener('mousemove', (event) => {
+                const glow = document.getElementById('cursorGlow');
+                glow.style.left = `${event.clientX}px`;
+                glow.style.top = `${event.clientY}px`;
+            });
+
+            mapShell.addEventListener('mousemove', (event) => {
+                const rect = mapShell.getBoundingClientRect();
+                const x = ((event.clientX - rect.left) / rect.width - 0.5) * 14;
+                const y = ((event.clientY - rect.top) / rect.height - 0.5) * 14;
+                const gridLines = mapShell.querySelector('.mof-grid-lines');
+                if (gridLines) {
+                    gridLines.style.transform =
+                        `perspective(900px) rotateX(66deg) scale(1.45) translate(${x}px, calc(20% + ${y}px))`;
+                }
+            });
+
+            mapShell.addEventListener('mouseleave', () => {
+                atlasStatus.textContent = 'AREA 01 \u00b7 SIAGA';
+                liveCoordinate.textContent = 'LINTANG 00.0000 / BUJUR 00.0000';
+                clearMoodHover();
+            });
+
+            document.getElementById('enterMap').addEventListener('click', () => setScreen('atlas'));
+            document.getElementById('questionBack').addEventListener('click', () => setScreen('atlas'));
+            document.getElementById('brandHome').addEventListener('click', reset);
+            document.getElementById('coordinateButton').addEventListener('click', openPanel);
+            document.getElementById('panelClose').addEventListener('click', closePanel);
+            document.getElementById('restartButton').addEventListener('click', reset);
+            document.getElementById('saveCoordinate').addEventListener('click', saveCoordinateCard);
+
+            renderAtlas();
+            setMoodTheme(MOODS[0]);
+            clearMoodHover();
+            startOrbitCycle();
             setScreen('landing');
         })();
     </script>
