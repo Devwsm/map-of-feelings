@@ -6,11 +6,11 @@
         <div class="mof-cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 
         <header
-            class="fixed inset-x-0 top-0 z-[70] flex items-center justify-between px-6 py-5 sm:px-8 backdrop-blur-md bg-white/70 border-b border-black/5">
+            class="fixed inset-x-0 top-0 z-50 flex items-center justify-between px-6 py-4 sm:px-8 backdrop-blur-md bg-white/70 border-b border-black/5">
             <button id="brandHome" type="button" aria-label="Kembali ke awal"
                 class="flex items-center border-0 bg-transparent p-0 cursor-pointer">
                 <img src="{{ asset('assets/logo/logo-map-of-feelings.svg') }}" alt="Map of Feelings"
-                    class="block h-[18px] sm:h-[22px] w-auto" />
+                    class="block h-4.5 sm:h-5.5 w-auto" />
             </button>
 
             <div class="flex items-center gap-4 sm:gap-5">
@@ -19,7 +19,7 @@
                     <span id="atlasStatus">AREA 01 &middot; SIAGA</span>
                 </div>
                 <a href="{{ route('login') }}"
-                    class="font-mono tracking-widest rounded-full border border-black/20 bg-white/80 px-4 py-2.5 text-[10px] hover:bg-white transition-colors">MASUK
+                    class="font-mono tracking-widest rounded-full border border-black/20 bg-white/80 px-4 py-3 text-[10px] hover:bg-white transition-colors">MASUK
                     PENGELOLA</a>
             </div>
         </header>
@@ -28,10 +28,10 @@
 
             {{-- LANDING / HERO --}}
             <section id="landing" data-screen="landing"
-                class="mof-screen place-items-center text-center overflow-hidden px-6 pt-[110px] pb-10 sm:pt-[140px]">
-                <div class="relative z-[4] max-w-3xl">
+                class="mof-screen place-items-center text-center overflow-hidden px-6 pt-28 pb-10 sm:pt-36">
+                <div class="relative z-4 max-w-3xl">
                     <img src="{{ asset('assets/logo/logo-map-of-feelings.svg') }}" alt="Map of Feelings"
-                        class="block w-[min(520px,74vw)] h-auto mx-auto mb-8" />
+                        class="block w-full max-w-lg h-auto mx-auto mb-8" />
                     <p class="max-w-xl mx-auto mb-8 text-black/60 text-base sm:text-lg leading-relaxed">Setiap perasaan
                         punya tempatnya sendiri. Temukan koordinat emosimu dan lagu yang sedang berbicara paling dekat
                         denganmu.</p>
@@ -40,7 +40,7 @@
                         PERJALANAN</button>
                 </div>
 
-                <div class="absolute w-[min(70vmin,760px)] aspect-square" aria-hidden="true">
+                <div class="absolute w-full max-w-xl aspect-square" aria-hidden="true">
                     <div class="mof-orbit-ring"></div>
                     <div class="mof-orbit-ring mof-orbit-b"></div>
                     <div class="mof-orbit-ring mof-orbit-c"></div>
@@ -49,16 +49,16 @@
             </section>
 
             {{-- ATLAS --}}
-            <section id="atlas" data-screen="atlas" class="mof-screen px-5 pt-[110px] pb-16 sm:px-8">
-                <div class="max-w-[1400px] mx-auto mb-8 text-center">
+            <section id="atlas" data-screen="atlas" class="mof-screen z-50 px-5 pt-28 pb-16 sm:px-8">
+                <div class="max-w-7xl mx-auto mb-8 text-center">
                     <img src="{{ asset('assets/logo/logo-map-of-feelings.svg') }}" alt="Map of Feelings"
-                        class="block w-[min(340px,62vw)] h-auto mx-auto mb-3" />
+                        class="block w-full max-w-sm h-auto mx-auto mb-3" />
                     <h2 class="text-4xl sm:text-6xl font-light tracking-tight">Bagaimana perasaanmu hari ini?</h2>
                     <p class="font-mono tracking-widest mt-4 text-[10px] text-black/50">SOROT &middot; RASAKAN &middot;
                         PILIH</p>
                 </div>
 
-                <div class="mof-map-shell max-w-[1400px] mx-auto min-h-[600px] sm:min-h-[680px]" id="mapShell">
+                <div class="mof-map-shell max-w-7xl w-full mx-auto min-h-150 sm:min-h-170" id="mapShell">
                     <div class="mof-grid-lines"></div>
                     <div class="mof-map-glow"></div>
                     <div id="emotionNodes"></div>
@@ -70,14 +70,14 @@
             </section>
 
             {{-- QUESTION --}}
-            <section id="question" data-screen="question" class="mof-screen place-items-center px-5 pt-[100px] pb-16">
-                <div class="relative w-[min(920px,92vw)] text-center">
+            <section id="question" data-screen="question" class="mof-screen place-items-center px-5 pt-24 pb-16">
+                <div class="relative max-w-5xl w-full text-center">
                     <button id="questionBack" type="button"
                         class="font-mono tracking-widest absolute left-0 -top-12 border-0 bg-transparent p-0 text-black/50 hover:text-black/80 transition-colors cursor-pointer">&larr;
                         KEMBALI</button>
 
                     <p id="questionFeeling"
-                        class="font-mono tracking-widest mb-4 text-[11px] text-[color:rgb(var(--mof-mood-rgb,122,174,247))]">
+                        class="font-mono tracking-widest mb-4 text-[11px] text-[rgb(var(--mof-mood-rgb,122,174,247))]">
                         SEDIH</p>
                     <h2 id="questionTitle" class="mb-10 text-3xl sm:text-6xl font-normal leading-tight tracking-tight"></h2>
                     <div id="questionChoices" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5"></div>
@@ -90,7 +90,7 @@
             <section id="mapping" data-screen="mapping"
                 class="mof-screen mof-mapping-screen place-items-center overflow-hidden" aria-live="polite">
                 <div id="mappingField" class="mof-mapping-field" aria-hidden="true"></div>
-                <div class="relative z-[3] w-[min(650px,85vw)] text-center">
+                <div class="relative z-3 max-w-2xl w-full text-center">
                     <p class="font-mono tracking-widest mb-2 text-[11px] text-black/50">MEMETAKAN PERASAANMU</p>
                     <h2 id="mappingText"
                         class="whitespace-pre-line text-4xl sm:text-7xl font-light leading-none tracking-tight"></h2>
@@ -102,7 +102,7 @@
             <section id="coordinate" data-screen="coordinate"
                 class="mof-screen mof-coordinate-screen place-items-center overflow-hidden">
                 <div class="mof-coordinate-aura"></div>
-                <div class="relative z-[2] flex flex-col items-center text-center px-6">
+                <div class="relative z-2 flex flex-col items-center text-center px-6">
                     <p class="font-mono tracking-widest mb-5 text-[11px]">PERASAANMU PUNYA TEMPAT</p>
                     <h2 class="m-0 text-4xl sm:text-7xl font-light leading-none tracking-tight">Kami
                         menemukan<br />koordinatmu.</h2>
@@ -124,9 +124,9 @@
         {{-- RESULT PANEL --}}
         <aside id="emotionPanel" class="mof-emotion-panel" aria-hidden="true">
             <button id="panelClose" type="button" aria-label="Tutup"
-                class="fixed right-6 top-6 z-[5] w-12 h-12 rounded-full border border-black/10 bg-white/90 text-2xl shadow-lg">&times;</button>
+                class="fixed right-6 top-6 z-5 w-12 h-12 rounded-full border border-black/10 bg-white/90 text-2xl shadow-lg">&times;</button>
 
-            <div class="grid place-items-center relative px-6 py-[90px] sm:px-[6vw]">
+            <div class="grid place-items-center relative px-6 py-24 sm:px-[6vw]">
                 <div class="mof-artwork-frame">
                     <img id="resultArtwork" src="" alt="Artwork lagu" />
                 </div>
@@ -134,7 +134,7 @@
                     01 / 10</div>
             </div>
 
-            <div class="self-center w-[min(760px,86%)] py-16 sm:py-[100px]">
+            <div class="self-center max-w-3xl w-full py-16 sm:py-24">
                 <p id="panelCoordinate" class="font-mono tracking-widest mb-2 text-[11px] text-black/50">TITIK PATAH YANG
                     SUNYI</p>
                 <h2 id="resultSong" class="m-0 text-5xl sm:text-8xl font-light leading-[0.9] tracking-tighter">Aku Harus
@@ -159,13 +159,13 @@
                         <span class="font-mono tracking-widest text-[9px] text-black/50">NAMA</span>
                         <input id="visitorName" type="text" maxlength="40" autocomplete="name"
                             placeholder="Tulis nama kamu"
-                            class="w-full min-h-[50px] rounded-2xl border border-black/15 bg-white/80 px-4 py-3.5 text-sm outline-none focus:border-[color:rgb(var(--mof-panel-accent-rgb,122,174,247))]" />
+                            class="w-full min-h-12.5 rounded-2xl border border-black/15 bg-white/80 px-4 py-4 text-sm outline-none focus:border-[rgb(var(--mof-panel-accent-rgb,122,174,247))]" />
                     </label>
                     <label class="grid gap-2">
                         <span class="font-mono tracking-widest text-[9px] text-black/50">NAMA INSTAGRAM</span>
                         <input id="visitorInstagram" type="text" maxlength="40" autocapitalize="none"
                             spellcheck="false" placeholder="@username"
-                            class="w-full min-h-[50px] rounded-2xl border border-black/15 bg-white/80 px-4 py-3.5 text-sm outline-none focus:border-[color:rgb(var(--mof-panel-accent-rgb,122,174,247))]" />
+                            class="w-full min-h-12.5 rounded-2xl border border-black/15 bg-white/80 px-4 py-4 text-sm outline-none focus:border-[rgb(var(--mof-panel-accent-rgb,122,174,247))]" />
                     </label>
                     <p id="coordinateFormError" class="sm:col-span-2 min-h-4 text-xs text-red-600" aria-live="polite">
                     </p>
@@ -173,13 +173,13 @@
 
                 <div class="flex flex-wrap gap-2.5">
                     <a id="spotifyLink" href="#" target="_blank" rel="noopener"
-                        class="font-mono tracking-widest rounded-full border border-black/15 bg-white/80 px-4.5 py-3.5 text-[10px] hover:bg-white hover:-translate-y-0.5 transition">DENGARKAN
+                        class="font-mono tracking-widest rounded-full border border-black/15 bg-white/80 px-4.5 py-4 text-[10px] hover:bg-white hover:-translate-y-0.5 transition">DENGARKAN
                         DI SPOTIFY</a>
                     <a id="youtubeLink" href="#" target="_blank" rel="noopener"
-                        class="font-mono tracking-widest rounded-full border border-black/15 bg-white/80 px-4.5 py-3.5 text-[10px] hover:bg-white hover:-translate-y-0.5 transition">TONTON
+                        class="font-mono tracking-widest rounded-full border border-black/15 bg-white/80 px-4.5 py-4 text-[10px] hover:bg-white hover:-translate-y-0.5 transition">TONTON
                         DI YOUTUBE</a>
                     <button id="saveCoordinate" type="button"
-                        class="font-mono tracking-widest rounded-full border border-black/15 bg-white/80 px-4.5 py-3.5 text-[10px] hover:bg-white hover:-translate-y-0.5 transition disabled:opacity-50 disabled:cursor-wait">SIMPAN
+                        class="font-mono tracking-widest rounded-full border border-black/15 bg-white/80 px-4.5 py-4 text-[10px] hover:bg-white hover:-translate-y-0.5 transition disabled:opacity-50 disabled:cursor-wait">SIMPAN
                         KOORDINAT</button>
                 </div>
 
@@ -563,8 +563,8 @@
 
                     button.type = 'button';
                     button.className = 'mof-emotion-node';
-                    button.style.setProperty('--x', `${positions[index][0]}%`);
-                    button.style.setProperty('--y', `${positions[index][1]}%`);
+                    button.style.setProperty('--x', positions[index][0] + '%');
+                    button.style.setProperty('--y', positions[index][1] + '%');
                     button.style.setProperty('--node-rgb', rgb);
 
                     button.innerHTML = `
@@ -760,7 +760,7 @@
                 if (!feedback) {
                     feedback = document.createElement('div');
                     feedback.className =
-                        'mof-download-feedback font-mono tracking-widest fixed right-7 bottom-7 z-[130] rounded-full bg-black text-white px-4.5 py-3.5 text-[10px] opacity-0 translate-y-2.5 pointer-events-none transition-all';
+                        'mof-download-feedback font-mono tracking-widest fixed right-7 bottom-7 z-[130] rounded-full bg-black text-white px-4.5 py-4 text-[10px] opacity-0 translate-y-2.5 pointer-events-none transition-all';
                     document.body.appendChild(feedback);
                 }
                 feedback.textContent = message || 'KOORDINAT TERSIMPAN';
@@ -904,7 +904,7 @@
                 } catch (error) {
                     console.error(error);
                     errorText.textContent =
-                    'Gagal menyimpan PNG. Coba buka melalui Chrome atau Safari lalu ulangi.';
+                        'Gagal menyimpan PNG. Coba buka melalui Chrome atau Safari lalu ulangi.';
                     showDownloadFeedback('GAGAL MENYIMPAN');
                 } finally {
                     saveButton.disabled = false;
