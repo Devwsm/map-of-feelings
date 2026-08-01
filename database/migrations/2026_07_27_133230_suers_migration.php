@@ -21,7 +21,7 @@ return new class extends Migration
 
             // Disiapin sekarang, logic pengecekannya nyusul pas dashboard diintegrasi.
             // Default 'admin' karena akun pertama yang dibuat kemungkinan besar admin.
-            $table->enum('role', ['admin', 'staff'])->default('admin');
+            $table->enum('role', ['panel', 'admin', 'staff'])->default('admin');
 
             $table->rememberToken();
             $table->timestamps();

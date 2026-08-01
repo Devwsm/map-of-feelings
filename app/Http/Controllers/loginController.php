@@ -9,7 +9,6 @@ use Illuminate\View\View;
 
 class loginController extends Controller
 {
-    //
     /**
      * GET /login
      */
@@ -27,14 +26,20 @@ class loginController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
+
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             return back()
                 ->withErrors(['email' => 'Email atau password salah.'])
                 ->onlyInput('email');
         }
-        $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+        $request->session()->regenerate();
+        $redirect = match ($request->user()->role) {
+            'panel' => route('dashboard.panel'),
+            default => route('dashboard'),
+        };
+
+        return redirect()->intended($redirect);
     }
 
     /**
@@ -45,6 +50,6 @@ class loginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('presscon-inv.landing');
+        return redirect()->route('login');
     }
 }

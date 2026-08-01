@@ -21,7 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', // ditambahin: 'admin' | 'staff' — logic pengecekannya nyusul pas dashboard
+        'role',
     ];
 
     /**
