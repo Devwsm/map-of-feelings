@@ -16,6 +16,13 @@ class userSeeder extends Seeder
     {
         //
         User::create([
+            'name' => 'panel',
+            'email' => 'panel@mapoffeelings.com',
+            'password' => Hash::make('panel@mof'),
+            'role' => 'panel',
+        ]);
+        
+        User::create([
             'name' => 'Admin',
             'email' => 'admin@mapoffeelings.com',
             'password' => Hash::make('admin@mof'),
