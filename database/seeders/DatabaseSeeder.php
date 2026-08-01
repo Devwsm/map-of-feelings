@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             pressconGuestSeeder::class,
             userSeeder::class,
+            moodSeeder::class,
         ]);
     }
 }
