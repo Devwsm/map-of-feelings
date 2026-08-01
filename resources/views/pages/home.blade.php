@@ -18,7 +18,7 @@
                     <span id="liveCoordinate">LINTANG 00.0000 / BUJUR 00.0000</span>
                     <span id="atlasStatus">AREA 01 &middot; SIAGA</span>
                 </div>
-                <a href="{{ route('login') }}"
+                <a href="{{ route('dashboard') }}"
                     class="font-mono tracking-widest rounded-full border border-black/20 bg-white/80 px-4 py-3 text-[10px] hover:bg-white transition-colors">MASUK
                     PENGELOLA</a>
             </div>
@@ -197,218 +197,9 @@
     </div>
 
     <script>
-        // Data lagu lengkap.
-        window.MAP_OF_FEELINGS = [{
-                id: "sedih",
-                feeling: "Sedih",
-                nuance: "Memilih pergi demi diri sendiri",
-                song: "Aku Harus Pergi",
-                question: "Apa yang paling berat saat kamu memilih pergi demi dirimu sendiri?",
-                choices: [
-                    "Meninggalkan seseorang yang masih disayangi",
-                    "Menerima bahwa hubungan telah selesai",
-                    "Berhenti mengharapkan perubahan",
-                    "Meyakini bahwa pergi adalah keputusan yang tepat"
-                ],
-                coordinate: "Titik Patah yang Sunyi",
-                barGradient: "linear-gradient(180deg,#DCEBFF 0%,#6FA6F5 50%,#0954E3 100%)",
-                pageGradient: "radial-gradient(circle at 18% 22%,#DCEBFF 0%,#6FA6F5 48%,#0954E3 100%)",
-                artwork: "{{ asset('assets/artwork/aku-harus-pergi.svg') }}",
-                why: "Aku Harus Pergi berbicara tentang keberanian memilih pergi, bukan karena rasa sudah hilang, tetapi karena diri sendiri juga perlu diselamatkan.",
-                affirmation: "Pergi tidak selalu berarti menyerah. Kadang itu adalah cara pertama untuk kembali memilih dirimu sendiri.",
-                spotify: "#",
-                youtube: "#"
-            },
-            {
-                id: "serba-salah",
-                feeling: "Serba Salah",
-                nuance: "Tidak memahami keinginan pasangan",
-                song: "Tak Peka",
-                question: "Apa yang paling sering membuatmu merasa serba salah dalam hubungan?",
-                choices: [
-                    "Takut tidak memahami keinginan pasangan",
-                    "Merasa apa pun yang dilakukan tetap salah",
-                    "Lelah menebak tanpa mendapat penjelasan",
-                    "Bingung antara salah paham atau tidak lagi sejalan"
-                ],
-                coordinate: "Sinyal yang Tak Terbaca",
-                barGradient: "linear-gradient(180deg,#3EAD9C 0%,#8DB36E 50%,#FCA547 100%)",
-                pageGradient: "radial-gradient(circle at 18% 22%,#3EAD9C 0%,#8DB36E 48%,#FCA547 100%)",
-                artwork: "{{ asset('assets/artwork/tak-peka.svg') }}",
-                why: "Tak Peka mewakili rasa lelah ketika niat baik terus meleset dan kamu merasa selalu salah karena tidak memahami sesuatu yang tak pernah benar-benar dijelaskan.",
-                affirmation: "Kamu tidak harus terus menerjemahkan sesuatu yang tidak pernah disampaikan dengan jujur.",
-                spotify: "#",
-                youtube: "#"
-            },
-            {
-                id: "curiga",
-                feeling: "Curiga",
-                nuance: "Menguji kesetiaan",
-                song: "Tak Mendua",
-                question: "Ketika memilih tetap setia, apa yang paling ingin kamu jaga?",
-                choices: [
-                    "Kepercayaan dalam hubungan",
-                    "Komitmen yang telah disepakati",
-                    "Perasaan yang hanya ditujukan kepada satu orang",
-                    "Keyakinan bahwa cinta tidak perlu terbagi"
-                ],
-                coordinate: "Titik Uji Kepercayaan",
-                barGradient: "linear-gradient(180deg,#F8DDD0 0%,#F2A17A 50%,#BCC59A 100%)",
-                pageGradient: "radial-gradient(circle at 18% 22%,#F8DDD0 0%,#F2A17A 48%,#BCC59A 100%)",
-                artwork: "{{ asset('assets/artwork/tak-mendua.svg') }}",
-                why: "Tak Mendua adalah penegasan bahwa kesetiaan bukan sekadar ucapan, tetapi keputusan untuk menjaga kepercayaan dan tetap memilih satu orang.",
-                affirmation: "Kesetiaan tidak seharusnya terasa seperti pembelaan tanpa akhir. Hati juga perlu dipercaya.",
-                spotify: "#",
-                youtube: "#"
-            },
-            {
-                id: "lelah",
-                feeling: "Lelah",
-                nuance: "Terjebak dalam hubungan yang tidak sehat",
-                song: "Hilang Warasnya",
-                question: "Apa yang paling sulit saat terjebak dalam hubungan yang tidak sehat?",
-                choices: [
-                    "Melepaskan seseorang yang terus menyakiti",
-                    "Menyadari bahwa hubungan ini tidak lagi sehat",
-                    "Kehilangan diri sendiri secara perlahan",
-                    "Tidak mengetahui kapan keadaan mulai berubah"
-                ],
-                coordinate: "Garis Retak",
-                barGradient: "linear-gradient(180deg,#7D351F 0%,#A6503C 50%,#C48773 100%)",
-                pageGradient: "radial-gradient(circle at 18% 22%,#7D351F 0%,#A6503C 48%,#C48773 100%)",
-                artwork: "{{ asset('assets/artwork/hilang-warasnya.svg') }}",
-                why: "Hilang Warasnya menggambarkan kelelahan ketika hubungan perlahan mengikis ketenangan, kepercayaan, dan rasa mengenali diri sendiri.",
-                affirmation: "Kamu tidak harus kehilangan dirimu sendiri untuk mempertahankan sebuah hubungan.",
-                spotify: "#",
-                youtube: "#"
-            },
-            {
-                id: "kesepian",
-                feeling: "Kesepian",
-                nuance: "Pencapaian yang terasa kosong",
-                song: "Sumpah Percuma",
-                question: "Kapan terakhir kali kamu memiliki banyak hal, tetapi tetap merasa kosong?",
-                choices: [
-                    "Saat seluruh pencapaian terasa biasa saja",
-                    "Saat dikelilingi banyak hal tetapi tetap kesepian",
-                    "Saat berhasil memperoleh hal yang dahulu diinginkan",
-                    "Saat menyadari bahwa kebahagiaan tidak selalu menyertai pencapaian"
-                ],
-                coordinate: "Ruang Trofi yang Kosong",
-                barGradient: "linear-gradient(180deg,#7695FB 0%,#A29BFC 50%,#C69FF8 100%)",
-                pageGradient: "radial-gradient(circle at 18% 22%,#7695FB 0%,#A29BFC 48%,#C69FF8 100%)",
-                artwork: "{{ asset('assets/artwork/sumpah-percuma.svg') }}",
-                why: "Sumpah Percuma hadir untuk momen ketika pencapaian terlihat penuh dari luar, tetapi tidak menjawab ruang kosong di dalam diri.",
-                affirmation: "Tidak semua yang dirayakan orang lain mampu mengisi bagian dalam dirimu.",
-                spotify: "#",
-                youtube: "#"
-            },
-            {
-                id: "berduka",
-                feeling: "Berduka",
-                nuance: "Merindukan seseorang yang telah tiada",
-                song: "Pesan Rindu",
-                question: "Apabila dapat mengulang satu momen, apa yang paling ingin kamu lakukan?",
-                choices: [
-                    "Mengucapkan selamat tinggal dengan lebih baik",
-                    "Mendengar suaranya sekali lagi",
-                    "Memeluknya lebih lama",
-                    "Mengatakan bahwa kerinduan itu masih ada"
-                ],
-                coordinate: "Pesan yang Tetap Tinggal",
-                barGradient: "linear-gradient(180deg,#FFF0C9 0%,#FDD374 50%,#F7B94D 100%)",
-                pageGradient: "radial-gradient(circle at 18% 22%,#FFF0C9 0%,#FDD374 48%,#F7B94D 100%)",
-                artwork: "{{ asset('assets/artwork/pesan-rindu.svg') }}",
-                why: "Pesan Rindu menjadi ruang untuk rindu yang tidak lagi dapat disampaikan langsung, tetapi tetap hidup dalam ingatan.",
-                affirmation: "Sebagian pesan tidak membutuhkan balasan. Ia tinggal karena rasa sayang masih mengingat jalan pulang.",
-                spotify: "#",
-                youtube: "#"
-            },
-            {
-                id: "nyaman",
-                feeling: "Nyaman",
-                nuance: "Hubungan intim yang cukup diketahui berdua",
-                song: "Yang Tau-Tau Aja",
-                question: "Apa yang paling berharga dari hubungan yang cukup diketahui oleh kalian berdua?",
-                choices: [
-                    "Percakapan yang hanya dipahami berdua",
-                    "Tatapan sederhana yang memiliki banyak arti",
-                    "Momen pribadi yang terasa dekat dan intim",
-                    "Kenyamanan tanpa perlu diketahui semua orang"
-                ],
-                coordinate: "Sudut yang Tersembunyi",
-                barGradient: "linear-gradient(180deg,#9EC9AE 0%,#33CADB 50%,#FC8D80 100%)",
-                pageGradient: "radial-gradient(circle at 18% 22%,#9EC9AE 0%,#33CADB 48%,#FC8D80 100%)",
-                artwork: "{{ asset('assets/artwork/yang-tau-tau-aja.svg') }}",
-                why: "Yang Tau-Tau Aja merayakan hubungan yang intim, hangat, dan tidak membutuhkan pengumuman untuk terasa nyata.",
-                affirmation: "Tidak semua perasaan harus diumumkan. Beberapa justru tumbuh paling jujur dalam ruang yang hanya dipahami berdua.",
-                spotify: "#",
-                youtube: "#"
-            },
-            {
-                id: "terharu",
-                feeling: "Terharu",
-                nuance: "Belajar menerima perpisahan",
-                song: "Sedih Harus Kau Buang",
-                question: "Dalam proses melepaskan, apa yang paling ingin kamu pelajari?",
-                choices: [
-                    "Mengikhlaskan bahwa tidak semua hal dapat dipertahankan",
-                    "Berdamai dengan kenangan yang tersisa",
-                    "Menerima perpisahan sebagai bagian dari kehidupan",
-                    "Tetap melangkah meskipun belum sepenuhnya pulih"
-                ],
-                coordinate: "Hari Terakhir di Suatu Tempat",
-                barGradient: "linear-gradient(180deg,#A6E67A 0%,#7CE46A 50%,#62B158 100%)",
-                pageGradient: "radial-gradient(circle at 18% 22%,#A6E67A 0%,#7CE46A 48%,#62B158 100%)",
-                artwork: "{{ asset('assets/artwork/sedih-harus-kau-buang.svg') }}",
-                why: "Sedih Harus Kau Buang menemani proses melepaskan: bukan menghapus kenangan, melainkan belajar berjalan bersama apa yang pernah ada.",
-                affirmation: "Sebagian kesedihan perlu dipeluk, diberi terima kasih, lalu perlahan dilepaskan.",
-                spotify: "#",
-                youtube: "#"
-            },
-            {
-                id: "penuh-harap",
-                feeling: "Penuh Harap",
-                nuance: "Percaya bahwa cinta akan menemukan jalan",
-                song: "Fatamorgana",
-                question: "Apa yang masih membuatmu percaya bahwa cinta yang nyata akan datang?",
-                choices: [
-                    "Harapan yang terus dijaga",
-                    "Seseorang yang masih didoakan",
-                    "Keyakinan bahwa waktu yang tepat akan tiba",
-                    "Kepercayaan bahwa ketulusan akan menemukan jalannya"
-                ],
-                coordinate: "Cahaya di Kejauhan",
-                barGradient: "linear-gradient(180deg,#DE842D 0%,#EDAB49 50%,#A89C42 100%)",
-                pageGradient: "radial-gradient(circle at 18% 22%,#DE842D 0%,#EDAB49 48%,#A89C42 100%)",
-                artwork: "{{ asset('assets/artwork/fatamorgana.svg') }}",
-                why: "Fatamorgana adalah tentang harapan, doa, dan perjalanan mencari tempat pulang yang terasa nyata.",
-                affirmation: "Harapan tidak selalu bersuara keras. Kadang ia hanya membuatmu tetap memandang ke arah cahaya.",
-                spotify: "#",
-                youtube: "#"
-            },
-            {
-                id: "hampa",
-                feeling: "Hampa",
-                nuance: "Sepi di tengah keramaian",
-                song: "Sorak Sepi",
-                question: "Kapan kamu paling merasa sepi di tengah keramaian?",
-                choices: [
-                    "Saat banyak orang hadir tetapi tidak ada yang benar-benar memahami",
-                    "Saat suasana ramai tetapi pikiran tetap kosong",
-                    "Saat tertawa bersama tetapi hati terasa jauh",
-                    "Saat kembali sendiri setelah keramaian berakhir"
-                ],
-                coordinate: "Panggung yang Sunyi",
-                barGradient: "linear-gradient(180deg,#4CB69C 0%,#3DAA8C 50%,#2F776B 100%)",
-                pageGradient: "radial-gradient(circle at 18% 22%,#4CB69C 0%,#3DAA8C 48%,#2F776B 100%)",
-                artwork: "{{ asset('assets/artwork/sorak-sepi.svg') }}",
-                why: "Sorak Sepi menggambarkan ruang kosong yang tetap terasa meski suara, tawa, dan banyak orang berada di sekelilingmu.",
-                affirmation: "Ruangan paling ramai pun dapat menyisakan sunyi. Perasaanmu tetap nyata, bahkan ketika tidak terlihat.",
-                spotify: "#",
-                youtube: "#"
-            }
-        ];
+        // Data mood sekarang dari database (tabel moods), bukan hardcode lagi.
+        // Diisi/diedit lewat panel (role: panel) di /dashboard/panel.
+        window.MAP_OF_FEELINGS = @json($moods->map->toJsPayload()->values());
 
         (function() {
             const MOODS = window.MAP_OF_FEELINGS;
@@ -459,11 +250,6 @@
                 'LINTANG 03.5952 / BUJUR 98.6722',
                 'LINTANG -05.1477 / BUJUR 119.4327',
                 'LINTANG 00.7893 / BUJUR 113.9213'
-            ];
-
-            const weather = [
-                'Waktu biru', 'Hujan statis', 'Senja elektrik', 'Hangat yang memudar', 'Kabut sunyi',
-                'Cahaya sore', 'Angin rahasia', 'Cahaya hari terakhir', 'Matahari dari kejauhan', 'Sorak yang sunyi'
             ];
 
             function getHexMatches(text) {
@@ -563,8 +349,8 @@
 
                     button.type = 'button';
                     button.className = 'mof-emotion-node';
-                    button.style.setProperty('--x', positions[index][0] + '%');
-                    button.style.setProperty('--y', positions[index][1] + '%');
+                    button.style.setProperty('--x', `${positions[index][0]}%`);
+                    button.style.setProperty('--y', `${positions[index][1]}%`);
                     button.style.setProperty('--node-rgb', rgb);
 
                     button.innerHTML = `
@@ -678,7 +464,7 @@
                 document.getElementById('resultSong').textContent = mood.song;
                 document.getElementById('resultMood').textContent = `${mood.feeling} \u2014 ${mood.nuance}`;
                 document.getElementById('panelState').textContent = mood.nuance;
-                document.getElementById('panelWeather').textContent = weather[mood.index];
+                document.getElementById('panelWeather').textContent = mood.weatherText;
                 document.getElementById('resultWhy').textContent = selectedAnswer ?
                     `${mood.why} Jawabanmu: \u201c${selectedAnswer}\u201d.` : mood.why;
                 document.getElementById('resultAffirmation').textContent = mood.affirmation;
@@ -760,7 +546,7 @@
                 if (!feedback) {
                     feedback = document.createElement('div');
                     feedback.className =
-                        'mof-download-feedback font-mono tracking-widest fixed right-7 bottom-7 z-[130] rounded-full bg-black text-white px-4.5 py-4 text-[10px] opacity-0 translate-y-2.5 pointer-events-none transition-all';
+                        'mof-download-feedback font-mono tracking-widest fixed right-7 bottom-7 z-[130] rounded-full bg-black text-white px-4.5 py-3.5 text-[10px] opacity-0 translate-y-2.5 pointer-events-none transition-all';
                     document.body.appendChild(feedback);
                 }
                 feedback.textContent = message || 'KOORDINAT TERSIMPAN';
