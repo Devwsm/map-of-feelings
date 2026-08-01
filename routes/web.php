@@ -18,8 +18,12 @@ Route::prefix('/')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [dashboardController::class, 'index'])->name('dashboard');
-
+    // Admin & staff berdua boleh
+    Route::middleware('role:admin,staff')->group(function () {
+        Route::get('/dashboard', [dashboardController::class, 'index'])->name('dashboard');
+        // Route::get('/dashboard/checkin', [...])->name('dashboard.checkin');
+    });
+    
     // Cuma admin
     Route::middleware('role:admin')->group(function () {
         Route::get('/dashboard/tamu', [pressconGuestController::class, 'index'])->name('dashboard.tamu');
@@ -28,11 +32,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard/tamu/{guest}/edit', [pressconGuestController::class, 'edit'])->name('dashboard.tamu.edit');
         Route::put('/dashboard/tamu/{guest}', [pressconGuestController::class, 'update'])->name('dashboard.tamu.update');
         Route::delete('/dashboard/tamu/{guest}', [pressconGuestController::class, 'destroy'])->name('dashboard.tamu.destroy');
-    });
-
-    // Admin & staff berdua boleh
-    Route::middleware('role:admin,staff')->group(function () {
-        // Route::get('/dashboard/checkin', [...])->name('dashboard.checkin');
     });
 
     Route::middleware('role:panel')->group(function () {
