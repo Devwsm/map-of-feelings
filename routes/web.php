@@ -34,6 +34,12 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin,staff')->group(function () {
         // Route::get('/dashboard/checkin', [...])->name('dashboard.checkin');
     });
+
+    Route::middleware('role:panel')->group(function () {
+        Route::get('/dashboard/panel', [homeController::class, 'panel'])->name('dashboard.panel');
+        Route::get('/dashboard/panel/{mood}/edit', [homeController::class, 'editPanel'])->name('dashboard.panel.edit');
+        Route::put('/dashboard/panel/{mood}', [homeController::class, 'updatePanel'])->name('dashboard.panel.update');
+    });
 });
 
 Route::prefix('/presscon-inv')->group(function () {
