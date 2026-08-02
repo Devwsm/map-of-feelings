@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 
 class pressconGuest extends Model
 {
-    //
     protected $table = 'presscon_guests';
     protected $primaryKey = 'id_guest';
     protected $fillable = [
@@ -24,6 +23,7 @@ class pressconGuest extends Model
         'confirmed_pax',
         'checked_in',
         'arrival_time',
+        'checked_in_by',
         'qr_generated',
         'qr_path',
     ];
@@ -44,6 +44,14 @@ class pressconGuest extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    /**
+     * Staff/admin yang mengeksekusi check-in tamu ini.
+     */
+    public function checkedInBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\User::class, 'checked_in_by');
     }
 
     /**
