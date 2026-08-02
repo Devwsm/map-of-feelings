@@ -7,8 +7,8 @@
     Section/variable yang bisa di-override child:
     - title    -> @section('title', 'Nama Halaman') — muncul di identity bar
     - active   -> variable $active dioper dari CONTROLLER (bukan @section), value:
-            'home' | 'tamu' | 'tambah' | 'checkin' | 'export-import'
-            dipakai buat nge-highlight tab yang lagi aktif
+        'home' | 'tamu' | 'tambah' | 'checkin' | 'export-import'
+        dipakai buat nge-highlight tab yang lagi aktif
     - body     -> @section('body') ... @endsection — isi utama halaman
 
     Nav otomatis nyaring menu sesuai role: staff cuma liat Home & Check-in.
@@ -63,8 +63,8 @@
                 @endif
 
                 @if (auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
-                    <a href="#"
-                        class="py-4 border-b-2 border-transparent text-white/40 hover:text-white/70 transition-colors whitespace-nowrap">Check-in</a>
+                    <a href="{{ route('dashboard.checkin') }}"
+                        class="py-4 border-b-2 {{ $active === 'checkin' ? 'border-white text-white' : 'border-transparent text-white/40 hover:text-white/70' }} transition-colors whitespace-nowrap">Check-in</a>
                 @endif
 
                 @if (auth()->user()->role === 'admin')
