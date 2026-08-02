@@ -19,8 +19,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
 
-            // Disiapin sekarang, logic pengecekannya nyusul pas dashboard diintegrasi.
-            // Default 'admin' karena akun pertama yang dibuat kemungkinan besar admin.
+            //check in role: panel, admin, staff
             $table->enum('role', ['panel', 'admin', 'staff'])->default('admin');
 
             $table->rememberToken();
@@ -41,6 +40,14 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        Schema::table('presscon_guests', function (Blueprint $table) {
+            $table->foreignId('checked_in_by')
+                ->nullable()
+                ->after('arrival_time')
+                ->constrained('users')
+                ->nullOnDelete();
+        });
     }
 
     /**
@@ -52,5 +59,8 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::table('presscon_guests', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('checked_in_by');
+        });
     }
 };
