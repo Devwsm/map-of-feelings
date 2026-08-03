@@ -59,8 +59,12 @@
         <div class="mt-4 rounded-3xl bg-white p-6 flex flex-col sm:flex-row items-center gap-6">
             <div
                 class="w-36 h-36 sm:w-56 sm:h-56 shrink-0 grid place-items-center bg-white p-3 border-2 border-neutral-900">
-                <img src="{{ asset('assets/qr/qr.png') }}" alt="QR check-in"
-                    class="block mx-auto w-full h-auto object-contain" />
+                @if ($guest->qrUrl())
+                    <img src="{{ $guest->qrUrl() }}" alt="QR check-in" class="block mx-auto w-full h-auto object-contain" />
+                @else
+                    <img src="{{ asset('assets/qr/qr.png') }}" alt="QR check-in (placeholder)"
+                        class="block mx-auto w-full h-auto object-contain" />
+                @endif
             </div>
             <div class="text-center sm:text-left">
                 <p class="text-xs font-bold tracking-widest text-black/50 mb-2">CHECK-IN CODE</p>
