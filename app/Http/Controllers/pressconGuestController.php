@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\pressconGuest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class pressconGuestController extends Controller
 {
@@ -121,13 +124,44 @@ class pressconGuestController extends Controller
     public function destroy(pressconGuest $guest): RedirectResponse
     {
         $name = $guest->name;
+        if ($guest->qr_path) {
+            Storage::disk('public')->delete($guest->qr_path);
+        }
+
         $guest->delete();
 
         return redirect()
             ->route('dashboard.tamu')
             ->with('status', $name . ' berhasil dihapus.');
     }
- 
+
+    /**
+     * POST /dashboard/tamu/{guest}/generate-qr
+     * Isi QR = check-in code (slug), nama file random & gak ketebak — beda dari
+     * slug yang sengaja gampang dibaca manusia. Aman digenerate sinkron karena
+     * cuma 1 tamu, cepat (beda kasus sama import massal yang butuh queue).
+     */
+    public function generateQr(pressconGuest $guest): RedirectResponse
+    {
+        if ($guest->qr_path) {
+            Storage::disk('public')->delete($guest->qr_path);
+        }
+
+        $filename = 'qrcodes/' . Str::random(40) . '.svg';
+        $svg = QrCode::format('svg')->size(400)->generate($guest->slug);
+
+        Storage::disk('public')->put($filename, $svg);
+
+        $guest->update([
+            'qr_path' => $filename,
+            'qr_generated' => true,
+        ]);
+
+        return redirect()
+            ->back()
+            ->with('status', 'QR untuk ' . $guest->name . ' berhasil digenerate.');
+    }
+
     // ===== Halaman publik (guest page) =====
 
     /**
