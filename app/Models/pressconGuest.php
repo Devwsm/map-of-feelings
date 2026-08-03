@@ -52,9 +52,7 @@ class pressconGuest extends Model
      */
     public function qrUrl(): ?string
     {
-        return $this->qr_path
-            ? \Illuminate\Support\Facades\Storage::disk('public')->url($this->qr_path)
-            : null;
+        return $this->qr_path ? asset('storage/' . $this->qr_path) : null;
     }
 
     /**
