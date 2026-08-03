@@ -11,6 +11,28 @@
         Kembali ke Tamu</a>
     <h1 class="text-3xl font-bold mt-3 mb-8">Edit {{ $guest->name }}</h1>
 
+    <div class="max-w-2xl rounded-3xl bg-neutral-900 border border-white/10 p-6 mb-6 flex items-center gap-6">
+        @if ($guest->qrUrl())
+            <img src="{{ $guest->qrUrl() }}" alt="QR check-in" class="w-24 h-24 shrink-0 bg-white rounded-xl p-2" />
+        @else
+            <div
+                class="w-24 h-24 shrink-0 rounded-xl border border-dashed border-white/20 grid place-items-center text-xs text-white/40 text-center">
+                Belum ada QR</div>
+        @endif
+
+        <div class="flex-1">
+            <p class="text-sm text-white/60 mb-3">
+                {{ $guest->qr_generated ? 'QR sudah pernah digenerate.' : 'QR belum digenerate.' }}</p>
+            <form action="{{ route('dashboard.tamu.generate-qr', $guest->slug) }}" method="POST">
+                @csrf
+                <button type="submit"
+                    class="rounded-full border border-white/20 px-4 py-2 text-xs font-bold hover:bg-white/10 transition-colors">
+                    {{ $guest->qr_generated ? 'Regenerate QR' : 'Generate QR' }}
+                </button>
+            </form>
+        </div>
+    </div>
+
     <form action="{{ route('dashboard.tamu.update', $guest->slug) }}" method="POST" class="max-w-xl space-y-5">
         @csrf
         @method('PUT')
@@ -29,7 +51,8 @@
                 class="w-full rounded-2xl border border-white/15 bg-neutral-900 px-4 py-3 focus:outline-none focus:border-white/40">
                 @foreach ($categories as $category)
                     <option value="{{ $category }}"
-                        {{ old('category', $guest->category) === $category ? 'selected' : '' }}>{{ $category }}</option>
+                        {{ old('category', $guest->category) === $category ? 'selected' : '' }}>{{ $category }}
+                    </option>
                 @endforeach
             </select>
             @error('category')
