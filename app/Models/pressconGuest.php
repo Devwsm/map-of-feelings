@@ -47,6 +47,17 @@ class pressconGuest extends Model
     }
 
     /**
+     * URL QR asli kalau udah pernah digenerate, null kalau belum (guest.blade.php
+     * fallback ke placeholder waktu ini null).
+     */
+    public function qrUrl(): ?string
+    {
+        return $this->qr_path
+            ? \Illuminate\Support\Facades\Storage::disk('public')->url($this->qr_path)
+            : null;
+    }
+
+    /**
      * Staff/admin yang mengeksekusi check-in tamu ini.
      */
     public function checkedInBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
