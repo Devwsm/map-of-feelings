@@ -80,6 +80,14 @@
                 </div>
 
                 <div class="flex items-center gap-2 shrink-0">
+                    <form action="{{ route('dashboard.tamu.generate-qr', $guest->slug) }}" method="POST">
+                        @csrf
+                        <button type="submit"
+                            class="rounded-full border border-white/20 px-4 py-2 text-xs font-bold hover:bg-white/10 transition-colors">
+                            {{ $guest->qr_generated ? 'Regenerate QR' : 'Generate QR' }}
+                        </button>
+                    </form>
+
                     <a href="{{ route('dashboard.tamu.edit', $guest->slug) }}"
                         class="rounded-full border border-white/20 px-4 py-2 text-xs font-bold hover:bg-white/10 transition-colors">Edit</a>
                     <form action="{{ route('dashboard.tamu.destroy', $guest->slug) }}" method="POST"
