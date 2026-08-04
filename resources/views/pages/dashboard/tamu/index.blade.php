@@ -38,7 +38,6 @@
 
         <button type="submit"
             class="rounded-2xl border border-white/15 px-5 py-3 text-sm font-bold hover:bg-white/10 transition-colors">Cari</button>
-
         @if (request('search') || request('category'))
             <a href="{{ route('dashboard.tamu') }}"
                 class="rounded-2xl border border-white/15 px-5 py-3 text-sm font-bold text-white/60 hover:bg-white/10 transition-colors text-center">Reset</a>
@@ -66,6 +65,7 @@
 
                 <div class="flex items-center gap-3 text-xs shrink-0">
                     <span class="font-mono text-white/50">{{ $guest->slug }}</span>
+
                     @if ($guest->checked_in)
                         <span
                             class="rounded-full bg-emerald-500/15 text-emerald-300 px-3 py-1 font-bold whitespace-nowrap">Checked
@@ -82,10 +82,15 @@
                 <div class="flex items-center gap-2 shrink-0">
                     <form action="{{ route('dashboard.tamu.generate-qr', $guest->slug) }}" method="POST">
                         @csrf
-                        <button type="submit"
-                            class="rounded-full border border-white/20 px-4 py-2 text-xs font-bold hover:bg-white/10 transition-colors">
-                            {{ $guest->qr_generated ? 'Regenerate QR' : 'Generate QR' }}
-                        </button>
+                        @if ($guest->qr_generated)
+                            <button type="submit"
+                                class="rounded-full border border-amber-500/30 text-amber-300 px-4 py-2 text-xs font-bold hover:bg-amber-500/10 transition-colors">Regenerate
+                                QR</button>
+                        @else
+                            <button type="submit"
+                                class="rounded-full border border-emerald-500/30 text-emerald-300 px-4 py-2 text-xs font-bold hover:bg-emerald-500/10 transition-colors">Generate
+                                QR</button>
+                        @endif
                     </form>
 
                     <a href="{{ route('dashboard.tamu.edit', $guest->slug) }}"

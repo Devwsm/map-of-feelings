@@ -25,10 +25,15 @@
                 {{ $guest->qr_generated ? 'QR sudah pernah digenerate.' : 'QR belum digenerate.' }}</p>
             <form action="{{ route('dashboard.tamu.generate-qr', $guest->slug) }}" method="POST">
                 @csrf
-                <button type="submit"
-                    class="rounded-full border border-white/20 px-4 py-2 text-xs font-bold hover:bg-white/10 transition-colors">
-                    {{ $guest->qr_generated ? 'Regenerate QR' : 'Generate QR' }}
-                </button>
+                @if ($guest->qr_generated)
+                    <button type="submit"
+                        class="rounded-full border border-amber-500/30 text-amber-300 px-4 py-2 text-xs font-bold hover:bg-amber-500/10 transition-colors">Regenerate
+                        QR</button>
+                @else
+                    <button type="submit"
+                        class="rounded-full border border-emerald-500/30 text-emerald-300 px-4 py-2 text-xs font-bold hover:bg-emerald-500/10 transition-colors">Generate
+                        QR</button>
+                @endif
             </form>
         </div>
     </div>
