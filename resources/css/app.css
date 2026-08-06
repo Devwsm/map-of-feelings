@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -21,13 +22,13 @@
 }
 
 /* ============================================================
-   MAP OF FEELINGS — TEMA ORBIT (v2, gantiin tema mood-bar lama)
-   Bagian ini genuinely butuh custom CSS karena:
-   1. Banyak custom property (--node-rgb, --dot-rgb, dst) di-set JS saat
-      runtime per elemen — gak bisa diekspresiin lewat Tailwind utility.
-   2. Gradient berlapis kompleks + banyak keyframe animasi custom.
-   Layout/spacing/typography yang gak butuh ini semua tetap Tailwind,
-   ditulis langsung di blade.
+    MAP OF FEELINGS — TEMA ORBIT (v2, gantiin tema mood-bar lama)
+    Bagian ini genuinely butuh custom CSS karena:
+    1. Banyak custom property (--node-rgb, --dot-rgb, dst) di-set JS saat
+        runtime per elemen — gak bisa diekspresiin lewat Tailwind utility.
+    2. Gradient berlapis kompleks + banyak keyframe animasi custom.
+    Layout/spacing/typography yang gak butuh ini semua tetap Tailwind,
+    ditulis langsung di blade.
    ============================================================ */
 
 .mof-body {
