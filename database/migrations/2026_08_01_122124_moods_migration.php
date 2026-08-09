@@ -30,6 +30,7 @@ return new class extends Migration
             $table->text('affirmation');
             $table->string('weather_text')->nullable();
 
+            $table->string('audio_path')->nullable(); // relatif ke public/, mis. assets/audio/sedih.mp3
             $table->string('artwork_path')->nullable(); // relatif ke public/, mis. assets/artwork/xxx.svg
             $table->string('color_primary', 7)->default('#7aaef7');
             $table->string('color_secondary', 7)->default('#4b82eb');
