@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -283,14 +283,21 @@
     transform: translate(-50%, -50%) scale(1.08);
 }
 
+/* ==========================================================
+   Titik emosi di Atlas — DIUBAH: dari lingkaran polos jadi
+   blob organik yang morphing pelan, dan semua ukuran pakai
+   clamp() supaya menyesuaikan lebar layar tanpa breakpoint
+   kaku. --x, --y, --node-rgb tetap di-set dari JS (blade),
+   jadi tidak ada perubahan di sisi JS.
+   ========================================================== */
 .mof-emotion-node {
     position: absolute;
     left: var(--x);
     top: var(--y);
-    width: 28px;
-    height: 28px;
+    width: clamp(24px, 3.4vw, 36px);
+    height: clamp(24px, 3.4vw, 36px);
     padding: 0;
-    border-radius: 50%;
+    border-radius: 62% 38% 55% 45% / 48% 42% 58% 52%;
     border: 1.5px solid rgba(12, 13, 15, 0.34);
     background: rgba(255, 255, 255, 0.8);
     box-shadow:
@@ -298,7 +305,25 @@
         0 6px 22px rgba(var(--node-rgb), 0.08);
     cursor: pointer;
     color: #0c0d0f;
-    transition: 0.25s ease;
+    touch-action: manipulation;
+    animation: mofNodeMorph 9s ease-in-out infinite;
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+@keyframes mofNodeMorph {
+    0%,
+    100% {
+        border-radius: 62% 38% 55% 45% / 48% 42% 58% 52%;
+    }
+    33% {
+        border-radius: 45% 55% 62% 38% / 55% 45% 55% 45%;
+    }
+    66% {
+        border-radius: 55% 45% 40% 60% / 40% 60% 45% 55%;
+    }
 }
 
 .mof-emotion-node:hover,
@@ -310,11 +335,12 @@
         0 0 0 10px rgba(var(--node-rgb), 0.1),
         0 16px 36px rgba(var(--node-rgb), 0.16);
     outline: 0;
+    animation-play-state: paused;
 }
 
 .mof-pulse {
     position: absolute;
-    inset: -14px;
+    inset: clamp(-12px, -1.6vw, -16px);
     border: 1px solid rgba(var(--node-rgb), 0.2);
     border-radius: 50%;
     animation: mofPulse 2.5s ease-out infinite;
@@ -333,7 +359,7 @@
 
 .mof-node-core {
     position: absolute;
-    inset: 6px;
+    inset: clamp(5px, 0.7vw, 7px);
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.96);
     border: 1px solid rgba(12, 13, 15, 0.22);
@@ -341,13 +367,21 @@
 
 .mof-node-label {
     position: absolute;
-    top: 40px;
+    top: clamp(32px, 4.2vw, 42px);
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
-    font: 10px monospace;
+    font-family: monospace;
+    font-size: clamp(8px, 1vw, 10px);
     letter-spacing: 0.06em;
     color: rgba(12, 13, 15, 0.54);
+    pointer-events: none;
+}
+
+@media (max-width: 480px) {
+    .mof-node-label {
+        display: none;
+    }
 }
 
 .mof-map-caption {
@@ -615,6 +649,7 @@
     .mof-moon,
     .mof-intro-color-field,
     .mof-pulse,
+    .mof-emotion-node,
     .mof-map-dot,
     .mof-mapping-progress-bar span,
     .mof-coordinate-aura,

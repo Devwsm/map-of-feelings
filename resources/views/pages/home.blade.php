@@ -1,46 +1,68 @@
+{{--
+    Path: resources/views/pages/home.blade.php
+    Rewrite total dari tema mood-bar lama ke tema "orbit" sesuai desain baru dari tim.
+
+    PENTING — perubahan arsitektur dari versi tim:
+    1. Panel pengelola (login + dashboard color/content editor) DIHAPUS TOTAL dari file ini.
+        Itu tadinya login pakai username/password hardcoded di JS (gak aman) + data
+        tersimpan di localStorage browser. Sesuai rencana, dashboard pengelola beneran
+        dibangun terpisah (role baru + layout dashboard sendiri).
+    2. Tombol "MASUK PENGELOLA" sekarang ke route('login') (sistem auth asli), bukan modal.
+    3. embedded-artwork.js (base64 fallback buat canvas) DIHAPUS — gak perlu, karena
+        gambar di-serve dari domain sendiri (asset()), jadi gak ada isu CORS buat canvas.
+    4. Teks UI yang dulu bisa diedit lewat panel admin (questionHint, coordinateEyebrow,
+        dst) sekarang di-hardcode langsung di blade, karena panel edit-nya udah gak ada.
+
+    CSS pendukung tema ini (custom property + keyframes) ada di resources/css/app.css,
+    cari komentar "MAP OF FEELINGS — TEMA ORBIT".
+--}}
 @extends('template.layout')
 
 @section('content')
-    <div class="mof-body w-full" id="mofRoot">
+    <div class="mof-body w-full overflow-x-hidden" id="mofRoot">
         <div class="mof-noise" aria-hidden="true"></div>
         <div class="mof-cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 
         <header
-            class="fixed inset-x-0 top-0 z-50 flex items-center justify-between px-6 py-4 sm:px-8 backdrop-blur-md bg-white/70 border-b border-black/5">
+            class="fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-4 border-b border-black/5 bg-white/70 px-4 py-4 backdrop-blur-md sm:px-8 sm:py-5">
             <button id="brandHome" type="button" aria-label="Kembali ke awal"
-                class="flex items-center border-0 bg-transparent p-0 cursor-pointer">
+                class="flex shrink-0 cursor-pointer items-center border-0 bg-transparent p-0">
                 <img src="{{ asset('assets/logo/logo-map-of-feelings.svg') }}" alt="Map of Feelings"
-                    class="block h-4.5 sm:h-5.5 w-auto" />
+                    class="block h-4 w-auto sm:h-5">
             </button>
 
-            <div class="flex items-center gap-4 sm:gap-5">
-                <div class="hidden sm:flex gap-5 font-mono tracking-widest text-[10px] text-black/60">
+            <div class="flex items-center gap-2 sm:gap-3 md:gap-5">
+                <div class="hidden gap-5 font-mono text-xs tracking-widest text-black/60 lg:flex">
                     <span id="liveCoordinate">LINTANG 00.0000 / BUJUR 00.0000</span>
                     <span id="atlasStatus">AREA 01 &middot; SIAGA</span>
                 </div>
-                <a href="{{ route('dashboard') }}"
-                    class="font-mono tracking-widest rounded-full border border-black/20 bg-white/80 px-4 py-3 text-[10px] hover:bg-white transition-colors">MASUK
-                    PENGELOLA</a>
+
+                <a href="{{ route('login') }}"
+                    class="rounded-full border border-black/20 bg-white/80 px-3 py-2 font-mono text-xs tracking-widest transition-colors hover:bg-white sm:px-4 sm:py-2.5">
+                    MASUK PENGELOLA
+                </a>
             </div>
         </header>
 
         <main id="mofApp" class="w-full">
 
-            {{-- LANDING / HERO --}}
+            {{-- LANDING --}}
             <section id="landing" data-screen="landing"
-                class="mof-screen place-items-center text-center overflow-hidden px-6 pt-28 pb-10 sm:pt-36">
-                <div class="relative z-4 max-w-3xl">
+                class="mof-screen relative grid min-h-screen place-items-center overflow-hidden px-5 pb-10 pt-28 text-center sm:px-8 sm:pt-36">
+                <div class="relative z-10 w-full max-w-3xl">
                     <img src="{{ asset('assets/logo/logo-map-of-feelings.svg') }}" alt="Map of Feelings"
-                        class="block w-full max-w-lg h-auto mx-auto mb-8" />
-                    <p class="max-w-xl mx-auto mb-8 text-black/60 text-base sm:text-lg leading-relaxed">Setiap perasaan
-                        punya tempatnya sendiri. Temukan koordinat emosimu dan lagu yang sedang berbicara paling dekat
-                        denganmu.</p>
+                        class="mx-auto mb-8 block w-3/4 max-w-xl">
+                    <p class="mx-auto mb-8 max-w-xl text-sm leading-relaxed text-black/60 sm:text-base md:text-lg">
+                        Setiap perasaan punya tempatnya sendiri. Temukan koordinat emosimu dan lagu yang sedang berbicara
+                        paling dekat denganmu.
+                    </p>
                     <button id="enterMap" type="button"
-                        class="font-mono tracking-widest rounded-full border border-black bg-black text-white px-6 py-4 text-[11px] hover:-translate-y-0.5 hover:shadow-lg transition">MULAI
-                        PERJALANAN</button>
+                        class="rounded-full border border-black bg-black px-5 py-3.5 font-mono text-xs tracking-widest text-white transition hover:-translate-y-0.5 hover:shadow-lg sm:px-6 sm:py-4">
+                        MULAI PERJALANAN
+                    </button>
                 </div>
 
-                <div class="absolute w-full max-w-xl aspect-square" aria-hidden="true">
+                <div class="absolute aspect-square w-3/4 max-w-3xl" aria-hidden="true">
                     <div class="mof-orbit-ring"></div>
                     <div class="mof-orbit-ring mof-orbit-b"></div>
                     <div class="mof-orbit-ring mof-orbit-c"></div>
@@ -49,148 +71,199 @@
             </section>
 
             {{-- ATLAS --}}
-            <section id="atlas" data-screen="atlas" class="mof-screen z-50 px-5 pt-28 pb-16 sm:px-8">
-                <div class="max-w-7xl mx-auto mb-8 text-center">
+            <section id="atlas" data-screen="atlas" class="mof-screen z-50 px-4 pb-16 pt-28 sm:px-8">
+                <div class="mx-auto mb-8 max-w-7xl text-center">
                     <img src="{{ asset('assets/logo/logo-map-of-feelings.svg') }}" alt="Map of Feelings"
-                        class="block w-full max-w-sm h-auto mx-auto mb-3" />
-                    <h2 class="text-4xl sm:text-6xl font-light tracking-tight">Bagaimana perasaanmu hari ini?</h2>
-                    <p class="font-mono tracking-widest mt-4 text-[10px] text-black/50">SOROT &middot; RASAKAN &middot;
-                        PILIH</p>
+                        class="mx-auto mb-3 block w-full max-w-sm">
+                    <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
+                        Bagaimana perasaanmu hari ini?
+                    </h2>
+                    <p class="mt-4 font-mono text-xs tracking-widest text-black/50">
+                        SOROT &middot; RASAKAN &middot; PILIH
+                    </p>
                 </div>
 
-                <div class="mof-map-shell max-w-7xl w-full mx-auto min-h-150 sm:min-h-170" id="mapShell">
+                <div id="mapShell" class="mof-map-shell mx-auto min-h-screen w-full max-w-7xl">
                     <div class="mof-grid-lines"></div>
                     <div class="mof-map-glow"></div>
                     <div id="emotionNodes"></div>
-                    <div class="mof-map-caption font-mono tracking-widest">
-                        <span>AREA 01</span><span class="hidden sm:inline">KEDALAMAN: BATIN</span><span>VISIBILITAS:
-                            BERUBAH</span>
+
+                    <div class="mof-map-caption flex flex-wrap gap-3 font-mono text-xs tracking-widest">
+                        <span>AREA 01</span>
+                        <span class="hidden sm:inline">KEDALAMAN: BATIN</span>
+                        <span>VISIBILITAS: BERUBAH</span>
                     </div>
                 </div>
             </section>
 
             {{-- QUESTION --}}
-            <section id="question" data-screen="question" class="mof-screen place-items-center px-5 pt-24 pb-16">
-                <div class="relative max-w-5xl w-full text-center">
+            <section id="question" data-screen="question"
+                class="mof-screen grid min-h-screen place-items-center px-4 pb-16 pt-28 sm:px-8">
+                <div class="relative w-full max-w-4xl text-center">
                     <button id="questionBack" type="button"
-                        class="font-mono tracking-widest absolute left-0 -top-12 border-0 bg-transparent p-0 text-black/50 hover:text-black/80 transition-colors cursor-pointer">&larr;
-                        KEMBALI</button>
-
-                    <p id="questionFeeling"
-                        class="font-mono tracking-widest mb-4 text-[11px] text-[rgb(var(--mof-mood-rgb,122,174,247))]">
-                        SEDIH</p>
-                    <h2 id="questionTitle" class="mb-10 text-3xl sm:text-6xl font-normal leading-tight tracking-tight"></h2>
-                    <div id="questionChoices" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5"></div>
-                    <p class="font-mono tracking-widest mt-6 text-[10px] text-black/50">Pilih jawaban yang terasa paling
-                        dekat denganmu.</p>
+                        class="absolute left-0 top-0 cursor-pointer border-0 bg-transparent p-0 font-mono text-xs tracking-widest text-black/50 transition-colors hover:text-black/80 sm:-top-12">
+                        &larr; KEMBALI
+                    </button>
+                    <p id="questionFeeling" class="mb-4 font-mono text-xs tracking-widest text-blue-400">
+                        SEDIH
+                    </p>
+                    <h2 id="questionTitle"
+                        class="mb-8 text-3xl font-semibold leading-tight tracking-tight sm:mb-10 sm:text-4xl md:text-5xl lg:text-6xl">
+                    </h2>
+                    <div id="questionChoices" class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4"></div>
+                    <p class="mt-6 font-mono text-xs tracking-widest text-black/50">
+                        Pilih jawaban yang terasa paling dekat denganmu.
+                    </p>
                 </div>
             </section>
 
             {{-- MAPPING --}}
             <section id="mapping" data-screen="mapping"
-                class="mof-screen mof-mapping-screen place-items-center overflow-hidden" aria-live="polite">
+                class="mof-screen mof-mapping-screen relative grid min-h-screen place-items-center overflow-hidden px-5"
+                aria-live="polite">
                 <div id="mappingField" class="mof-mapping-field" aria-hidden="true"></div>
-                <div class="relative z-3 max-w-2xl w-full text-center">
-                    <p class="font-mono tracking-widest mb-2 text-[11px] text-black/50">MEMETAKAN PERASAANMU</p>
+
+                <div class="relative z-10 w-full max-w-2xl text-center">
+                    <p class="mb-2 font-mono text-xs tracking-widest text-black/50">
+                        MEMETAKAN PERASAANMU
+                    </p>
                     <h2 id="mappingText"
-                        class="whitespace-pre-line text-4xl sm:text-7xl font-light leading-none tracking-tight"></h2>
-                    <div class="mof-mapping-progress-bar"><span id="mappingProgress"></span></div>
+                        class="whitespace-pre-line text-3xl font-medium leading-tight tracking-tight sm:text-4xl md:text-6xl lg:text-7xl">
+                    </h2>
+                    <div class="mof-mapping-progress-bar">
+                        <span id="mappingProgress"></span>
+                    </div>
                 </div>
             </section>
 
             {{-- COORDINATE --}}
             <section id="coordinate" data-screen="coordinate"
-                class="mof-screen mof-coordinate-screen place-items-center overflow-hidden">
+                class="mof-screen mof-coordinate-screen relative grid min-h-screen place-items-center overflow-hidden px-5">
                 <div class="mof-coordinate-aura"></div>
-                <div class="relative z-2 flex flex-col items-center text-center px-6">
-                    <p class="font-mono tracking-widest mb-5 text-[11px]">PERASAANMU PUNYA TEMPAT</p>
-                    <h2 class="m-0 text-4xl sm:text-7xl font-light leading-none tracking-tight">Kami
-                        menemukan<br />koordinatmu.</h2>
 
-                    <div class="mof-coordinate-marker my-11"></div>
-
-                    <button id="coordinateButton" type="button" class="mof-coordinate-button">
-                        <small id="coordinateFeeling"
-                            class="font-mono tracking-widest text-[10px] text-white/72">PERASAAN</small>
-                        <strong id="coordinateName">Titik Patah yang Sunyi</strong>
+                <div class="relative z-10 flex w-full max-w-3xl flex-col items-center px-2 text-center">
+                    <p class="mb-5 font-mono text-xs tracking-widest">
+                        PERASAANMU PUNYA TEMPAT
+                    </p>
+                    <h2 class="text-3xl font-medium leading-tight tracking-tight sm:text-4xl md:text-6xl lg:text-7xl">
+                        Kami
+                        menemukan<br>
+                        koordinatmu.
+                    </h2>
+                    <div class="mof-coordinate-marker my-10 sm:my-11"></div>
+                    <button id="coordinateButton" type="button" class="mof-coordinate-button w-full max-w-md">
+                        <span id="coordinateFeeling" class="font-mono text-xs tracking-widest text-white/70">
+                            PERASAAN
+                        </span>
+                        <span id="coordinateName" class="mof-coordinate-name">
+                            Titik Patah yang Sunyi
+                        </span>
                     </button>
-
-                    <p class="font-mono tracking-widest mt-6 text-[10px] text-black/60">Klik koordinat untuk melihat lagu
-                        yang terhubung</p>
+                    <p class="mt-6 font-mono text-xs tracking-widest text-black/60">
+                        Klik koordinat untuk melihat lagu yang terhubung
+                    </p>
                 </div>
             </section>
         </main>
 
         {{-- RESULT PANEL --}}
+        <audio id="resultAudio" preload="auto"></audio>
         <aside id="emotionPanel" class="mof-emotion-panel" aria-hidden="true">
             <button id="panelClose" type="button" aria-label="Tutup"
-                class="fixed right-6 top-6 z-5 w-12 h-12 rounded-full border border-black/10 bg-white/90 text-2xl shadow-lg">&times;</button>
+                class="fixed right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full border border-black/10 bg-white/90 shadow-lg sm:right-6 sm:top-6 sm:h-12 sm:w-12">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4 sm:h-5 sm:w-5" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+            </button>
 
-            <div class="grid place-items-center relative px-6 py-24 sm:px-[6vw]">
-                <div class="mof-artwork-frame">
-                    <img id="resultArtwork" src="" alt="Artwork lagu" />
+            <div class="relative grid place-items-center px-5 pb-10 pt-24 sm:px-12 sm:pb-16 sm:pt-24">
+                <div class="mof-artwork-frame w-full max-w-lg">
+                    <img id="resultArtwork" src="" alt="Artwork lagu" class="h-auto w-full">
                 </div>
-                <div class="font-mono tracking-widest absolute left-8 bottom-7 text-[10px] text-black/50" id="panelIndex">
-                    01 / 10</div>
+
+                <div id="panelIndex"
+                    class="absolute bottom-5 left-5 font-mono text-xs tracking-widest text-black/50 sm:bottom-7 sm:left-8">
+                    01 / 10
+                </div>
             </div>
 
-            <div class="self-center max-w-3xl w-full py-16 sm:py-24">
-                <p id="panelCoordinate" class="font-mono tracking-widest mb-2 text-[11px] text-black/50">TITIK PATAH YANG
-                    SUNYI</p>
-                <h2 id="resultSong" class="m-0 text-5xl sm:text-8xl font-light leading-[0.9] tracking-tighter">Aku Harus
-                    Pergi</h2>
-                <p id="resultMood" class="mt-7 mb-8 text-lg text-black/55"></p>
+            <div class="mx-auto w-11/12 max-w-3xl py-12 sm:py-24">
+                <p id="panelCoordinate" class="mb-2 font-mono text-xs tracking-widest text-black/50">
+                    TITIK PATAH YANG SUNYI
+                </p>
+                <h2 id="resultSong"
+                    class="text-3xl font-bold leading-none tracking-tight sm:text-4xl md:text-6xl lg:text-8xl"> Aku Harus
+                    Pergi
+                </h2>
+                <p id="resultMood" class="mb-8 mt-6 text-sm text-black/60 sm:mt-7 sm:text-base md:text-lg"></p>
 
-                <div class="grid grid-cols-2 border-y border-black/10 mb-8">
-                    <div class="py-4"><span
-                            class="font-mono tracking-widest block mb-1.5 text-[9px] text-black/50">KONDISI
-                            EMOSI</span><strong id="panelState" class="text-xl"></strong></div>
-                    <div class="py-4"><span
-                            class="font-mono tracking-widest block mb-1.5 text-[9px] text-black/50">CUACA
-                            ATLAS</span><strong id="panelWeather" class="text-xl"></strong></div>
+                <div
+                    class="mb-8 grid grid-cols-1 divide-y divide-black/10 border-y border-black/10 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+                    <div class="py-4 sm:pr-5">
+                        <span class="mb-1 block font-mono text-xs tracking-widest text-black/50">
+                            KONDISI EMOSI
+                        </span>
+                        <span id="panelState" class="block text-xl font-bold"></span>
+                    </div>
+                    <div class="py-4 sm:pl-5">
+                        <span class="mb-1 block font-mono text-xs tracking-widest text-black/50">
+                            CUACA ATLAS
+                        </span>
+                        <span id="panelWeather" class="block text-xl font-bold"></span>
+                    </div>
                 </div>
 
-                <p class="font-mono tracking-widest mb-2 text-[9px] text-black/50">KENAPA LAGU INI?</p>
-                <p id="resultWhy" class="mb-7 text-black/55 leading-loose"></p>
-                <p id="resultAffirmation" class="my-7 italic text-lg text-black"></p>
+                <p class="mb-2 font-mono text-xs tracking-widest text-black/50">
+                    KENAPA LAGU INI?
+                </p>
+                <p id="resultWhy"
+                    class="mb-7 leading-relaxed text-black/60 sm:leading-loose text-sm sm:text-base md:text-lg"></p>
+                <p id="resultAffirmation" class="my-7 text-lg italic text-black"></p>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 my-7">
+                <div class="my-7 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
                     <label class="grid gap-2">
-                        <span class="font-mono tracking-widest text-[9px] text-black/50">NAMA</span>
+                        <span class="font-mono text-xs tracking-widest text-black/50">NAMA</span>
                         <input id="visitorName" type="text" maxlength="40" autocomplete="name"
                             placeholder="Tulis nama kamu"
-                            class="w-full min-h-12.5 rounded-2xl border border-black/15 bg-white/80 px-4 py-4 text-sm outline-none focus:border-[rgb(var(--mof-panel-accent-rgb,122,174,247))]" />
+                            class="min-h-12 w-full rounded-2xl border border-black/15 bg-white/80 px-4 py-3 text-sm outline-none focus:border-blue-400">
                     </label>
+
                     <label class="grid gap-2">
-                        <span class="font-mono tracking-widest text-[9px] text-black/50">NAMA INSTAGRAM</span>
+                        <span class="font-mono text-xs tracking-widest text-black/50">NAMA INSTAGRAM</span>
                         <input id="visitorInstagram" type="text" maxlength="40" autocapitalize="none"
                             spellcheck="false" placeholder="@username"
-                            class="w-full min-h-12.5 rounded-2xl border border-black/15 bg-white/80 px-4 py-4 text-sm outline-none focus:border-[rgb(var(--mof-panel-accent-rgb,122,174,247))]" />
+                            class="min-h-12 w-full rounded-2xl border border-black/15 bg-white/80 px-4 py-3 text-sm outline-none focus:border-blue-400">
                     </label>
-                    <p id="coordinateFormError" class="sm:col-span-2 min-h-4 text-xs text-red-600" aria-live="polite">
+
+                    <p id="coordinateFormError" class="min-h-4 text-xs text-red-600 sm:col-span-2" aria-live="polite">
                     </p>
                 </div>
 
-                <div class="flex flex-wrap gap-2.5">
+                <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-3.5">
                     <a id="spotifyLink" href="#" target="_blank" rel="noopener"
-                        class="font-mono tracking-widest rounded-full border border-black/15 bg-white/80 px-4.5 py-4 text-[10px] hover:bg-white hover:-translate-y-0.5 transition">DENGARKAN
-                        DI SPOTIFY</a>
+                        class="rounded-full border border-black/15 bg-white/80 px-5 py-3 font-mono text-xs tracking-widest transition hover:-translate-y-0.5 hover:bg-white">
+                        DENGARKAN DI SPOTIFY
+                    </a>
                     <a id="youtubeLink" href="#" target="_blank" rel="noopener"
-                        class="font-mono tracking-widest rounded-full border border-black/15 bg-white/80 px-4.5 py-4 text-[10px] hover:bg-white hover:-translate-y-0.5 transition">TONTON
-                        DI YOUTUBE</a>
+                        class="rounded-full border border-black/15 bg-white/80 px-5 py-3 font-mono text-xs tracking-widest transition hover:-translate-y-0.5 hover:bg-white">
+                        TONTON DI YOUTUBE
+                    </a>
                     <button id="saveCoordinate" type="button"
-                        class="font-mono tracking-widest rounded-full border border-black/15 bg-white/80 px-4.5 py-4 text-[10px] hover:bg-white hover:-translate-y-0.5 transition disabled:opacity-50 disabled:cursor-wait">SIMPAN
-                        KOORDINAT</button>
+                        class="rounded-full border border-black/15 bg-white/80 px-5 py-3 font-mono text-xs tracking-widest transition hover:-translate-y-0.5 hover:bg-white disabled:cursor-wait disabled:opacity-50">
+                        SIMPAN KOORDINAT
+                    </button>
                 </div>
 
                 <button id="restartButton" type="button"
-                    class="font-mono tracking-widest mt-7 border-0 border-b border-black/15 bg-transparent pb-2.5 text-[10px] text-black/55 cursor-pointer">PETAKAN
-                    PERASAAN LAIN</button>
+                    class="mt-7 cursor-pointer border-0 border-b border-black/15 bg-transparent pb-2 font-mono font-bold text-xs tracking-widest text-black/55">
+                    PETAKAN PERASAAN LAIN
+                </button>
             </div>
         </aside>
 
         <footer
-            class="flex flex-col sm:flex-row justify-between gap-1 px-6 py-6 sm:px-8 sm:py-7 border-t border-black/10 bg-white/90 font-mono tracking-widest text-[9px] text-black/55">
+            class="flex flex-col gap-2 border-t border-black/10 bg-white/90 px-5 py-6 font-mono text-xs tracking-widest text-black/55 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
             <span>MAP OF FEELINGS &middot; SETIAP PERASAAN PUNYA KOORDINAT</span>
             <span>&copy; WAHSUDAH MONDAY 2026</span>
         </footer>
@@ -214,6 +287,7 @@
             const mappingField = document.getElementById('mappingField');
             const mappingText = document.getElementById('mappingText');
             const panel = document.getElementById('emotionPanel');
+            const resultAudio = document.getElementById('resultAudio');
             const liveCoordinate = document.getElementById('liveCoordinate');
             const atlasStatus = document.getElementById('atlasStatus');
             const mapShell = document.getElementById('mapShell');
@@ -478,16 +552,67 @@
                 liveCoordinate.textContent = coords[mood.index];
             }
 
+            let audioPlayToken = 0; // penanda sesi audio aktif
+            function stopResultAudio() {
+                audioPlayToken += 1; // batalkan fade/play sesi sebelumnya
+                if (!resultAudio) return;
+                resultAudio.pause();
+                resultAudio.currentTime = 0;
+                resultAudio.removeAttribute('src');
+                resultAudio.load();
+            }
+
+            async function playResultAudio(mood) {
+                if (!resultAudio || !mood || !mood.audio) return;
+
+                const myToken = ++audioPlayToken; // sesi ini
+
+                if (resultAudio.getAttribute('src') !== mood.audio) {
+                    resultAudio.src = mood.audio;
+                    resultAudio.load();
+                }
+
+                resultAudio.volume = 0;
+
+                try {
+                    await resultAudio.play();
+
+                    // kalau sesi sudah dibatalkan (panel ditutup / dibuka ulang) selama menunggu play(), stop di sini
+                    if (myToken !== audioPlayToken) return;
+
+                    const targetVolume = 0.6;
+                    const fadeStart = performance.now();
+                    const fadeDuration = 900;
+
+                    const fade = (now) => {
+                        // stop kalau sesi berubah ATAU audio sudah kepause
+                        if (myToken !== audioPlayToken || resultAudio.paused) return;
+                        const progress = Math.max(0, Math.min((now - fadeStart) / fadeDuration, 1));
+                        resultAudio.volume = Math.max(0, Math.min(1, targetVolume * progress));
+                        if (progress < 1) requestAnimationFrame(fade);
+                    };
+
+                    requestAnimationFrame(fade);
+                } catch (error) {
+                    // AbortError normal terjadi kalau panel ditutup cepat sebelum play() selesai — bukan bug
+                    if (error && error.name !== 'AbortError') {
+                        console.warn(`Audio tidak dapat diputar otomatis: ${mood.audio}`, error);
+                    }
+                }
+            }
+
             function openPanel() {
                 panel.classList.add('open');
                 panel.setAttribute('aria-hidden', 'false');
                 document.body.style.overflow = 'hidden';
+                playResultAudio(selectedMood);
             }
 
             function closePanel() {
                 panel.classList.remove('open');
                 panel.setAttribute('aria-hidden', 'true');
                 document.body.style.overflow = '';
+                stopResultAudio();
             }
 
             function reset() {
