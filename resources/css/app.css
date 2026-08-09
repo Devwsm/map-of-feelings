@@ -284,11 +284,11 @@
 }
 
 /* ==========================================================
-   Titik emosi di Atlas — DIUBAH: dari lingkaran polos jadi
-   blob organik yang morphing pelan, dan semua ukuran pakai
-   clamp() supaya menyesuaikan lebar layar tanpa breakpoint
-   kaku. --x, --y, --node-rgb tetap di-set dari JS (blade),
-   jadi tidak ada perubahan di sisi JS.
+    Titik emosi di Atlas — DIUBAH: dari lingkaran polos jadi
+    blob organik yang morphing pelan, dan semua ukuran pakai
+    clamp() supaya menyesuaikan lebar layar tanpa breakpoint
+    kaku. --x, --y, --node-rgb tetap di-set dari JS (blade),
+    jadi tidak ada perubahan di sisi JS.
    ========================================================== */
 .mof-emotion-node {
     position: absolute;
