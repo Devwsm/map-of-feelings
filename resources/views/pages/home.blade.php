@@ -36,11 +36,6 @@
                     <span id="liveCoordinate">LINTANG 00.0000 / BUJUR 00.0000</span>
                     <span id="atlasStatus">AREA 01 &middot; SIAGA</span>
                 </div>
-
-                <a href="{{ route('login') }}"
-                    class="rounded-full border border-black/20 bg-white/80 px-3 py-2 font-mono text-xs tracking-widest transition-colors hover:bg-white sm:px-4 sm:py-2.5">
-                    MASUK PENGELOLA
-                </a>
             </div>
         </header>
 
@@ -265,7 +260,13 @@
         <footer
             class="flex flex-col gap-2 border-t border-black/10 bg-white/90 px-5 py-6 font-mono text-xs tracking-widest text-black/55 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
             <span>MAP OF FEELINGS &middot; SETIAP PERASAAN PUNYA KOORDINAT</span>
-            <span>&copy; WAHSUDAH MONDAY 2026</span>
+            <div class="flex flex-col md:flex-row gap-2">
+                <a href="{{ route('login') }}">
+                    <span>PANEL</span>
+                </a>
+                <span>&middot; PRIVACY POLICY &middot;</span>
+                <span>&copy; WAHSUDAH MONDAY 2026 &middot;</span>
+            </div>
         </footer>
     </div>
 
