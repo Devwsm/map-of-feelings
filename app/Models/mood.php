@@ -23,6 +23,7 @@ class mood extends Model
         'why',
         'affirmation',
         'weather_text',
+        'audio_path',
         'artwork_path',
         'color_primary',
         'color_secondary',
@@ -51,6 +52,11 @@ class mood extends Model
         return $this->artwork_path ? asset($this->artwork_path) : '';
     }
 
+    public function audioUrl(): string
+    {
+        return $this->audio_path ? asset($this->audio_path) : '';
+    }
+
     /**
      * Bentuk data persis kayak yang dulu ditulis manual di window.MAP_OF_FEELINGS.
      * Dipanggil dari homeController lewat $moods->map->toJsPayload() lalu di-@json() ke blade.
@@ -68,6 +74,7 @@ class mood extends Model
             'barGradient' => $this->barGradient(),
             'pageGradient' => $this->pageGradient(),
             'artwork' => $this->artworkUrl(),
+            'audio' => $this->audioUrl(), 
             'why' => $this->why,
             'affirmation' => $this->affirmation,
             'weatherText' => $this->weather_text,
