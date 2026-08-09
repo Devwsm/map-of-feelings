@@ -67,14 +67,14 @@
                         class="py-4 border-b-2 {{ $active === 'checkin' ? 'border-white text-white' : 'border-transparent text-white/40 hover:text-white/70' }} transition-colors whitespace-nowrap">Check-in</a>
                 @endif
 
+                @if (auth()->user()->role === 'panel' || auth()->user()->role === 'admin')
+                    <a href="{{ route('dashboard.panel') }}"
+                        class="py-4 border-b-2 {{ $active === 'panel' ? 'border-white text-white' : 'border-transparent text-white/40 hover:text-white/70' }} transition-colors whitespace-nowrap">Panel</a>
+                @endif
+
                 @if (auth()->user()->role === 'admin')
                     <a href="#"
                         class="py-4 border-b-2 border-transparent text-white/40 hover:text-white/70 transition-colors whitespace-nowrap">Export/Import</a>
-                @endif
-
-                @if (auth()->user()->role === 'panel')
-                    <a href="{{ route('dashboard.panel') }}"
-                        class="py-4 border-b-2 {{ $active === 'panel' ? 'border-white text-white' : 'border-transparent text-white/40 hover:text-white/70' }} transition-colors whitespace-nowrap">Panel</a>
                 @endif
             </div>
         </nav>
