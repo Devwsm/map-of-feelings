@@ -85,6 +85,24 @@
                 class="w-full rounded-2xl border border-white/15 bg-neutral-900 px-4 py-3 focus:outline-none focus:border-white/40" />
         </div>
 
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+                <label for="artwork_path" class="block text-sm font-bold mb-2">Path Artwork</label>
+                <input id="artwork_path" name="artwork_path" type="text"
+                    value="{{ old('artwork_path', $mood->artwork_path) }}" placeholder="assets/artwork/nama-file.svg"
+                    class="w-full rounded-2xl border border-white/15 bg-neutral-900 px-4 py-3 focus:outline-none focus:border-white/40" />
+                <p class="mt-1 text-xs text-white/40">Relatif ke folder public/, file harus udah diupload manual.</p>
+            </div>
+
+            <div>
+                <label for="audio_path" class="block text-sm font-bold mb-2">Path Audio Preview</label>
+                <input id="audio_path" name="audio_path" type="text" value="{{ old('audio_path', $mood->audio_path) }}"
+                    placeholder="assets/audio/nama-file.mp3"
+                    class="w-full rounded-2xl border border-white/15 bg-neutral-900 px-4 py-3 focus:outline-none focus:border-white/40" />
+                <p class="mt-1 text-xs text-white/40">Relatif ke folder public/, file harus udah diupload manual.</p>
+            </div>
+        </div>
+
         <div class="grid grid-cols-3 gap-5">
             <div>
                 <label for="color_primary" class="block text-sm font-bold mb-2">Warna Utama</label>

@@ -59,6 +59,8 @@ class homeController extends Controller
             'why' => ['required', 'string'],
             'affirmation' => ['required', 'string'],
             'weather_text' => ['nullable', 'string', 'max:255'],
+            'artwork_path' => ['nullable', 'string', 'max:255'],
+            'audio_path' => ['nullable', 'string', 'max:255'],
             'color_primary' => ['required', 'string', 'max:7'],
             'color_secondary' => ['required', 'string', 'max:7'],
             'color_accent' => ['required', 'string', 'max:7'],
