@@ -64,6 +64,7 @@ class homeController extends Controller
             'color_primary' => ['required', 'string', 'max:7'],
             'color_secondary' => ['required', 'string', 'max:7'],
             'color_accent' => ['required', 'string', 'max:7'],
+            'color_text' => ['required', 'string', 'max:7'],
             'mof_url' => ['nullable', 'string', 'max:255'],
         ]);
 

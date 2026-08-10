@@ -122,6 +122,12 @@
                     value="{{ old('color_accent', $mood->color_accent) }}"
                     class="w-full h-12 rounded-2xl border border-white/15 bg-neutral-900 p-1" />
             </div>
+            <div>
+                <label for="color_text" class="block text-sm font-bold mb-2">Warna Teks</label>
+                <input id="color_text" name="color_text" type="color"
+                    value="{{ old('color_text', $mood->color_text) }}"
+                    class="w-full h-12 rounded-2xl border border-white/15 bg-neutral-900 p-1" />
+            </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">

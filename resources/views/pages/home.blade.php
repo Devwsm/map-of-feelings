@@ -536,7 +536,9 @@
 
                 document.getElementById('panelIndex').textContent = `${String(mood.index + 1).padStart(2, '0')} / 10`;
                 document.getElementById('panelCoordinate').textContent = mood.coordinate;
-                document.getElementById('resultSong').textContent = mood.song;
+                const resultSong = document.getElementById('resultSong');
+                resultSong.textContent = mood.song;
+                resultSong.style.color = mood.colorText || '#0c0d0f'; // fallback kalau kosong
                 document.getElementById('resultMood').textContent = `${mood.feeling} \u2014 ${mood.nuance}`;
                 document.getElementById('panelState').textContent = mood.nuance;
                 document.getElementById('panelWeather').textContent = mood.weatherText;

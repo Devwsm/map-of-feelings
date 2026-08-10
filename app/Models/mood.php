@@ -28,6 +28,7 @@ class mood extends Model
         'color_primary',
         'color_secondary',
         'color_accent',
+        'color_text',
         'mof_url',
     ];
 
@@ -73,10 +74,11 @@ class mood extends Model
             'barGradient' => $this->barGradient(),
             'pageGradient' => $this->pageGradient(),
             'artwork' => $this->artworkUrl(),
-            'audio' => $this->audioUrl(), 
+            'audio' => $this->audioUrl(),
             'why' => $this->why,
             'affirmation' => $this->affirmation,
             'weatherText' => $this->weather_text,
+            'colorText' => $this->color_text,
             'mof' => $this->mof_url ?: '#',
         ];
     }

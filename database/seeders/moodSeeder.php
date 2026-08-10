@@ -31,6 +31,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#528AED',
                 'color_secondary' => '#2673F4',
                 'color_accent' => '#0A3CCF',
+                'color_text' => '#EAF1FF',
                 'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
@@ -53,6 +54,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#F2921B',
                 'color_secondary' => '#AEB247',
                 'color_accent' => '#4AB190',
+                'color_text' => '#5B2A0A',
                 'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
@@ -75,6 +77,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#F59F7B',
                 'color_secondary' => '#BEC799',
                 'color_accent' => '#B9CCA1',
+                'color_text' => '#2B4B2E',
                 'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
@@ -97,6 +100,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#B79C90',
                 'color_secondary' => '#AE8475',
                 'color_accent' => '#9A4735',
+                'color_text' => '#FFC98A',
                 'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
@@ -119,6 +123,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#7EAAFD',
                 'color_secondary' => '#B99EFD',
                 'color_accent' => '#DB9EFD',
+                'color_text' => '#F5F3FF',
                 'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
@@ -141,6 +146,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#FEE5B0',
                 'color_secondary' => '#FDD986',
                 'color_accent' => '#FEC75B',
+                'color_text' => '#7A3A12',
                 'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
@@ -159,10 +165,11 @@ class moodSeeder extends Seeder
                 'affirmation' => 'Tidak semua perasaan harus diumumkan. Beberapa justru tumbuh paling jujur dalam ruang yang hanya dipahami berdua.',
                 'weather_text' => 'Angin rahasia',
                 'audio_path' => 'assets/audio/nyaman.mp3',
-                'artwork_path' => 'assets/artwork/yang-tau-tau-aja.jpg',
+                'artwork_path' => 'assets/artwork/ytta.jpg',
                 'color_primary' => '#7ECBC0',
                 'color_secondary' => '#F5C150',
                 'color_accent' => '#FE9B72',
+                'color_text' => '#33413A',
                 'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
@@ -185,6 +192,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#B5DC7C',
                 'color_secondary' => '#7ADC6E',
                 'color_accent' => '#71CD8D',
+                'color_text' => '#1F4A1B',
                 'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
@@ -207,6 +215,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#F0AE51',
                 'color_secondary' => '#DF842D',
                 'color_accent' => '#999C47',
+                'color_text' => '#FFF176',
                 'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
@@ -229,6 +238,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#4DB79D',
                 'color_secondary' => '#3BA888',
                 'color_accent' => '#308B75',
+                'color_text' => '#EFFFAE',
                 'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
         ];

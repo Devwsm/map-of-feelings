@@ -35,6 +35,7 @@ return new class extends Migration
             $table->string('color_primary', 7)->default('#7aaef7');
             $table->string('color_secondary', 7)->default('#4b82eb');
             $table->string('color_accent', 7)->default('#0954e3');
+            $table->string('color_text', 7)->default('#0c0d0f');
 
             $table->string('mof_url')->nullable();
 
