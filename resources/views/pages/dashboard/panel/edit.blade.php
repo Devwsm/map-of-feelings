@@ -126,15 +126,9 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-                <label for="spotify_url" class="block text-sm font-bold mb-2">Link Spotify</label>
-                <input id="spotify_url" name="spotify_url" type="text"
-                    value="{{ old('spotify_url', $mood->spotify_url) }}"
-                    class="w-full rounded-2xl border border-white/15 bg-neutral-900 px-4 py-3 focus:outline-none focus:border-white/40" />
-            </div>
-            <div>
-                <label for="youtube_url" class="block text-sm font-bold mb-2">Link YouTube</label>
-                <input id="youtube_url" name="youtube_url" type="text"
-                    value="{{ old('youtube_url', $mood->youtube_url) }}"
+                <label for="mof_url" class="block text-sm font-bold mb-2">Link Map of Feelings</label>
+                <input id="mof_url" name="mof_url" type="text"
+                    value="{{ old('mof_url', $mood->mof_url) }}"
                     class="w-full rounded-2xl border border-white/15 bg-neutral-900 px-4 py-3 focus:outline-none focus:border-white/40" />
             </div>
         </div>

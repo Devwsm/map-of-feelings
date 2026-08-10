@@ -36,8 +36,7 @@ return new class extends Migration
             $table->string('color_secondary', 7)->default('#4b82eb');
             $table->string('color_accent', 7)->default('#0954e3');
 
-            $table->string('spotify_url')->nullable();
-            $table->string('youtube_url')->nullable();
+            $table->string('mof_url')->nullable();
 
             $table->timestamps();
         });

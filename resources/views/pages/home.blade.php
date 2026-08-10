@@ -236,13 +236,9 @@
                 </div>
 
                 <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-3.5">
-                    <a id="spotifyLink" href="#" target="_blank" rel="noopener"
+                    <a id="mofLink" href="#" target="_blank" rel="noopener"
                         class="rounded-full border border-black/15 bg-white/80 px-5 py-3 font-mono text-xs tracking-widest transition hover:-translate-y-0.5 hover:bg-white">
-                        DENGARKAN DI SPOTIFY
-                    </a>
-                    <a id="youtubeLink" href="#" target="_blank" rel="noopener"
-                        class="rounded-full border border-black/15 bg-white/80 px-5 py-3 font-mono text-xs tracking-widest transition hover:-translate-y-0.5 hover:bg-white">
-                        TONTON DI YOUTUBE
+                        PRE SAVE MAP OF FEELINGS
                     </a>
                     <button id="saveCoordinate" type="button"
                         class="rounded-full border border-black/15 bg-white/80 px-5 py-3 font-mono text-xs tracking-widest transition hover:-translate-y-0.5 hover:bg-white disabled:cursor-wait disabled:opacity-50">
@@ -552,8 +548,7 @@
                 artwork.src = mood.artwork;
                 artwork.alt = `${mood.song} artwork`;
 
-                document.getElementById('spotifyLink').href = mood.spotify || '#';
-                document.getElementById('youtubeLink').href = mood.youtube || '#';
+                document.getElementById('mofLink').href = mood.mof || '#';
                 liveCoordinate.textContent = coords[mood.index];
             }
 

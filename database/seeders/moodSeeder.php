@@ -31,6 +31,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#1679F3',
                 'color_secondary' => '#0E5ADC',
                 'color_accent' => '#073BC5',
+                'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
                 'mood_key' => 'serba-salah',
@@ -52,6 +53,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#ED5A72',
                 'color_secondary' => '#D23450',
                 'color_accent' => '#B80D2D',
+                'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
                 'mood_key' => 'curiga',
@@ -73,6 +75,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#19C8D8',
                 'color_secondary' => '#8C9CB4',
                 'color_accent' => '#FF7090',
+                'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
                 'mood_key' => 'lelah',
@@ -94,6 +97,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#FFC369',
                 'color_secondary' => '#F7A63C',
                 'color_accent' => '#EF8A10',
+                'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
                 'mood_key' => 'kesepian',
@@ -115,6 +119,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#7597FF',
                 'color_secondary' => '#A796F7',
                 'color_accent' => '#D995EF',
+                'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
                 'mood_key' => 'berduka',
@@ -136,6 +141,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#FFD009',
                 'color_secondary' => '#FF9E04',
                 'color_accent' => '#FF6D00',
+                'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
                 'mood_key' => 'nyaman',
@@ -157,6 +163,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#B4DFF1',
                 'color_secondary' => '#DAE6B4',
                 'color_accent' => '#FFEC78',
+                'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
                 'mood_key' => 'terharu',
@@ -178,6 +185,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#D7FF1E',
                 'color_secondary' => '#BBE80F',
                 'color_accent' => '#9FD000',
+                'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
                 'mood_key' => 'penuh-harap',
@@ -199,6 +207,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#FFF8B5',
                 'color_secondary' => '#FFEC5A',
                 'color_accent' => '#FFE000',
+                'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
             [
                 'mood_key' => 'hampa',
@@ -220,6 +229,7 @@ class moodSeeder extends Seeder
                 'color_primary' => '#4BC35C',
                 'color_secondary' => '#368F44',
                 'color_accent' => '#205B2D',
+                'mof_url' => 'https://ffm.to/mapoffeelings',
             ],
         ];
 

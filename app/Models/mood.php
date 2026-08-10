@@ -28,8 +28,7 @@ class mood extends Model
         'color_primary',
         'color_secondary',
         'color_accent',
-        'spotify_url',
-        'youtube_url',
+        'mof_url',
     ];
 
     public function choices(): array
@@ -78,8 +77,7 @@ class mood extends Model
             'why' => $this->why,
             'affirmation' => $this->affirmation,
             'weatherText' => $this->weather_text,
-            'spotify' => $this->spotify_url ?: '#',
-            'youtube' => $this->youtube_url ?: '#',
+            'mof' => $this->mof_url ?: '#',
         ];
     }
 }
