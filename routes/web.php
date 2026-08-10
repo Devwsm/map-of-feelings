@@ -39,7 +39,7 @@ Route::prefix('/dashboard')->middleware('auth')->group(function () {
         Route::post('/dashboard/tamu/{guest}/generate-qr', [pressconGuestController::class, 'generateQr'])->name('dashboard.tamu.generate-qr');
     });
 
-    // Cuma panel
+    // panel & admin berdua boleh
     Route::middleware('role:panel,admin')->group(function () {
         Route::get('/panel', [homeController::class, 'panel'])->name('dashboard.panel');
         Route::get('/panel/submissions', [homeController::class, 'submissions'])->name('dashboard.panel.submissions');
