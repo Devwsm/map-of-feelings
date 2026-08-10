@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
-<defs><radialGradient id="g" cx="25%" cy="20%" r="100%"><stop offset="0" stop-color="#b4dff1"/><stop offset="1" stop-color="#ffec78"/></radialGradient></defs>
-<rect width="1200" height="1200" fill="url(#g)"/>
-<text x="600" y="600" text-anchor="middle" dominant-baseline="middle" font-family="Arial,Helvetica,sans-serif" font-size="68" font-weight="700" fill="#000">Yang Tau Tau Aja</text>
-</svg>
