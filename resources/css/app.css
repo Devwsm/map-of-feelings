@@ -180,6 +180,252 @@
     }
 }
 
+/* ==========================================================
+    Pecahan warna interaktif di hero — pengganti .mof-moon
+    (update desain terbaru dari tim, lihat home.blade.php).
+    .mof-moon TIDAK dipakai lagi tapi rule-nya sengaja tetap
+    dibiarkan di atas kalau-kalau mau dipakai ulang di layar lain.
+   ========================================================== */
+.mof-fragments {
+    position: absolute;
+    inset: 24%;
+    width: 52%;
+    height: 52%;
+    overflow: visible;
+    z-index: 3;
+    filter: drop-shadow(
+        0 16px 28px rgba(var(--mof-orbit-primary-rgb, 115, 173, 255), 0.25)
+    );
+}
+
+.mof-frag {
+    transform-box: fill-box;
+    transform-origin: center;
+    will-change: transform, opacity, translate;
+}
+
+.mof-frag-a {
+    animation: mofBurstA 7.2s cubic-bezier(0.77, 0, 0.18, 1) infinite;
+}
+.mof-frag-b {
+    animation: mofBurstB 7.2s cubic-bezier(0.77, 0, 0.18, 1) infinite;
+}
+.mof-frag-c {
+    animation: mofBurstC 7.2s cubic-bezier(0.77, 0, 0.18, 1) infinite;
+}
+.mof-frag-d {
+    animation: mofBurstD 7.2s cubic-bezier(0.77, 0, 0.18, 1) infinite;
+}
+.mof-frag-e {
+    animation: mofBurstE 7.2s cubic-bezier(0.77, 0, 0.18, 1) infinite;
+}
+.mof-frag-f {
+    animation: mofBurstF 7.2s steps(1, end) infinite;
+}
+.mof-frag-g {
+    animation: mofBurstG 7.2s cubic-bezier(0.77, 0, 0.18, 1) infinite;
+}
+.mof-fragment-glow {
+    transform-origin: center;
+    animation: mofFragmentGlow 3.6s ease-in-out infinite;
+}
+
+@keyframes mofBurstA {
+    0%,
+    100% {
+        transform: translate(-42px, -30px) scale(0.08);
+        opacity: 0;
+    }
+    9% {
+        transform: none;
+        opacity: 1;
+    }
+    27% {
+        transform: translate(29px, 18px) scale(1.28) rotate(5deg);
+    }
+    42% {
+        transform: translate(-18px, 31px) scale(0.72) rotate(-8deg);
+    }
+    61% {
+        transform: translate(10px, -19px) scale(1.08);
+    }
+    78% {
+        transform: translate(-34px, 8px) scale(0.88);
+    }
+    91% {
+        transform: translate(25px, -26px) scale(0.18);
+        opacity: 0;
+    }
+}
+@keyframes mofBurstB {
+    0%,
+    6% {
+        transform: translate(-70px, 12px) scaleX(0.08);
+        opacity: 0;
+    }
+    16% {
+        transform: none;
+        opacity: 1;
+    }
+    34% {
+        transform: translate(41px, -24px) scale(0.82) rotate(-10deg);
+    }
+    49% {
+        transform: translate(17px, 37px) scale(1.25) rotate(4deg);
+    }
+    67% {
+        transform: translate(-25px, -12px) scale(0.7);
+    }
+    84% {
+        transform: translate(46px, 15px) scale(1.12);
+    }
+    100% {
+        transform: translate(-50px, 0) scale(0.1);
+        opacity: 0;
+    }
+}
+@keyframes mofBurstC {
+    0%,
+    13% {
+        transform: translate(65px, -25px) scaleY(0.05);
+        opacity: 0;
+    }
+    23% {
+        transform: none;
+        opacity: 1;
+    }
+    39% {
+        transform: translate(-38px, 29px) scale(1.2) rotate(7deg);
+    }
+    55% {
+        transform: translate(22px, 42px) scale(0.66) rotate(-5deg);
+    }
+    72% {
+        transform: translate(-12px, -21px) scale(1.1);
+    }
+    89% {
+        transform: translate(38px, -7px) scale(0.45);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(0.08);
+        opacity: 0;
+    }
+}
+@keyframes mofBurstD {
+    0%,
+    20% {
+        transform: translate(-15px, 75px) scale(0.06);
+        opacity: 0;
+    }
+    30% {
+        transform: none;
+        opacity: 1;
+    }
+    47% {
+        transform: translate(45px, -17px) scale(0.78) rotate(11deg);
+    }
+    63% {
+        transform: translate(-31px, -34px) scale(1.24) rotate(-4deg);
+    }
+    81% {
+        transform: translate(18px, 14px) scale(0.88);
+    }
+    94%,
+    100% {
+        transform: translate(-20px, 50px) scale(0.1);
+        opacity: 0;
+    }
+}
+@keyframes mofBurstE {
+    0%,
+    27% {
+        transform: translate(70px, 35px) scale(0.06);
+        opacity: 0;
+    }
+    37% {
+        transform: none;
+        opacity: 1;
+    }
+    52% {
+        transform: translate(-42px, -28px) scale(1.26) rotate(-8deg);
+    }
+    68% {
+        transform: translate(-8px, 34px) scale(0.65);
+    }
+    83% {
+        transform: translate(27px, -12px) scale(1.08) rotate(6deg);
+    }
+    97%,
+    100% {
+        transform: scale(0.08);
+        opacity: 0;
+    }
+}
+@keyframes mofBurstF {
+    0% {
+        transform: translate(-30px, 30px);
+        opacity: 0;
+    }
+    11% {
+        transform: none;
+        opacity: 1;
+    }
+    25% {
+        transform: translate(25px, -18px) scale(1.5);
+    }
+    40% {
+        transform: translate(-40px, 12px) scale(0.7);
+    }
+    58% {
+        transform: translate(18px, 36px);
+    }
+    74% {
+        transform: translate(-8px, -32px) scale(1.3);
+    }
+    90% {
+        transform: translate(35px, 7px) scale(0.5);
+    }
+    100% {
+        opacity: 0;
+    }
+}
+@keyframes mofBurstG {
+    0%,
+    35% {
+        transform: translate(0, 55px) scale(0.1);
+        opacity: 0;
+    }
+    45% {
+        transform: none;
+        opacity: 1;
+    }
+    60% {
+        transform: translate(28px, -38px) scale(1.3);
+    }
+    76% {
+        transform: translate(-32px, 6px) scale(0.72) rotate(-9deg);
+    }
+    89% {
+        transform: translate(12px, -18px) scale(1.08);
+    }
+    100% {
+        transform: translate(0, 40px) scale(0.1);
+        opacity: 0;
+    }
+}
+@keyframes mofFragmentGlow {
+    0%,
+    100% {
+        transform: scale(0.82);
+        opacity: 0.35;
+    }
+    50% {
+        transform: scale(1.28);
+        opacity: 0.8;
+    }
+}
+
 /* Intro screen — DIPAKAI JUGA DI errors/503.blade.php */
 .mof-intro-color-field {
     position: absolute;
@@ -647,6 +893,8 @@
     .mof-screen,
     .mof-orbit-ring,
     .mof-moon,
+    .mof-frag,
+    .mof-fragment-glow,
     .mof-intro-color-field,
     .mof-pulse,
     .mof-emotion-node,

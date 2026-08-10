@@ -47,7 +47,76 @@
                     <div class="mof-orbit-ring"></div>
                     <div class="mof-orbit-ring mof-orbit-b"></div>
                     <div class="mof-orbit-ring mof-orbit-c"></div>
-                    <div class="mof-moon"></div>
+                    {{-- Pecahan warna interaktif, pengganti bola "moon" polos di tengah orbit (update desain terbaru dari tim) --}}
+                    <svg id="mofFragments" class="mof-fragments" viewBox="0 0 320 320" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="mofBlue" x1="0" y1="0" x2="1" y2="1">
+                                <stop stop-color="#1757ff" />
+                                <stop offset="1" stop-color="#72b7ff" />
+                            </linearGradient>
+                            <linearGradient id="mofSun" x1="0" y1="0" x2="1" y2="1">
+                                <stop stop-color="#ff8b39" />
+                                <stop offset="1" stop-color="#ffe26d" />
+                            </linearGradient>
+                            <linearGradient id="mofMint" x1="0" y1="0" x2="1" y2="1">
+                                <stop stop-color="#57ef80" />
+                                <stop offset="1" stop-color="#25bac7" />
+                            </linearGradient>
+                            <linearGradient id="mofRose" x1="0" y1="0" x2="1" y2="1">
+                                <stop stop-color="#ff8f77" />
+                                <stop offset="1" stop-color="#eab7ff" />
+                            </linearGradient>
+                            <linearGradient id="mofEmber" x1="0" y1="0" x2="1" y2="1">
+                                <stop stop-color="#6d241b" />
+                                <stop offset="1" stop-color="#f05b4f" />
+                            </linearGradient>
+                            <linearGradient id="mofLime" x1="0" y1="0" x2="1" y2="1">
+                                <stop stop-color="#dfff55" />
+                                <stop offset="1" stop-color="#73e37a" />
+                            </linearGradient>
+                            <filter id="mofGlow">
+                                <feGaussianBlur stdDeviation="8" result="blur" />
+                                <feMerge>
+                                    <feMergeNode in="blur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <g class="mof-fragment-glow" filter="url(#mofGlow)">
+                            <rect x="93" y="79" width="134" height="145" rx="6" fill="#ff667f"
+                                opacity=".22" />
+                        </g>
+                        <g class="mof-frag mof-frag-a">
+                            <rect x="91" y="64" width="71" height="55" fill="url(#mofBlue)" />
+                            <rect x="162" y="64" width="58" height="31" fill="url(#mofSun)" />
+                        </g>
+                        <g class="mof-frag mof-frag-b">
+                            <rect x="54" y="119" width="65" height="74" fill="url(#mofMint)" />
+                            <rect x="119" y="119" width="43" height="42" fill="url(#mofRose)" />
+                        </g>
+                        <g class="mof-frag mof-frag-c">
+                            <rect x="162" y="95" width="91" height="66" fill="url(#mofLime)" />
+                            <rect x="220" y="71" width="34" height="24" fill="#22d3d5" />
+                        </g>
+                        <g class="mof-frag mof-frag-d">
+                            <rect x="119" y="161" width="68" height="76" fill="url(#mofEmber)" />
+                            <rect x="78" y="193" width="41" height="27" fill="#ffb655" />
+                        </g>
+                        <g class="mof-frag mof-frag-e">
+                            <rect x="187" y="161" width="68" height="55" fill="url(#mofBlue)" />
+                            <rect x="187" y="216" width="42" height="33" fill="url(#mofRose)" />
+                        </g>
+                        <g class="mof-frag mof-frag-f">
+                            <rect x="42" y="98" width="12" height="35" fill="#ff667f" />
+                            <rect x="254" y="133" width="18" height="48" fill="#ff9e47" />
+                            <rect x="151" y="42" width="28" height="22" fill="#dcff50" />
+                        </g>
+                        <g class="mof-frag mof-frag-g">
+                            <rect x="65" y="220" width="54" height="20" fill="#37d9b0" />
+                            <rect x="229" y="216" width="29" height="19" fill="#e8ff78" />
+                            <rect x="144" y="237" width="18" height="30" fill="#5689ff" />
+                        </g>
+                    </svg>
                 </div>
             </section>
 
@@ -747,7 +816,7 @@
                     saveButton.textContent = 'SIMPAN KOORDINAT';
                 }
             }
-            
+
             window.addEventListener('mousemove', (event) => {
                 const glow = document.getElementById('cursorGlow');
                 glow.style.left = `${event.clientX}px`;
