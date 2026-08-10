@@ -1,20 +1,6 @@
 {{--
     Path: resources/views/pages/home.blade.php
     Rewrite total dari tema mood-bar lama ke tema "orbit" sesuai desain baru dari tim.
-
-    PENTING — perubahan arsitektur dari versi tim:
-    1. Panel pengelola (login + dashboard color/content editor) DIHAPUS TOTAL dari file ini.
-        Itu tadinya login pakai username/password hardcoded di JS (gak aman) + data
-        tersimpan di localStorage browser. Sesuai rencana, dashboard pengelola beneran
-        dibangun terpisah (role baru + layout dashboard sendiri).
-    2. Tombol "MASUK PENGELOLA" sekarang ke route('login') (sistem auth asli), bukan modal.
-    3. embedded-artwork.js (base64 fallback buat canvas) DIHAPUS — gak perlu, karena
-        gambar di-serve dari domain sendiri (asset()), jadi gak ada isu CORS buat canvas.
-    4. Teks UI yang dulu bisa diedit lewat panel admin (questionHint, coordinateEyebrow,
-        dst) sekarang di-hardcode langsung di blade, karena panel edit-nya udah gak ada.
-
-    CSS pendukung tema ini (custom property + keyframes) ada di resources/css/app.css,
-    cari komentar "MAP OF FEELINGS — TEMA ORBIT".
 --}}
 @extends('template.layout')
 
