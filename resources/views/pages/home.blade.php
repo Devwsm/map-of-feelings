@@ -260,12 +260,16 @@
         <footer
             class="flex flex-col gap-2 border-t border-black/10 bg-white/90 px-5 py-6 font-mono text-xs tracking-widest text-black/55 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
             <span>MAP OF FEELINGS &middot; SETIAP PERASAAN PUNYA KOORDINAT</span>
-            <div class="flex flex-col md:flex-row gap-2">
-                <a href="{{ route('login') }}">
-                    <span>PANEL</span>
-                </a>
-                <span>&middot; PRIVACY POLICY &middot;</span>
-                <span>&copy; WAHSUDAH MONDAY 2026 &middot;</span>
+            <div class="flex flex-col md:flex-row">
+                <div class="flex gap-2">
+                    <a href="{{ route('login') }}">
+                        <span>PANEL</span>
+                    </a>
+                    <span>&middot; PRIVACY POLICY &middot;</span>
+                </div>
+                <div class="flex">
+                    <span>&copy; WAHSUDAH MONDAY 2026 &middot;</span>
+                </div>
             </div>
         </footer>
     </div>
