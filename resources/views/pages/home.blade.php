@@ -32,16 +32,18 @@
                 class="mof-screen relative grid min-h-screen place-items-center overflow-hidden px-5 pb-10 pt-28 text-center sm:px-8 sm:pt-36">
                 <div class="mof-hero-glow" aria-hidden="true"></div>
                 <div class="relative z-10 w-full max-w-3xl">
-                    <img src="{{ asset('assets/logo/logo-map-of-feelings.svg') }}" alt="Map of Feelings"
-                        class="mx-auto mb-8 block w-3/4 max-w-xl">
-                    <p class="mx-auto mb-8 max-w-xl text-sm leading-relaxed text-black/60 sm:text-base md:text-lg">
-                        Setiap perasaan punya tempatnya sendiri. Temukan koordinat emosimu dan lagu yang sedang berbicara
-                        paling dekat denganmu.
-                    </p>
-                    <button id="enterMap" type="button"
-                        class="rounded-full border border-black bg-black px-5 py-3.5 font-mono text-xs tracking-widest text-white transition hover:-translate-y-0.5 hover:shadow-lg sm:px-6 sm:py-4">
-                        MULAI PERJALANAN
-                    </button>
+                    <div class="flex flex-col items-center gap-6">
+                        <img src="{{ asset('assets/logo/logo-map-of-feelings.svg') }}" alt="Map of Feelings"
+                            class="mx-auto block w-3/4 max-w-xl">
+                        <p class="mx-auto max-w-xl text-sm leading-relaxed text-black/60 sm:text-base md:text-lg">
+                            Setiap perasaan punya tempatnya sendiri. Temukan koordinat emosimu dan lagu yang sedang
+                            berbicara paling dekat denganmu.
+                        </p>
+                        <button id="enterMap" type="button"
+                            class="rounded-full border border-black bg-black px-5 py-3.5 font-mono text-xs tracking-widest text-white transition hover:-translate-y-0.5 hover:shadow-lg sm:px-6 sm:py-4">
+                            MULAI PERJALANAN
+                        </button>
+                    </div>
                 </div>
 
                 <div class="absolute aspect-square w-3/4 max-w-3xl" aria-hidden="true">
@@ -808,7 +810,81 @@
                 }
 
                 try {
-                    // ... proses canvas & download PNG persis seperti sebelumnya, TIDAK BERUBAH
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 1080;
+                    canvas.height = 1350;
+                    const ctx = canvas.getContext('2d');
+
+                    const colors = getHexMatches(selectedMood.pageGradient);
+                    const bg = ctx.createLinearGradient(0, 0, 1080, 1350);
+                    bg.addColorStop(0, colors[0] || '#ffffff');
+                    bg.addColorStop(.55, colors[1] || getMoodPrimaryHex(selectedMood));
+                    bg.addColorStop(1, colors[colors.length - 1] || getMoodSecondaryHex(selectedMood));
+                    ctx.fillStyle = bg;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    ctx.fillStyle = 'rgba(255,255,255,.92)';
+                    roundedRect(ctx, 70, 70, 940, 1210, 50);
+                    ctx.fill();
+
+                    ctx.textAlign = 'center';
+                    ctx.fillStyle = '#0c0d0f';
+                    ctx.font = '24px monospace';
+                    ctx.fillText('MAP OF FEELINGS', 540, 125);
+
+                    try {
+                        const artwork = await loadImage(selectedMood.artwork);
+                        ctx.save();
+                        roundedRect(ctx, 180, 170, 720, 720, 24);
+                        ctx.clip();
+                        ctx.drawImage(artwork, 180, 170, 720, 720);
+                        ctx.restore();
+                    } catch (error) {
+                        ctx.strokeStyle = `rgba(${hexToRgb(getMoodPrimaryHex(selectedMood))}, .75)`;
+                        ctx.lineWidth = 4;
+                        ctx.beginPath();
+                        ctx.arc(540, 530, 84, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.fillStyle = '#0c0d0f';
+                        ctx.font = '600 42px Arial';
+                        ctx.fillText(selectedMood.feeling, 540, 555);
+                    }
+
+                    ctx.font = '20px monospace';
+                    ctx.fillText(selectedMood.coordinate.toUpperCase(), 540, 940);
+                    ctx.font = '700 60px Arial';
+                    wrapText(ctx, selectedMood.song, 540, 1020, 780, 66);
+                    ctx.font = '25px Arial';
+                    ctx.fillText(`${selectedMood.feeling} \u00b7 ${selectedMood.nuance}`, 540, 1122);
+                    if (selectedAnswer) {
+                        ctx.fillStyle = '#55585e';
+                        ctx.font = '17px Arial';
+                        wrapText(ctx, `\u201c${selectedAnswer}\u201d`, 540, 1152, 760, 22);
+                    }
+
+                    ctx.fillStyle = '#6d6d73';
+                    ctx.font = '20px Arial';
+                    ctx.fillText(visitorName, 540, 1194);
+                    ctx.font = '18px monospace';
+                    ctx.fillText(visitorInstagram, 540, 1224);
+
+                    ctx.fillStyle = '#0c0d0f';
+                    ctx.font = '18px monospace';
+                    ctx.fillText('SETIAP PERASAAN PUNYA KOORDINAT.', 540, 1262);
+
+                    const blob = await canvasToBlob(canvas);
+                    const objectUrl = URL.createObjectURL(blob);
+                    const safeName = visitorName.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') ||
+                        'coordinate';
+                    const link = document.createElement('a');
+                    link.download = `map-of-feelings-${safeName}-${selectedMood.id}.png`;
+                    link.href = objectUrl;
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    setTimeout(() => URL.revokeObjectURL(objectUrl), 1500);
+                    showDownloadFeedback('KOORDINAT BERHASIL DISIMPAN');
                 } catch (error) {
                     console.error(error);
                     showDownloadFeedback('GAGAL MENYIMPAN');
