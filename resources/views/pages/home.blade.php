@@ -30,6 +30,7 @@
             {{-- LANDING --}}
             <section id="landing" data-screen="landing"
                 class="mof-screen relative grid min-h-screen place-items-center overflow-hidden px-5 pb-10 pt-28 text-center sm:px-8 sm:pt-36">
+                <div class="mof-hero-glow" aria-hidden="true"></div>
                 <div class="relative z-10 w-full max-w-3xl">
                     <img src="{{ asset('assets/logo/logo-map-of-feelings.svg') }}" alt="Map of Feelings"
                         class="mx-auto mb-8 block w-3/4 max-w-xl">

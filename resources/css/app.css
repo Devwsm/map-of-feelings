@@ -95,6 +95,33 @@
     );
 }
 
+/* Ambient color wash di belakang hero landing — biar warna orbit yang
+   lagi aktif "keluar" ke background, bukan cuma di ring/fragments doang.
+   Porting dari .hero::before punya tim. */
+.mof-hero-glow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(
+            circle at 50% 48%,
+            rgba(var(--mof-orbit-primary-rgb, 115, 173, 255), 0.52),
+            transparent 36%
+        ),
+        radial-gradient(
+            circle at 25% 25%,
+            rgba(var(--mof-orbit-secondary-rgb, 77, 130, 235), 0.34),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 78% 76%,
+            rgba(var(--mof-orbit-primary-rgb, 115, 173, 255), 0.24),
+            transparent 30%
+        );
+    transition: background 0.8s ease;
+}
+
 /* Screen transition */
 .mof-screen {
     display: none;
