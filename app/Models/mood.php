@@ -57,6 +57,11 @@ class mood extends Model
         return $this->audio_path ? asset($this->audio_path) : '';
     }
 
+    public function submissions()
+    {
+        return $this->hasMany(mood_submissions::class);
+    }
+
     /**
      * Bentuk data persis kayak yang dulu ditulis manual di window.MAP_OF_FEELINGS.
      * Dipanggil dari homeController lewat $moods->map->toJsPayload() lalu di-@json() ke blade.

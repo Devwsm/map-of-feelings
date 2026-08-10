@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('/')->group(function () {
     Route::get('/', [homeController::class, 'home'])->name('home');
+    Route::post('/coordinate', [homeController::class, 'storeCoordinate'])->name('coordinate.store');
 });
 
 Route::prefix('/')->group(function () {
@@ -41,6 +42,7 @@ Route::prefix('/dashboard')->middleware('auth')->group(function () {
     // Cuma panel
     Route::middleware('role:panel,admin')->group(function () {
         Route::get('/panel', [homeController::class, 'panel'])->name('dashboard.panel');
+        Route::get('/panel/submissions', [homeController::class, 'submissions'])->name('dashboard.panel.submissions');
         Route::get('/panel/{mood}/edit', [homeController::class, 'editPanel'])->name('dashboard.panel.edit');
         Route::put('/panel/{mood}', [homeController::class, 'updatePanel'])->name('dashboard.panel.update');
     });

@@ -70,8 +70,10 @@
                 @if (auth()->user()->role === 'panel' || auth()->user()->role === 'admin')
                     <a href="{{ route('dashboard.panel') }}"
                         class="py-4 border-b-2 {{ $active === 'panel' ? 'border-white text-white' : 'border-transparent text-white/40 hover:text-white/70' }} transition-colors whitespace-nowrap">Panel</a>
+                    <a href="{{ route('dashboard.panel.submissions') }}"
+                        class="py-4 border-b-2 {{ $active === 'panel-submissions' ? 'border-white text-white' : 'border-transparent text-white/40 hover:text-white/70' }} transition-colors whitespace-nowrap">Data</a>
                 @endif
-
+                
                 @if (auth()->user()->role === 'admin')
                     <a href="#"
                         class="py-4 border-b-2 border-transparent text-white/40 hover:text-white/70 transition-colors whitespace-nowrap">Export/Import</a>
