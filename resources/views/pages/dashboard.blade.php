@@ -42,9 +42,46 @@
         @endforeach
     </div>
 
-    {{-- EMPTY STATE --}}
-    <div class="rounded-3xl border border-dashed border-white/15 p-10 text-center">
-        <p class="font-bold mb-1">Belum ada aktivitas (belum sinkron data)</p>
-        <p class="text-sm text-white/50">RSVP dan check-in tamu bakal muncul di sini begitu mulai masuk.</p>
-    </div>
+    {{-- RECENT ACTIVITY --}}
+    <p class="text-xs font-bold uppercase tracking-widest text-white/40 mb-3">Aktivitas Terbaru</p>
+
+    @if ($recentActivity->isEmpty())
+        <div class="rounded-3xl border border-dashed border-white/15 p-10 text-center">
+            <p class="font-bold mb-1">Belum ada aktivitas</p>
+            <p class="text-sm text-white/50">RSVP dan check-in tamu bakal muncul di sini begitu mulai masuk.</p>
+        </div>
+    @else
+        <div class="rounded-3xl bg-neutral-900 border border-white/10 divide-y divide-white/5">
+            @foreach ($recentActivity as $guest)
+                <div class="flex items-center justify-between gap-4 px-6 py-4">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <span
+                            class="w-2 h-2 rounded-full shrink-0 {{ \App\Models\pressconGuest::categoryColor($guest->category) }}"></span>
+                        <div class="min-w-0">
+                            <p class="font-bold truncate">{{ $guest->submitted_name ?: $guest->name }}</p>
+                            <p class="text-xs text-white/40">{{ $guest->category }}</p>
+                        </div>
+                    </div>
+
+                    <div class="text-right shrink-0">
+                        @if ($guest->checked_in)
+                            <p class="text-sm font-bold text-emerald-400">Checked in</p>
+                            <p class="text-xs text-white/40">
+                                oleh {{ $guest->checkedInBy->name ?? '-' }}
+                                @if ($guest->arrival_time)
+                                    &middot; {{ $guest->arrival_time->diffForHumans() }}
+                                @endif
+                            </p>
+                        @elseif ($guest->rsvp_status === 'hadir')
+                            <p class="text-sm font-bold text-sky-400">RSVP: Hadir</p>
+                            <p class="text-xs text-white/40">{{ $guest->updated_at->diffForHumans() }}</p>
+                        @elseif ($guest->rsvp_status === 'tidak_hadir')
+                            <p class="text-sm font-bold text-white/50">RSVP: Tidak hadir</p>
+                            <p class="text-xs text-white/40">{{ $guest->updated_at->diffForHumans() }}</p>
+                        @endif
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @endif
 @endsection
