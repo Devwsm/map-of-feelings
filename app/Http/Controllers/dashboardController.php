@@ -23,10 +23,23 @@ class dashboardController extends Controller
         $categoryCounts = pressconGuest::selectRaw('category, count(*) as total')
             ->groupBy('category')
             ->pluck('total', 'category');
-            
+
+        // Aktivitas terbaru: tamu yang udah RSVP (bukan pending) atau udah check-in,
+        // diurut dari yang paling baru diupdate. Ini yang isi "Recent Activity"
+        // di dashboard home, gantiin empty state statis yang lama.
+        $recentActivity = pressconGuest::with('checkedInBy')
+            ->where(function ($query) {
+                $query->where('checked_in', true)
+                    ->orWhere('rsvp_status', '!=', 'pending');
+            })
+            ->orderByDesc('updated_at')
+            ->limit(8)
+            ->get();
+
         return view('pages.dashboard', [
             'stats' => $stats,
             'categoryCounts' => $categoryCounts,
+            'recentActivity' => $recentActivity,
             'active' => 'home',
         ]);
     }
