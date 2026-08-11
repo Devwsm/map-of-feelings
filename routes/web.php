@@ -3,6 +3,7 @@
 use App\Http\Controllers\checkinController;
 use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\homeController;
+use App\Http\Controllers\importExportController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\pressconController;
 use App\Http\Controllers\pressconGuestController;
@@ -37,6 +38,13 @@ Route::prefix('/dashboard')->middleware('auth')->group(function () {
         Route::put('/tamu/{guest}', [pressconGuestController::class, 'update'])->name('dashboard.tamu.update');
         Route::delete('/tamu/{guest}', [pressconGuestController::class, 'destroy'])->name('dashboard.tamu.destroy');
         Route::post('/dashboard/tamu/{guest}/generate-qr', [pressconGuestController::class, 'generateQr'])->name('dashboard.tamu.generate-qr');
+
+        Route::get('/export', [importExportController::class, 'index'])->name('dashboard.export');
+        Route::get('/export/database', [importExportController::class, 'exportDatabase'])->name('dashboard.export.database');
+        Route::get('/export/mood-submissions/excel', [importExportController::class, 'exportMoodSubmissionsExcel'])->name('dashboard.export.mood-submissions.excel');
+        Route::get('/export/mood-submissions/pdf', [importExportController::class, 'exportMoodSubmissionsPdf'])->name('dashboard.export.mood-submissions.pdf');
+        Route::get('/export/guest-checkin/excel', [importExportController::class, 'exportGuestCheckinExcel'])->name('dashboard.export.guest-checkin.excel');
+        Route::get('/export/guest-checkin/pdf', [importExportController::class, 'exportGuestCheckinPdf'])->name('dashboard.export.guest-checkin.pdf');
     });
 
     // panel & admin berdua boleh
