@@ -56,7 +56,7 @@
         class="fixed inset-0 bg-black/60 z-40 transition-opacity duration-300"></div>
 
     <aside id="navDrawer" style="display:none; transform: translateX(100%);"
-        class="fixed top-0 right-0 h-full w-72 max-w-[85vw] bg-neutral-950 border-l border-white/10 z-50 flex flex-col transition-transform duration-300 ease-out">
+        class="fixed top-0 right-0 h-full w-72 max-w-[50vw] bg-neutral-950 border-l border-white/10 z-50 flex flex-col transition-transform duration-300 ease-out">
         <div class="flex items-center justify-between px-5 py-5 border-b border-white/10">
             <p class="text-xs font-bold uppercase tracking-widest text-white/40">Menu</p>
             <button type="button" id="navDrawerClose" aria-label="Tutup menu navigasi"
@@ -113,7 +113,7 @@
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit"
-                    class="w-full rounded-full border border-white/20 px-4 py-2.5 text-xs font-bold uppercase tracking-widest hover:bg-white/10 transition-colors">Keluar</button>
+                    class="w-full rounded-full bg-red-500 hover:bg-red-700 text-white px-4 py-2.5 text-xs font-bold uppercase tracking-widest transition-colors">Keluar</button>
             </form>
         </div>
     </aside>
