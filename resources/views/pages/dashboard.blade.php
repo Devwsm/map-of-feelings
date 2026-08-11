@@ -78,6 +78,12 @@
                         @elseif ($guest->rsvp_status === 'tidak_hadir')
                             <p class="text-sm font-bold text-white/50">RSVP: Tidak hadir</p>
                             <p class="text-xs text-white/40">{{ $guest->updated_at->diffForHumans() }}</p>
+                            @if ($guest->note)
+                                <p class="mt-1 max-w-xs text-xs italic text-white/40 text-left sm:text-right"
+                                    title="{{ $guest->note }}">
+                                    &ldquo;{{ Str::limit($guest->note, 60) }}&rdquo;
+                                </p>
+                            @endif
                         @endif
                     </div>
                 </div>
