@@ -78,6 +78,7 @@
                 const colors = {
                     success: 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300',
                     already: 'bg-amber-500/10 border border-amber-500/30 text-amber-300',
+                    declined: 'bg-rose-500/10 border border-rose-500/30 text-rose-300',
                     error: 'bg-rose-500/10 border border-rose-500/30 text-rose-300',
                 };
                 feedback.className = 'mb-6 rounded-2xl px-4 py-3 text-sm font-semibold ' + colors[status];
@@ -93,9 +94,10 @@
                 recentList.prepend(row);
             }
 
-            async function submitCheckin(slug) {
+            async function submitCheckin(slug, force = false) {
                 try {
-                    const response = await fetch(`/dashboard/checkin/${encodeURIComponent(slug)}`, {
+                    const url = `/dashboard/checkin/${encodeURIComponent(slug)}` + (force ? '?force=1' : '');
+                    const response = await fetch(url, {
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -109,6 +111,17 @@
                     }
 
                     const data = await response.json();
+
+                    // Tamu sudah declare tidak hadir -> minta staff konfirmasi ulang
+                    // sebelum benar-benar diproses check-in.
+                    if (data.status === 'declined') {
+                        showFeedback('declined', data.message);
+                        if (confirm(`${data.name} sudah konfirmasi TIDAK HADIR. Tetap check-in tamu ini?`)) {
+                            await submitCheckin(slug, true);
+                        }
+                        return;
+                    }
+
                     showFeedback(data.status, data.message);
 
                     if (data.status === 'success') {

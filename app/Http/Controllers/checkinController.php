@@ -64,9 +64,9 @@ class checkinController extends Controller
      * POST /dashboard/checkin/{guest}
      * Row-locked, biar 2 staff yang nge-hit tamu yang sama nyaris bersamaan gak dobel proses.
      */
-    public function store(pressconGuest $guest): JsonResponse
+    public function store(Request $request, pressconGuest $guest): JsonResponse
     {
-        return DB::transaction(function () use ($guest) {
+        return DB::transaction(function () use ($request, $guest) {
             $locked = pressconGuest::where('id_guest', $guest->id_guest)
                 ->lockForUpdate()
                 ->first();
@@ -80,6 +80,16 @@ class checkinController extends Controller
                         optional($locked->arrival_time)->format('H:i'),
                         $locked->checkedInBy ? " oleh {$locked->checkedInBy->name}" : ''
                     ),
+                ]);
+            }
+
+            // Tamu yang sudah declare "Tidak Hadir" gak langsung diproses check-in-nya —
+            // staff harus konfirmasi ulang dulu (kadang tamu berubah pikiran & tetap datang).
+            if ($locked->rsvp_status === 'tidak_hadir' && ! $request->boolean('force')) {
+                return response()->json([
+                    'status' => 'declined',
+                    'message' => ($locked->submitted_name ?: $locked->name) . ' sudah konfirmasi TIDAK HADIR. Tetap check-in?',
+                    'name' => $locked->submitted_name ?: $locked->name,
                 ]);
             }
 
