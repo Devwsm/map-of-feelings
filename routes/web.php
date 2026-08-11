@@ -41,10 +41,15 @@ Route::prefix('/dashboard')->middleware('auth')->group(function () {
 
         Route::get('/export', [importExportController::class, 'index'])->name('dashboard.export');
         Route::get('/export/database', [importExportController::class, 'exportDatabase'])->name('dashboard.export.database');
+        Route::get('/export/database/preview', [importExportController::class, 'previewDatabase'])->name('dashboard.export.database.preview');
+
         Route::get('/export/mood-submissions/excel', [importExportController::class, 'exportMoodSubmissionsExcel'])->name('dashboard.export.mood-submissions.excel');
         Route::get('/export/mood-submissions/pdf', [importExportController::class, 'exportMoodSubmissionsPdf'])->name('dashboard.export.mood-submissions.pdf');
+        Route::get('/export/mood-submissions/preview', [importExportController::class, 'previewMoodSubmissions'])->name('dashboard.export.mood-submissions.preview');
+
         Route::get('/export/guest-checkin/excel', [importExportController::class, 'exportGuestCheckinExcel'])->name('dashboard.export.guest-checkin.excel');
         Route::get('/export/guest-checkin/pdf', [importExportController::class, 'exportGuestCheckinPdf'])->name('dashboard.export.guest-checkin.pdf');
+        Route::get('/export/guest-checkin/preview', [importExportController::class, 'previewGuestCheckin'])->name('dashboard.export.guest-checkin.preview');
     });
 
     // panel & admin berdua boleh
