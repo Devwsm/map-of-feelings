@@ -9,12 +9,6 @@
     <p class="text-xs font-bold uppercase tracking-widest text-white/40 mb-2">Kelola Konten</p>
     <h1 class="text-3xl font-bold mb-8">Panel Map of Feelings</h1>
 
-    @if (session('status'))
-        <div class="mb-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
-            {{ session('status') }}
-        </div>
-    @endif
-
     <div class="space-y-3">
         @foreach ($moods as $mood)
             <div class="flex items-center gap-4 rounded-3xl bg-neutral-900 border border-white/10 p-5">

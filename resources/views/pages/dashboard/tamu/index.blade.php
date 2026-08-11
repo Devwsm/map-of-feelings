@@ -16,12 +16,6 @@
             Tambah Tamu</a>
     </div>
 
-    @if (session('status'))
-        <div class="mb-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
-            {{ session('status') }}
-        </div>
-    @endif
-
     {{-- SEARCH + FILTER --}}
     <form method="GET" class="flex flex-col sm:flex-row gap-3 mb-6">
         <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama tamu..."
@@ -96,7 +90,7 @@
                     <a href="{{ route('dashboard.tamu.edit', $guest->slug) }}"
                         class="rounded-full border border-white/20 px-4 py-2 text-xs font-bold hover:bg-white/10 transition-colors">Edit</a>
                     <form action="{{ route('dashboard.tamu.destroy', $guest->slug) }}" method="POST"
-                        onsubmit="return confirm('Hapus {{ $guest->name }}? Aksi ini gak bisa dibatalin.');">
+                        class="js-confirm-delete" data-guest-name="{{ $guest->name }}">
                         @csrf
                         @method('DELETE')
                         <button type="submit"
@@ -118,4 +112,25 @@
             {{ $guests->links() }}
         </div>
     @endif
+
+    <script>
+        document.addEventListener('submit', function(event) {
+            const form = event.target.closest('.js-confirm-delete');
+            if (!form) return;
+
+            event.preventDefault();
+            Swal.fire({
+                icon: 'warning',
+                title: 'Hapus tamu ini?',
+                text: `${form.dataset.guestName} akan dihapus permanen. Aksi ini gak bisa dibatalin.`,
+                showCancelButton: true,
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#e11d48',
+                cancelButtonColor: '#3f3f46',
+            }).then((result) => {
+                if (result.isConfirmed) form.submit();
+            });
+        });
+    </script>
 @endsection

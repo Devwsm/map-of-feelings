@@ -116,7 +116,17 @@
                     // sebelum benar-benar diproses check-in.
                     if (data.status === 'declined') {
                         showFeedback('declined', data.message);
-                        if (confirm(`${data.name} sudah konfirmasi TIDAK HADIR. Tetap check-in tamu ini?`)) {
+                        const confirmResult = await Swal.fire({
+                            icon: 'warning',
+                            title: 'Tamu ini sudah RSVP "Tidak Hadir"',
+                            text: `${data.name} sudah konfirmasi tidak hadir. Tetap check-in tamu ini?`,
+                            showCancelButton: true,
+                            confirmButtonText: 'Ya, tetap check-in',
+                            cancelButtonText: 'Batal',
+                            confirmButtonColor: '#e11d48',
+                            cancelButtonColor: '#3f3f46',
+                        });
+                        if (confirmResult.isConfirmed) {
                             await submitCheckin(slug, true);
                         }
                         return;

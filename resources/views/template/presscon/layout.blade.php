@@ -27,6 +27,7 @@
         @include('pages.presscon.partials.header')
         @yield('content')
     </div>
+    @include('errors.alert')
 </body>
 
 </html>

@@ -13,4 +13,5 @@
 
 <body class="flex flex-col w-full justify-center items-center @yield('container-class')">
     @yield('content')
+    @include('errors.alert')
 </body>
