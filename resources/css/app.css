@@ -645,16 +645,10 @@
     transform: translateX(-50%);
     white-space: nowrap;
     font-family: monospace;
-    font-size: clamp(8px, 1vw, 10px);
-    letter-spacing: 0.06em;
+    font-size: clamp(5.5px, 1.8vw, 10px);
+    letter-spacing: 0.01em;
     color: rgba(12, 13, 15, 0.54);
     pointer-events: none;
-}
-
-@media (max-width: 480px) {
-    .mof-node-label {
-        display: none;
-    }
 }
 
 .mof-map-caption {
@@ -906,7 +900,7 @@
 .mof-artwork-frame img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
 }
 

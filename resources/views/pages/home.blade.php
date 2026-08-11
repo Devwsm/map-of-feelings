@@ -29,24 +29,12 @@
 
             {{-- LANDING --}}
             <section id="landing" data-screen="landing"
-                class="mof-screen relative grid min-h-screen place-items-center overflow-hidden px-5 pb-10 pt-28 text-center sm:px-8 sm:pt-36">
+                class="mof-screen relative min-h-screen overflow-hidden px-5 pb-10 pt-28 text-center sm:px-8 sm:pt-36">
                 <div class="mof-hero-glow" aria-hidden="true"></div>
-                <div class="relative z-10 w-full max-w-3xl">
-                    <div class="flex flex-col items-center gap-6">
-                        <img src="{{ asset('assets/logo/logo-map-of-feelings.svg') }}" alt="Map of Feelings"
-                            class="mx-auto block w-3/4 max-w-xl">
-                        <p class="mx-auto max-w-xl text-sm leading-relaxed text-black/60 sm:text-base md:text-lg">
-                            Setiap perasaan punya tempatnya sendiri. Temukan koordinat emosimu dan lagu yang sedang
-                            berbicara paling dekat denganmu.
-                        </p>
-                        <button id="enterMap" type="button"
-                            class="rounded-full border border-black bg-black px-5 py-3.5 font-mono text-xs tracking-widest text-white transition hover:-translate-y-0.5 hover:shadow-lg sm:px-6 sm:py-4">
-                            MULAI PERJALANAN
-                        </button>
-                    </div>
-                </div>
 
-                <div class="absolute aspect-square w-3/4 max-w-3xl" aria-hidden="true">
+                {{-- Orbit + fragments: absolute, center sendiri, independen dari flow konten --}}
+                <div class="absolute left-1/2 top-1/2 aspect-square w-3/4 max-w-3xl -translate-x-1/2 -translate-y-1/2"
+                    aria-hidden="true">
                     <div class="mof-orbit-ring"></div>
                     <div class="mof-orbit-ring mof-orbit-b"></div>
                     <div class="mof-orbit-ring mof-orbit-c"></div>
@@ -120,6 +108,23 @@
                             <rect x="144" y="237" width="18" height="30" fill="#5689ff" />
                         </g>
                     </svg>
+                </div>
+
+                {{-- Konten: logo nempel atas, teks+button nempel bawah, tengah dibiarkan kosong biar orbit kelihatan --}}
+                <div class="relative z-10 flex w-full flex-col items-center justify-around min-h-[75vh] sm:min-h-[80vh]">
+                    <img src="{{ asset('assets/logo/logo-map-of-feelings.svg') }}" alt="Map of Feelings"
+                        class="mx-auto block w-3/4 max-w-xl">
+
+                    <div class="mx-auto flex w-full max-w-3xl flex-col items-center gap-6">
+                        <p class="mx-auto max-w-xl text-sm leading-relaxed text-black/60 sm:text-base md:text-lg">
+                            Setiap perasaan punya tempatnya sendiri. Temukan koordinat emosimu dan lagu yang sedang
+                            berbicara paling dekat denganmu.
+                        </p>
+                        <button id="enterMap" type="button"
+                            class="rounded-full border border-black bg-black px-5 py-3.5 font-mono text-xs tracking-widest text-white transition hover:-translate-y-0.5 hover:shadow-lg sm:px-6 sm:py-4">
+                            MULAI PERJALANAN
+                        </button>
+                    </div>
                 </div>
             </section>
 
