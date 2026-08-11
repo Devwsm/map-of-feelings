@@ -321,7 +321,7 @@
             <span>MAP OF FEELINGS &middot; SETIAP PERASAAN PUNYA KOORDINAT</span>
             <div class="flex flex-col md:flex-row">
                 <div class="flex gap-2">
-                    <a href="{{ route('login') }}">
+                    <a href="{{ route('dashboard') }}">
                         <span>PANEL</span>
                     </a>
                     <span>&middot; PRIVACY POLICY &middot;</span>
