@@ -18,6 +18,12 @@ class mood_submissions extends Model
         'created_at',
     ];
 
+    // $timestamps = false bikin Eloquent gak auto-cast created_at ke Carbon,
+    // jadi harus dipaksa manual di sini biar ->format() dkk gak silently null.
+    protected $casts = [
+        'created_at' => 'datetime',
+    ];
+
     public function mood()
     {
         return $this->belongsTo(mood::class);
