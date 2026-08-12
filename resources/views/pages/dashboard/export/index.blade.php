@@ -8,8 +8,16 @@
 @section('body')
     <div class="mb-8">
         <p class="text-xs font-bold uppercase tracking-widest text-white/40 mb-2">Kelola Data</p>
-        <h1 class="text-3xl font-bold">Export / Import</h1>
+        <h1 class="text-3xl font-bold">Export</h1>
     </div>
+
+    {{-- TOGGLE EXPORT/IMPORT --}}
+    <div class="flex gap-2 mb-6">
+        <span class="rounded-full bg-white text-black px-4 py-2 text-xs font-bold uppercase tracking-widest">Export</span>
+        <a href="{{ route('dashboard.import') }}"
+            class="rounded-full border border-white/20 px-4 py-2 text-xs font-bold uppercase tracking-widest text-white/60 hover:bg-white/10 transition-colors">Import</a>
+    </div>
+
 
     <div class="space-y-4">
         {{-- FULL DB BACKUP --}}

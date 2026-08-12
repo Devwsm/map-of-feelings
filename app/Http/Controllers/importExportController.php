@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Exports\GuestCheckinExport;
+use App\Exports\GuestImportTemplateExport;
 use App\Exports\MoodSubmissionsExport;
+use App\Imports\GuestImport;
 use App\Models\mood_submissions;
 use App\Models\pressconGuest;
 use Illuminate\Http\Response;
@@ -11,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use GuzzleHttp\Psr7\Request;
+use Illuminate\Http\RedirectResponse;
 
 /**
  * Route: prefix /dashboard/export & /dashboard/import (role:admin)
@@ -134,6 +138,32 @@ class importExportController extends Controller
             ->get();
 
         return view('exports.pdf.guest-checkin', ['guests' => $guests]);
+    }
+
+    public function importIndex(): View
+    {
+        return view('pages.dashboard.import.index', [
+            'active' => 'export-import',
+            'totalGuests' => pressconGuest::count(),
+        ]);
+    }
+
+    public function downloadGuestTemplate()
+    {
+        return Excel::download(new GuestImportTemplateExport, 'template_import_tamu.xlsx');
+    }
+
+    public function importGuests(\Illuminate\Http\Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xlsx,xls,csv'],
+        ]);
+        $import = new GuestImport();
+        Excel::import($import, $request->file('file'));
+        return redirect()
+            ->route('dashboard.import')
+            ->with('status', "{$import->imported} tamu berhasil diimport.")
+            ->with('importErrors', $import->errors);
     }
 
     /**

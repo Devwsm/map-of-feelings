@@ -50,6 +50,10 @@ Route::prefix('/dashboard')->middleware('auth')->group(function () {
         Route::get('/export/guest-checkin/excel', [importExportController::class, 'exportGuestCheckinExcel'])->name('dashboard.export.guest-checkin.excel');
         Route::get('/export/guest-checkin/pdf', [importExportController::class, 'exportGuestCheckinPdf'])->name('dashboard.export.guest-checkin.pdf');
         Route::get('/export/guest-checkin/preview', [importExportController::class, 'previewGuestCheckin'])->name('dashboard.export.guest-checkin.preview');
+
+        Route::get('/import', [importExportController::class, 'importIndex'])->name('dashboard.import');
+        Route::get('/import/tamu/template', [importExportController::class, 'downloadGuestTemplate'])->name('dashboard.import.tamu.template');
+        Route::post('/import/tamu', [importExportController::class, 'importGuests'])->name('dashboard.import.tamu');
     });
 
     // panel & admin berdua boleh
