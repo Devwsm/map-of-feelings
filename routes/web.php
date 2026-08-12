@@ -53,7 +53,10 @@ Route::prefix('/dashboard')->middleware('auth')->group(function () {
 
         Route::get('/import', [importExportController::class, 'importIndex'])->name('dashboard.import');
         Route::get('/import/tamu/template', [importExportController::class, 'downloadGuestTemplate'])->name('dashboard.import.tamu.template');
-        Route::post('/import/tamu', [importExportController::class, 'importGuests'])->name('dashboard.import.tamu');
+        Route::post('/import/tamu', [importExportController::class, 'importGuestsPreview'])->name('dashboard.import.tamu.preview');
+        Route::post('/import/tamu/confirm', [importExportController::class, 'importGuestsConfirm'])->name('dashboard.import.tamu.confirm');
+        Route::post('/import/tamu/cancel', [importExportController::class, 'importGuestsCancel'])->name('dashboard.import.tamu.cancel');
+        Route::get('/import/logs', [importExportController::class, 'importLogs'])->name('dashboard.import.logs');
     });
 
     // panel & admin berdua boleh

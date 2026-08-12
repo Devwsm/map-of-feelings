@@ -16,6 +16,9 @@
         <a href="{{ route('dashboard.export') }}"
             class="rounded-full border border-white/20 px-4 py-2 text-xs font-bold uppercase tracking-widest text-white/60 hover:bg-white/10 transition-colors">Export</a>
         <span class="rounded-full bg-white text-black px-4 py-2 text-xs font-bold uppercase tracking-widest">Import</span>
+        <a href="{{ route('dashboard.import.logs') }}"
+            class="rounded-full border border-white/20 px-4 py-2 text-xs font-bold uppercase tracking-widest text-white/60 hover:bg-white/10 transition-colors ml-auto">Riwayat
+            Import</a>
     </div>
 
     @if (session('status'))
@@ -59,17 +62,20 @@
             </a>
         </div>
 
-        <form action="{{ route('dashboard.import.tamu') }}" method="POST" enctype="multipart/form-data"
-            onsubmit="return confirm('Import file ini sekarang? Data yang valid bakal langsung ditambahkan.');"
+        <form action="{{ route('dashboard.import.tamu.preview') }}" method="POST" enctype="multipart/form-data"
             class="flex flex-col sm:flex-row gap-3">
             @csrf
             <input type="file" name="file" accept=".xlsx,.xls,.csv" required
                 class="flex-1 rounded-2xl border border-white/15 bg-neutral-950 px-4 py-3 text-sm file:mr-4 file:rounded-full file:border-0 file:bg-white file:text-black file:px-4 file:py-2 file:text-xs file:font-bold file:uppercase file:tracking-widest" />
             <button type="submit"
                 class="shrink-0 rounded-full bg-white text-black font-bold px-5 py-3 text-sm hover:bg-neutral-200 transition-colors">
-                Upload & Import
+                Lihat Preview
             </button>
         </form>
+        <p class="mt-3 text-xs text-white/40">
+            File akan dicek dulu, belum langsung masuk database — kamu bisa lihat mana yang valid dan mana yang
+            bakal dilewati sebelum konfirmasi.
+        </p>
 
         {{-- PETUNJUK KOLOM --}}
         <div class="mt-6 rounded-2xl border border-white/10 bg-neutral-950 p-5">

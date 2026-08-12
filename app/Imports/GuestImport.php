@@ -16,6 +16,13 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
  * Baris yang gagal validasi (nama kosong / kategori gak dikenali) dilewati,
  * bukan bikin seluruh import gagal — errornya dikumpulin di $errors buat
  * ditampilin ke admin setelah proses selesai.
+ *
+ * Dua mode pemakaian (lihat importExportController@importGuestsPreview /
+ * importGuestsConfirm):
+ *  - commit=false (preview) : cuma validasi, hasil ditampung di $validRows,
+ *                             TIDAK ada yang disimpan ke database.
+ *  - commit=true  (default) : validasi + langsung pressconGuest::create()
+ *                             untuk tiap baris yang lolos, kayak versi lama.
  */
 class GuestImport implements ToCollection, WithHeadingRow
 {
@@ -35,9 +42,24 @@ class GuestImport implements ToCollection, WithHeadingRow
 
     public int $imported = 0;
 
+    public int $totalRows = 0;
+
+    /**
+     * Baris yang lolos validasi, dalam bentuk array siap dipakai
+     * pressconGuest::create() (belum termasuk slug — slug baru digenerate
+     * pas commit, biar preview gak "memesan" slug yang mungkin gak jadi dipakai).
+     *
+     * @var array<int, array<string, mixed>>
+     */
+    public array $validRows = [];
+
+    public function __construct(private bool $commit = true) {}
+
     public function collection(Collection $rows): void
     {
         foreach ($rows as $index => $row) {
+            $this->totalRows++;
+
             // +1 buat baris header, +1 lagi biar penomoran sama kayak yang keliatan di Excel
             $rowNumber = $index + 2;
 
@@ -63,15 +85,22 @@ class GuestImport implements ToCollection, WithHeadingRow
             $requiresNameRaw = Str::lower(trim((string) ($row['wajib_isi_nama'] ?? '')));
             $requiresName = in_array($requiresNameRaw, ['ya', 'yes', '1', 'true'], true);
 
-            pressconGuest::create([
+            $data = [
                 'name' => $name,
                 'category' => $category,
                 'group' => trim((string) ($row['grup'] ?? '')) ?: null,
                 'max_pax' => $maxPax,
                 'requires_name' => $requiresName,
                 'details' => trim((string) ($row['catatan'] ?? '')) ?: null,
-                'slug' => pressconGuest::generateSlug($name, $category),
-            ]);
+            ];
+
+            $this->validRows[] = $data;
+
+            if ($this->commit) {
+                pressconGuest::create($data + [
+                    'slug' => pressconGuest::generateSlug($name, $category),
+                ]);
+            }
 
             $this->imported++;
         }

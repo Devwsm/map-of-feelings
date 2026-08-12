@@ -6,10 +6,13 @@ use App\Exports\GuestCheckinExport;
 use App\Exports\GuestImportTemplateExport;
 use App\Exports\MoodSubmissionsExport;
 use App\Imports\GuestImport;
+use App\Models\GuestImportLog;
 use App\Models\mood_submissions;
 use App\Models\pressconGuest;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -154,17 +157,107 @@ class importExportController extends Controller
         return Excel::download(new GuestImportTemplateExport, 'template_import_tamu.xlsx');
     }
 
-    public function importGuests(\Illuminate\Http\Request $request): \Illuminate\Http\RedirectResponse
+    /**
+     * POST /dashboard/import/tamu
+     * Tahap 1: upload file, validasi & parse SEMUA baris (tanpa nyimpen ke DB).
+     * Hasil parse (baris valid + baris error) ditampilkan di halaman preview.
+     * File asli disimpan sementara di disk lokal, path-nya ditaruh di session,
+     * dipakai lagi pas admin klik "Konfirmasi Import".
+     */
+    public function importGuestsPreview(\Illuminate\Http\Request $request): \Illuminate\Http\RedirectResponse|View
     {
         $request->validate([
-            'file' => ['required', 'file', 'mimes:xlsx,xls,csv'],
+            'file' => ['required', 'file', 'mimes:xlsx,xls,csv', 'max:5120'], // maks 5MB
         ]);
-        $import = new GuestImport();
-        Excel::import($import, $request->file('file'));
+
+        $uploaded = $request->file('file');
+        $tempPath = $uploaded->storeAs('imports/tmp', Str::uuid() . '.' . $uploaded->getClientOriginalExtension());
+
+        $import = new GuestImport(commit: false);
+        Excel::import($import, $tempPath, 'local');
+
+        session([
+            'guest_import.temp_path' => $tempPath,
+            'guest_import.original_name' => $uploaded->getClientOriginalName(),
+        ]);
+
+        return view('pages.dashboard.import.preview', [
+            'active' => 'export-import',
+            'originalName' => $uploaded->getClientOriginalName(),
+            'validRows' => $import->validRows,
+            'rowErrors' => $import->errors,
+            'totalRows' => $import->totalRows,
+        ]);
+    }
+
+    /**
+     * POST /dashboard/import/tamu/confirm
+     * Tahap 2: baca ulang file sementara dari session, kali ini commit=true
+     * jadi beneran nyimpen ke DB, terus dicatat ke guest_import_logs.
+     */
+    public function importGuestsConfirm(\Illuminate\Http\Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $tempPath = session('guest_import.temp_path');
+        $originalName = session('guest_import.original_name');
+
+        if (!$tempPath || !Storage::disk('local')->exists($tempPath)) {
+            return redirect()
+                ->route('dashboard.import')
+                ->with('status', 'Sesi import sudah kadaluarsa, silakan upload ulang file-nya.');
+        }
+
+        $import = new GuestImport(commit: true);
+        Excel::import($import, $tempPath, 'local');
+
+        GuestImportLog::create([
+            'user_id' => $request->user()?->id,
+            'original_filename' => $originalName,
+            'total_rows' => $import->totalRows,
+            'imported_count' => $import->imported,
+            'skipped_count' => count($import->errors),
+            'errors' => $import->errors,
+        ]);
+
+        Storage::disk('local')->delete($tempPath);
+        $request->session()->forget(['guest_import.temp_path', 'guest_import.original_name']);
+
         return redirect()
             ->route('dashboard.import')
             ->with('status', "{$import->imported} tamu berhasil diimport.")
             ->with('importErrors', $import->errors);
+    }
+
+    /**
+     * POST /dashboard/import/tamu/cancel
+     * Batalin preview: hapus file sementara, gak ada apapun yang masuk DB
+     * ataupun tercatat di log (karena memang belum pernah commit).
+     */
+    public function importGuestsCancel(\Illuminate\Http\Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $tempPath = session('guest_import.temp_path');
+        if ($tempPath) {
+            Storage::disk('local')->delete($tempPath);
+        }
+        $request->session()->forget(['guest_import.temp_path', 'guest_import.original_name']);
+
+        return redirect()
+            ->route('dashboard.import')
+            ->with('status', 'Import dibatalkan, gak ada data yang disimpan.');
+    }
+
+    /**
+     * GET /dashboard/import/logs
+     * Riwayat semua import yang benar-benar dieksekusi (bukan preview),
+     * terbaru duluan. Dipakai buat audit kalau banyak admin/staff yang import.
+     */
+    public function importLogs(): View
+    {
+        $logs = GuestImportLog::with('user')->latest()->paginate(20);
+
+        return view('pages.dashboard.import.logs', [
+            'active' => 'export-import',
+            'logs' => $logs,
+        ]);
     }
 
     /**
