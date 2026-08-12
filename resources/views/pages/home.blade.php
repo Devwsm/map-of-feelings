@@ -448,6 +448,22 @@
                 orbitInterval = setInterval(applyOrbitColor, 2200);
             }
 
+            // Section #landing di-`display:none` pas pindah screen, dan animasi
+            // CSS .mof-frag-* (infinite loop 7.2s) gak restart dari 0% pas
+            // section-nya ditampilin lagi — dia nerusin dari titik acak di
+            // tengah siklus, kadang keliatan numpuk kayak "bekas" hasil
+            // sebelumnya. Paksa restart tiap balik ke landing lewat reset().
+            function restartFragmentAnimations() {
+                const fragmentsSvg = document.getElementById('mofFragments');
+                if (!fragmentsSvg) return;
+                fragmentsSvg.querySelectorAll('.mof-frag, .mof-fragment-glow').forEach((el) => {
+                    el.style.animation = 'none';
+                    void el.getBBox(); // paksa reflow di SVG biar browser "lupa" animation state lama
+                    el.style.animation = '';
+                });
+            }
+
+
             function setScreen(name) {
                 root.classList.toggle('journey-landing', name === 'landing');
                 Object.entries(screens).forEach(([key, screen]) => {
@@ -618,33 +634,47 @@
             }
 
             let audioPlayToken = 0; // penanda sesi audio aktif
+            let resultAudioPlayPromise = null; // promise play() yang lagi pending, biar stop nunggu settle dulu
+
             function stopResultAudio() {
                 audioPlayToken += 1; // batalkan fade/play sesi sebelumnya
                 if (!resultAudio) return;
-                resultAudio.pause();
-                resultAudio.currentTime = 0;
-                resultAudio.removeAttribute('src');
-                resultAudio.load();
+
+                const finishStop = () => {
+                    resultAudio.pause();
+                    resultAudio.currentTime = 0;
+                    resultAudio.removeAttribute('src');
+                    resultAudio.load();
+                };
+
+                if (resultAudioPlayPromise) {
+                    // Browser nge-log warning sendiri kalau pause() dipanggil sebelum
+                    // promise play() settle (resolve/reject) — bukan exception JS biasa
+                    // jadi gak ketangkep try/catch. Tunggu promise-nya kelar dulu.
+                    resultAudioPlayPromise.then(finishStop).catch(finishStop);
+                } else {
+                    finishStop();
+                }
             }
 
             async function playResultAudio(mood) {
                 if (!resultAudio || !mood || !mood.audio) return;
-
                 const myToken = ++audioPlayToken; // sesi ini
-
                 if (resultAudio.getAttribute('src') !== mood.audio) {
                     resultAudio.src = mood.audio;
                     resultAudio.load();
                 }
 
                 resultAudio.volume = 0;
+                const playPromise = resultAudio.play();
+                resultAudioPlayPromise = playPromise;
 
                 try {
-                    await resultAudio.play();
+                    await playPromise;
+                    if (resultAudioPlayPromise === playPromise) resultAudioPlayPromise = null;
 
                     // kalau sesi sudah dibatalkan (panel ditutup / dibuka ulang) selama menunggu play(), stop di sini
                     if (myToken !== audioPlayToken) return;
-
                     const targetVolume = 0.6;
                     const fadeStart = performance.now();
                     const fadeDuration = 900;
@@ -659,6 +689,7 @@
 
                     requestAnimationFrame(fade);
                 } catch (error) {
+                    if (resultAudioPlayPromise === playPromise) resultAudioPlayPromise = null;
                     // AbortError normal terjadi kalau panel ditutup cepat sebelum play() selesai — bukan bug
                     if (error && error.name !== 'AbortError') {
                         console.warn(`Audio tidak dapat diputar otomatis: ${mood.audio}`, error);
@@ -674,6 +705,12 @@
             }
 
             function closePanel() {
+                // Chrome blokir aria-hidden kalau ada descendant yang masih fokus
+                // pas panel-nya di-hide (biasanya #panelClose sendiri abis diklik).
+                // Blur dulu elemen yang fokus sebelum aria-hidden di-set true.
+                if (panel.contains(document.activeElement)) {
+                    document.activeElement.blur();
+                }
                 panel.classList.remove('open');
                 panel.setAttribute('aria-hidden', 'true');
                 document.body.style.overflow = '';
@@ -698,6 +735,7 @@
                 liveCoordinate.textContent = 'LINTANG 00.0000 / BUJUR 00.0000';
                 atlasStatus.textContent = 'AREA 01 \u00b7 SIAGA';
                 setScreen('landing');
+                restartFragmentAnimations();
             }
 
             function roundedRect(ctx, x, y, width, height, radius) {
@@ -935,6 +973,7 @@
             clearMoodHover();
             startOrbitCycle();
             setScreen('landing');
+            restartFragmentAnimations();
         })();
     </script>
 @endsection
