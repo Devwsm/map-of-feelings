@@ -145,6 +145,7 @@ class importExportController extends Controller
         return view('pages.dashboard.import.index', [
             'active' => 'export-import',
             'totalGuests' => pressconGuest::count(),
+            'categories' => GuestImport::CATEGORIES,
         ]);
     }
 

@@ -71,11 +71,54 @@
             </button>
         </form>
 
-        <p class="mt-4 text-xs text-white/40">
-            Kolom wajib: <strong>Nama</strong> dan <strong>Kategori</strong> (harus sama persis salah satu dari:
-            Crew, Media, Partner, Venue, Colleague, DJ/Musician Colleague, Artist/Production Team, Inner Circle).
-            Kolom lain (Grup, Maks Pax, Wajib Isi Nama, Catatan) opsional. Baris yang gagal validasi otomatis
-            dilewati, gak bikin baris lain ikut gagal.
-        </p>
+        {{-- PETUNJUK KOLOM --}}
+        <div class="mt-6 rounded-2xl border border-white/10 bg-neutral-950 p-5">
+            <p class="text-xs font-bold uppercase tracking-widest text-white/40 mb-3">Petunjuk Kolom</p>
+
+            <dl class="space-y-3 text-sm">
+                <div>
+                    <dt class="font-bold text-white">Nama <span class="text-red-400 font-normal">(wajib)</span></dt>
+                    <dd class="text-white/50">Nama tamu, atau nama slot rombongan (mis. "Media A") kalau belum tahu nama
+                        orangnya. Kosong = baris dilewati.</dd>
+                </div>
+                <div>
+                    <dt class="font-bold text-white">Kategori <span class="text-red-400 font-normal">(wajib)</span></dt>
+                    <dd class="text-white/50 mb-2">Harus persis salah satu dari daftar berikut (tidak case-sensitive, tapi
+                        ejaan harus sama). Tidak cocok = baris dilewati.</dd>
+                    <div class="flex flex-wrap gap-1.5">
+                        @foreach ($categories as $category)
+                            <span
+                                class="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/70">{{ $category }}</span>
+                        @endforeach
+                    </div>
+                </div>
+                <div>
+                    <dt class="font-bold text-white">Grup <span class="text-white/30 font-normal">(opsional)</span></dt>
+                    <dd class="text-white/50">Nama rombongan/tim, bebas teks.</dd>
+                </div>
+                <div>
+                    <dt class="font-bold text-white">Maks Pax <span class="text-white/30 font-normal">(opsional)</span></dt>
+                    <dd class="text-white/50">Jumlah maksimal orang untuk satu slot tamu. Kosong atau &lt; 1 otomatis
+                        dianggap 1.</dd>
+                </div>
+                <div>
+                    <dt class="font-bold text-white">Wajib Isi Nama <span class="text-white/30 font-normal">(opsional,
+                            default: Tidak)</span></dt>
+                    <dd class="text-white/50">Isi "Ya" kalau Nama di atas masih nama slot tim — tamu akan diminta mengisi
+                        nama aslinya sendiri saat buka undangan. Isi "Tidak" kalau Nama sudah final, tamu tinggal konfirmasi
+                        ejaan.</dd>
+                </div>
+                <div>
+                    <dt class="font-bold text-white">Catatan <span class="text-white/30 font-normal">(opsional)</span></dt>
+                    <dd class="text-white/50">Catatan internal untuk admin, tidak terlihat oleh tamu.</dd>
+                </div>
+            </dl>
+
+            <p class="mt-4 pt-4 border-t border-white/10 text-xs text-white/40">
+                Baris yang gagal validasi otomatis dilewati saat import, tidak bikin baris lain ikut gagal.
+                Template download di atas juga sudah ada sheet <strong>"Petunjuk"</strong> dan dropdown pilihan
+                langsung di kolom Kategori &amp; Wajib Isi Nama, biar gak salah ketik.
+            </p>
+        </div>
     </div>
 @endsection
