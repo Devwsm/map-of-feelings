@@ -819,19 +819,8 @@
                 });
             }
 
-            async function saveCoordinateCard() {
-                if (!selectedMood) return;
-
-                const nameInput = document.getElementById('visitorName');
-                const instagramInput = document.getElementById('visitorInstagram');
-                const saveButton = document.getElementById('saveCoordinate');
-                const visitorName = nameInput.value.trim();
-                const visitorInstagram = normalizeInstagram(instagramInput.value);
-
-                saveButton.disabled = true;
-                saveButton.textContent = 'MENYIAPKAN PNG...';
-
-                // Kirim ke server dulu (non-blocking) — kalau gagal, PNG tetap lanjut di-download
+            // Nge-submit data koordinat ke server (non-blocking) — kalau gagal, PNG tetap lanjut dibuat.
+            async function submitCoordinateToServer(visitorName, visitorInstagram) {
                 try {
                     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
                     await fetch('{{ route('coordinate.store') }}', {
@@ -851,76 +840,106 @@
                 } catch (error) {
                     console.warn('Gagal menyimpan data koordinat ke server:', error);
                 }
+            }
+
+            // Gambar kartu koordinat ke canvas lalu balikin sebagai Blob PNG.
+            // Dipakai bareng sama tombol simpan (download) dan tombol bagikan (Web Share API).
+            async function buildCoordinateCardBlob(visitorName, visitorInstagram) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 1080;
+                canvas.height = 1350;
+                const ctx = canvas.getContext('2d');
+
+                const colors = getHexMatches(selectedMood.pageGradient);
+                const bg = ctx.createLinearGradient(0, 0, 1080, 1350);
+                bg.addColorStop(0, colors[0] || '#ffffff');
+                bg.addColorStop(.55, colors[1] || getMoodPrimaryHex(selectedMood));
+                bg.addColorStop(1, colors[colors.length - 1] || getMoodSecondaryHex(selectedMood));
+                ctx.fillStyle = bg;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = 'rgba(255,255,255,.92)';
+                roundedRect(ctx, 70, 70, 940, 1210, 50);
+                ctx.fill();
+
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#0c0d0f';
+                ctx.font = '24px monospace';
+                ctx.fillText('MAP OF FEELINGS', 540, 125);
 
                 try {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 1080;
-                    canvas.height = 1350;
-                    const ctx = canvas.getContext('2d');
-
-                    const colors = getHexMatches(selectedMood.pageGradient);
-                    const bg = ctx.createLinearGradient(0, 0, 1080, 1350);
-                    bg.addColorStop(0, colors[0] || '#ffffff');
-                    bg.addColorStop(.55, colors[1] || getMoodPrimaryHex(selectedMood));
-                    bg.addColorStop(1, colors[colors.length - 1] || getMoodSecondaryHex(selectedMood));
-                    ctx.fillStyle = bg;
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                    ctx.fillStyle = 'rgba(255,255,255,.92)';
-                    roundedRect(ctx, 70, 70, 940, 1210, 50);
-                    ctx.fill();
-
-                    ctx.textAlign = 'center';
+                    const artwork = await loadImage(selectedMood.artwork);
+                    ctx.save();
+                    roundedRect(ctx, 180, 170, 720, 720, 24);
+                    ctx.clip();
+                    ctx.drawImage(artwork, 180, 170, 720, 720);
+                    ctx.restore();
+                } catch (error) {
+                    ctx.strokeStyle = `rgba(${hexToRgb(getMoodPrimaryHex(selectedMood))}, .75)`;
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.arc(540, 530, 84, 0, Math.PI * 2);
+                    ctx.stroke();
                     ctx.fillStyle = '#0c0d0f';
-                    ctx.font = '24px monospace';
-                    ctx.fillText('MAP OF FEELINGS', 540, 125);
+                    ctx.font = '600 42px Arial';
+                    ctx.fillText(selectedMood.feeling, 540, 555);
+                }
 
-                    try {
-                        const artwork = await loadImage(selectedMood.artwork);
-                        ctx.save();
-                        roundedRect(ctx, 180, 170, 720, 720, 24);
-                        ctx.clip();
-                        ctx.drawImage(artwork, 180, 170, 720, 720);
-                        ctx.restore();
-                    } catch (error) {
-                        ctx.strokeStyle = `rgba(${hexToRgb(getMoodPrimaryHex(selectedMood))}, .75)`;
-                        ctx.lineWidth = 4;
-                        ctx.beginPath();
-                        ctx.arc(540, 530, 84, 0, Math.PI * 2);
-                        ctx.stroke();
-                        ctx.fillStyle = '#0c0d0f';
-                        ctx.font = '600 42px Arial';
-                        ctx.fillText(selectedMood.feeling, 540, 555);
-                    }
+                ctx.font = '20px monospace';
+                ctx.fillText(selectedMood.coordinate.toUpperCase(), 540, 940);
+                ctx.font = '700 60px Arial';
+                wrapText(ctx, selectedMood.song, 540, 1020, 780, 66);
+                ctx.font = '25px Arial';
+                ctx.fillText(`${selectedMood.feeling} \u00b7 ${selectedMood.nuance}`, 540, 1122);
+                if (selectedAnswer) {
+                    ctx.fillStyle = '#55585e';
+                    ctx.font = '17px Arial';
+                    wrapText(ctx, `\u201c${selectedAnswer}\u201d`, 540, 1152, 760, 22);
+                }
 
-                    ctx.font = '20px monospace';
-                    ctx.fillText(selectedMood.coordinate.toUpperCase(), 540, 940);
-                    ctx.font = '700 60px Arial';
-                    wrapText(ctx, selectedMood.song, 540, 1020, 780, 66);
-                    ctx.font = '25px Arial';
-                    ctx.fillText(`${selectedMood.feeling} \u00b7 ${selectedMood.nuance}`, 540, 1122);
-                    if (selectedAnswer) {
-                        ctx.fillStyle = '#55585e';
-                        ctx.font = '17px Arial';
-                        wrapText(ctx, `\u201c${selectedAnswer}\u201d`, 540, 1152, 760, 22);
-                    }
+                ctx.fillStyle = '#6d6d73';
+                ctx.font = '20px Arial';
+                ctx.fillText(visitorName, 540, 1194);
+                ctx.font = '18px monospace';
+                ctx.fillText(visitorInstagram, 540, 1224);
 
-                    ctx.fillStyle = '#6d6d73';
-                    ctx.font = '20px Arial';
-                    ctx.fillText(visitorName, 540, 1194);
-                    ctx.font = '18px monospace';
-                    ctx.fillText(visitorInstagram, 540, 1224);
+                ctx.fillStyle = '#0c0d0f';
+                ctx.font = '18px monospace';
+                ctx.fillText('SETIAP PERASAAN PUNYA KOORDINAT.', 540, 1262);
 
-                    ctx.fillStyle = '#0c0d0f';
-                    ctx.font = '18px monospace';
-                    ctx.fillText('SETIAP PERASAAN PUNYA KOORDINAT.', 540, 1262);
+                return canvasToBlob(canvas);
+            }
 
-                    const blob = await canvasToBlob(canvas);
+            function coordinateFileName(visitorName) {
+                const safeName = visitorName.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') ||
+                    'coordinate';
+                return `map-of-feelings-${safeName}-${selectedMood.id}.png`;
+            }
+
+            async function saveCoordinateCard() {
+                if (!selectedMood) return;
+
+                const nameInput = document.getElementById('visitorName');
+                const instagramInput = document.getElementById('visitorInstagram');
+                const saveButton = document.getElementById('saveCoordinate');
+                const visitorName = nameInput.value.trim();
+                const visitorInstagram = normalizeInstagram(instagramInput.value);
+
+                saveButton.disabled = true;
+                saveButton.textContent = 'MENYIAPKAN PNG...';
+
+                // 1. Simpan data pengunjung ke server
+                await submitCoordinateToServer(visitorName, visitorInstagram);
+
+                try {
+                    // 2. Bikin gambar PNG-nya
+                    const blob = await buildCoordinateCardBlob(visitorName, visitorInstagram);
+                    const fileName = coordinateFileName(visitorName);
+
+                    // 3. Download PNG-nya ke device user
                     const objectUrl = URL.createObjectURL(blob);
-                    const safeName = visitorName.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') ||
-                        'coordinate';
                     const link = document.createElement('a');
-                    link.download = `map-of-feelings-${safeName}-${selectedMood.id}.png`;
+                    link.download = fileName;
                     link.href = objectUrl;
                     link.style.display = 'none';
                     document.body.appendChild(link);
@@ -928,6 +947,30 @@
                     link.remove();
                     setTimeout(() => URL.revokeObjectURL(objectUrl), 1500);
                     showDownloadFeedback('KOORDINAT BERHASIL DISIMPAN');
+
+                    // 4. Langsung buka share sheet kalau device/browser-nya dukung (kebanyakan HP).
+                    //    Kalau gak didukung (misal browser desktop), lewati aja — PNG-nya
+                    //    sudah aman tersimpan dari langkah download di atas.
+                    const file = new File([blob], fileName, {
+                        type: 'image/png'
+                    });
+                    if (navigator.canShare && navigator.canShare({
+                            files: [file]
+                        })) {
+                        try {
+                            await navigator.share({
+                                files: [file],
+                                title: 'Map of Feelings',
+                                text: 'Koordinat perasaanku hari ini di Map of Feelings \u2014 ' +
+                                    selectedMood.song,
+                            });
+                        } catch (shareError) {
+                            // AbortError = user cancel share sheet-nya sendiri, PNG tetap sudah tersimpan.
+                            if (shareError?.name !== 'AbortError') {
+                                console.warn('Gagal membuka share sheet:', shareError);
+                            }
+                        }
+                    }
                 } catch (error) {
                     console.error(error);
                     showDownloadFeedback('GAGAL MENYIMPAN');
