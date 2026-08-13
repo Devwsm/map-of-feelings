@@ -89,7 +89,7 @@
         <a href="https://www.google.com/maps/search/?api=1&query=Samrock+Gandaria" target="_blank" rel="noopener"
             class="mt-4 block rounded-3xl bg-white px-6 py-6 text-black no-underline">
             <p class="text-xs font-bold tracking-widest text-black/50 mb-2">VENUE</p>
-            <p class="font-bold text-xl sm:text-2xl">Samrock Gandaria</p>
+            <p class="font-bold text-xl sm:text-2xl">Shamrock Gandaria</p>
             <span class="block mt-2 text-sm text-black/60">Buka Google Maps ↗</span>
         </a>
 
