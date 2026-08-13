@@ -4,6 +4,10 @@
 --}}
 @extends('template.layout')
 
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+@endpush
+
 @section('content')
     <div class="mof-body w-full overflow-x-hidden" id="mofRoot">
         <div class="mof-noise" aria-hidden="true"></div>
@@ -12,15 +16,15 @@
         <header
             class="fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-4 border-b border-black/5 bg-white/70 px-4 py-4 backdrop-blur-md sm:px-8 sm:py-5">
             <button id="brandHome" type="button" aria-label="Kembali ke awal"
-                class="flex shrink-0 cursor-pointer items-center border-0 bg-transparent p-0">
-                <img src="{{ asset('assets/logo/logo-map-of-feelings.svg') }}" alt="Map of Feelings"
+                class="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center border-0 bg-transparent p-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 lg:translate-y-0 lg:shrink-0">
+                <img src="{{ asset('assets/logo/Whisnu Santika MOF.svg') }}" alt="Whisnu Santika MOF"
                     class="block h-4 w-auto sm:h-5">
             </button>
 
             <div class="flex items-center gap-2 sm:gap-3 md:gap-5">
                 <div class="hidden gap-5 font-mono text-xs tracking-widest text-black/60 lg:flex">
                     <span id="liveCoordinate">LINTANG 00.0000 / BUJUR 00.0000</span>
-                    <span id="atlasStatus">AREA 01 &middot; SIAGA</span>
+                    <span id="atlasStatus">PERASAAN &middot; SIAGA</span>
                 </div>
             </div>
         </header>
@@ -126,6 +130,13 @@
                         </button>
                     </div>
                 </div>
+
+                {{-- Audio ambient landing + tombol mute/unmute --}}
+                <audio id="landingAudio" src="{{ asset('assets/audio/landing.wav') }}" loop preload="auto"></audio>
+                <button id="landingAudioToggle" type="button" aria-label="Mute atau unmute musik" aria-pressed="true"
+                    class="fixed bottom-5 right-5 z-40 grid h-11 w-11 place-items-center rounded-full border border-black/10 bg-white/90 text-black shadow-lg backdrop-blur transition hover:-translate-y-0.5 sm:bottom-7 sm:right-7 sm:h-12 sm:w-12">
+                    <i id="landingAudioIcon" class="bi bi-volume-mute-fill text-base"></i>
+                </button>
             </section>
 
             {{-- ATLAS --}}
@@ -147,8 +158,7 @@
                     <div id="emotionNodes"></div>
 
                     <div class="mof-map-caption flex flex-wrap gap-3 font-mono text-xs tracking-widest">
-                        <span>AREA 01</span>
-                        <span class="hidden sm:inline">KEDALAMAN: BATIN</span>
+                        <span>PERASAANMU</span>
                         <span>VISIBILITAS: BERUBAH</span>
                     </div>
                 </div>
@@ -182,9 +192,6 @@
                 <div id="mappingField" class="mof-mapping-field" aria-hidden="true"></div>
 
                 <div class="relative z-10 w-full max-w-2xl text-center">
-                    <p class="mb-2 font-mono text-xs tracking-widest text-black/50">
-                        MEMETAKAN PERASAANMU
-                    </p>
                     <h2 id="mappingText"
                         class="whitespace-pre-line text-3xl font-medium leading-tight tracking-tight sm:text-4xl md:text-6xl lg:text-7xl">
                     </h2>
@@ -208,7 +215,8 @@
                         menemukan<br>
                         koordinatmu.
                     </h2>
-                    <div class="mof-coordinate-marker my-10 sm:my-11"></div>
+                    <button type="button" id="coordinateMarkerButton" aria-label="Lihat lagu yang terhubung"
+                        class="mof-coordinate-marker my-10 cursor-pointer border-0 bg-transparent p-0 sm:my-11"></button>
                     <button id="coordinateButton" type="button" class="mof-coordinate-button w-full max-w-md">
                         <span id="coordinateFeeling" class="font-mono text-xs tracking-widest text-white/70">
                             PERASAAN
@@ -217,9 +225,10 @@
                             Titik Patah yang Sunyi
                         </span>
                     </button>
-                    <p class="mt-6 font-mono text-xs tracking-widest text-black/60">
+                    <button type="button" id="coordinateHintButton"
+                        class="mt-6 cursor-pointer border-0 bg-transparent p-0 font-mono text-xs tracking-widest text-black/60 underline-offset-4 hover:underline">
                         Klik koordinat untuk melihat lagu yang terhubung
-                    </p>
+                    </button>
                 </div>
             </section>
         </main>
@@ -300,7 +309,7 @@
 
                 <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-3.5">
                     <a id="mofLink" href="#" target="_blank" rel="noopener"
-                        class="rounded-full border border-black/15 bg-white/80 px-5 py-3 font-mono text-xs tracking-widest transition hover:-translate-y-0.5 hover:bg-white">
+                        class="flex items-center justify-center rounded-full border border-black/15 bg-white/80 px-5 py-3 text-center font-mono text-xs tracking-widest transition hover:-translate-y-0.5 hover:bg-white">
                         PRE SAVE MAP OF FEELINGS
                     </a>
                     <button id="saveCoordinate" type="button"
@@ -318,7 +327,7 @@
 
         <footer
             class="flex flex-col gap-2 border-t border-black/10 bg-white/90 px-5 py-6 font-mono text-xs tracking-widest text-black/55 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
-            <span>MAP OF FEELINGS &middot; SETIAP PERASAAN PUNYA KOORDINAT</span>
+            <span>MAP OF FEELINGS &middot; WHISNU'S STORY TO EVERYONE'S STORY</span>
             <div class="flex flex-col md:flex-row">
                 <div class="flex gap-2">
                     <a href="{{ route('dashboard') }}">
@@ -361,6 +370,7 @@
 
             let selectedMood = null;
             let selectedAnswer = '';
+            let landingAudioWasPlaying = false;
             let timers = [];
             let orbitInterval = null;
 
@@ -515,15 +525,21 @@
 
                     const handleHover = () => {
                         liveCoordinate.textContent = coords[index];
-                        atlasStatus.textContent =
-                            `AREA ${String(index + 1).padStart(2, '0')} \u00b7 ${mood.feeling.toUpperCase()}`;
+                        atlasStatus.textContent = `PERASAAN \u00b7 ${mood.feeling.toUpperCase()}`;
                         setMoodTheme(mood);
                         applyMoodHover(mood);
                     };
 
                     button.addEventListener('mouseenter', handleHover);
                     button.addEventListener('focus', handleHover);
-                    button.addEventListener('click', () => openQuestion(mood, index));
+                    // Mobile/tablet gak punya hover, jadi warnanya di-apply juga pas disentuh/dipilih.
+                    button.addEventListener('touchstart', handleHover, {
+                        passive: true
+                    });
+                    button.addEventListener('click', () => {
+                        handleHover();
+                        openQuestion(mood, index);
+                    });
 
                     emotionNodes.appendChild(button);
                 });
@@ -701,6 +717,13 @@
                 panel.classList.add('open');
                 panel.setAttribute('aria-hidden', 'false');
                 document.body.style.overflow = 'hidden';
+
+                // Biar gak numpuk sama audio result, audio landing di-pause
+                // otomatis dulu selama panel hasil lagunya kebuka.
+                const landingAudioEl = document.getElementById('landingAudio');
+                landingAudioWasPlaying = !!(landingAudioEl && !landingAudioEl.paused);
+                if (landingAudioEl && landingAudioWasPlaying) landingAudioEl.pause();
+
                 playResultAudio(selectedMood);
             }
 
@@ -715,6 +738,13 @@
                 panel.setAttribute('aria-hidden', 'true');
                 document.body.style.overflow = '';
                 stopResultAudio();
+
+                // Lanjutin lagi audio landing kalau sebelum panel dibuka dia lagi main.
+                if (landingAudioWasPlaying) {
+                    const landingAudioEl = document.getElementById('landingAudio');
+                    if (landingAudioEl) landingAudioEl.play().catch(() => {});
+                    landingAudioWasPlaying = false;
+                }
             }
 
             function reset() {
@@ -733,7 +763,7 @@
                 setMoodTheme(MOODS[0]);
                 clearMoodHover();
                 liveCoordinate.textContent = 'LINTANG 00.0000 / BUJUR 00.0000';
-                atlasStatus.textContent = 'AREA 01 \u00b7 SIAGA';
+                atlasStatus.textContent = 'PERASAAN \u00b7 SIAGA';
                 setScreen('landing');
                 restartFragmentAnimations();
             }
@@ -1005,7 +1035,7 @@
             });
 
             mapShell.addEventListener('mouseleave', () => {
-                atlasStatus.textContent = 'AREA 01 \u00b7 SIAGA';
+                atlasStatus.textContent = 'PERASAAN \u00b7 SIAGA';
                 liveCoordinate.textContent = 'LINTANG 00.0000 / BUJUR 00.0000';
                 clearMoodHover();
             });
@@ -1014,9 +1044,76 @@
             document.getElementById('questionBack').addEventListener('click', () => setScreen('atlas'));
             document.getElementById('brandHome').addEventListener('click', reset);
             document.getElementById('coordinateButton').addEventListener('click', openPanel);
+            document.getElementById('coordinateMarkerButton').addEventListener('click', openPanel);
+            document.getElementById('coordinateHintButton').addEventListener('click', openPanel);
             document.getElementById('panelClose').addEventListener('click', closePanel);
             document.getElementById('restartButton').addEventListener('click', reset);
             document.getElementById('saveCoordinate').addEventListener('click', saveCoordinateCard);
+
+            // Audio ambient landing (landing.wav) + tombol pause/resume
+            const landingAudio = document.getElementById('landingAudio');
+            const landingAudioToggle = document.getElementById('landingAudioToggle');
+            const landingAudioIcon = document.getElementById('landingAudioIcon');
+
+            function updateLandingAudioIcon() {
+                if (!landingAudioIcon || !landingAudio) return;
+                landingAudioIcon.className = landingAudio.paused ?
+                    'bi bi-volume-mute-fill text-base' :
+                    'bi bi-volume-up-fill text-base';
+                landingAudioToggle.setAttribute('aria-pressed', landingAudio.paused ? 'false' : 'true');
+            }
+
+            if (landingAudio && landingAudioToggle) {
+                landingAudio.volume = 0.6;
+                landingAudio.muted = false;
+                updateLandingAudioIcon();
+
+                // Kalau file landing.wav gagal dimuat (path salah/format gak didukung
+                // browser), ini bakal muncul di console biar gampang ditelusuri.
+                landingAudio.addEventListener('error', () => {
+                    console.warn('landing.wav gagal dimuat, cek path/format filenya:', landingAudio
+                        .currentSrc || landingAudio.src);
+                });
+
+                landingAudio.addEventListener('play', updateLandingAudioIcon);
+                landingAudio.addEventListener('pause', updateLandingAudioIcon);
+
+                // Langsung coba diputar begitu masuk website (gak mulai dari mute).
+                const tryAutoplay = () => landingAudio.play().catch(() => {});
+                tryAutoplay();
+
+                // Beberapa browser tetap blokir autoplay bersuara walau volume/muted
+                // sudah diatur. Kalau itu terjadi, begitu user berinteraksi pertama
+                // kali di halaman (klik/tap/keyboard di mana pun), audio otomatis
+                // mulai diputar sendiri.
+                const resumeOnFirstInteraction = (event) => {
+                    const isToggleClick = event.target && event.target.closest &&
+                        event.target.closest('#landingAudioToggle');
+                    // Kalau interaksi pertama itu justru klik tombol toggle sendiri,
+                    // biarkan handler klik tombol di bawah yang urus play/pause-nya —
+                    // supaya gak tabrakan: audio keburu diputar di sini, terus
+                    // langsung ke-pause lagi sama klik tombolnya sendiri.
+                    if (!isToggleClick && landingAudio.paused) tryAutoplay();
+                    ['pointerdown', 'keydown', 'touchstart'].forEach((evt) =>
+                        document.removeEventListener(evt, resumeOnFirstInteraction));
+                };
+                ['pointerdown', 'keydown', 'touchstart'].forEach((evt) =>
+                    document.addEventListener(evt, resumeOnFirstInteraction, {
+                        once: true,
+                        passive: true
+                    }));
+
+                // Tombol tetap ada buat pause/lanjutkan audio kapan pun user mau.
+                landingAudioToggle.addEventListener('click', () => {
+                    if (landingAudio.paused) {
+                        landingAudio.play().catch((error) => {
+                            console.warn('Gagal memutar landing.wav:', error);
+                        });
+                    } else {
+                        landingAudio.pause();
+                    }
+                });
+            }
 
             renderAtlas();
             setMoodTheme(MOODS[0]);

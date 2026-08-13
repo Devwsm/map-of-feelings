@@ -600,7 +600,8 @@
 }
 
 .mof-emotion-node:hover,
-.mof-emotion-node:focus-visible {
+.mof-emotion-node:focus-visible,
+.mof-emotion-node:active {
     transform: scale(1.18);
     background: rgba(255, 255, 255, 0.96);
     border-color: rgba(var(--node-rgb), 0.7);
@@ -645,9 +646,10 @@
     transform: translateX(-50%);
     white-space: nowrap;
     font-family: monospace;
-    font-size: clamp(5.5px, 1.8vw, 10px);
+    font-size: clamp(8px, 2.6vw, 14px);
+    font-weight: 600;
     letter-spacing: 0.01em;
-    color: rgba(12, 13, 15, 0.54);
+    color: rgba(12, 13, 15, 0.7);
     pointer-events: none;
 }
 
