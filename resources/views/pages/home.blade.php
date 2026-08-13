@@ -256,6 +256,13 @@
             </div>
 
             <div class="mx-auto w-11/12 max-w-3xl py-12 sm:py-24">
+                <div id="resultAnswerWrap" class="mb-6">
+                    <span class="mb-1 block font-mono text-xs tracking-widest text-black/50">
+                        JAWABANMU
+                    </span>
+                    <span id="resultAnswer" class="block text-sm text-black/60 sm:text-base md:text-lg"></span>
+                </div>
+
                 <p id="panelCoordinate" class="mb-2 font-mono text-xs tracking-widest text-black/50">
                     TITIK PATAH YANG SUNYI
                 </p>
@@ -281,11 +288,13 @@
                     </div>
                 </div>
 
-                <p class="mb-2 font-mono text-xs tracking-widest text-black/50">
-                    KENAPA LAGU INI?
-                </p>
-                <p id="resultWhy"
-                    class="mb-7 leading-relaxed text-black/60 sm:leading-loose text-sm sm:text-base md:text-lg"></p>
+                <div class="mb-6">
+                    <span class="mb-1 block font-mono text-xs tracking-widest text-black/50">
+                        ANALISIS
+                    </span>
+                    <span id="resultAnalysis" class="block text-xl font-bold"></span>
+                </div>
+
                 <p id="resultAffirmation" class="my-7 text-lg italic text-black"></p>
 
                 <div class="my-7 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
@@ -637,8 +646,16 @@
                 document.getElementById('resultMood').textContent = `${mood.feeling} \u2014 ${mood.nuance}`;
                 document.getElementById('panelState').textContent = mood.nuance;
                 document.getElementById('panelWeather').textContent = mood.weatherText;
-                document.getElementById('resultWhy').textContent = selectedAnswer ?
-                    `${mood.why} Jawabanmu: \u201c${selectedAnswer}\u201d.` : mood.why;
+
+                const resultAnswerWrap = document.getElementById('resultAnswerWrap');
+                if (mood.answer) {
+                    document.getElementById('resultAnswer').textContent = mood.answer;
+                    resultAnswerWrap.style.display = '';
+                } else {
+                    resultAnswerWrap.style.display = 'none';
+                }
+                document.getElementById('resultAnalysis').textContent = mood.why;
+
                 document.getElementById('resultAffirmation').textContent = mood.affirmation;
 
                 const artwork = document.getElementById('resultArtwork');

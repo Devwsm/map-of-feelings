@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('choice_2');
             $table->string('choice_3');
             $table->string('choice_4');
+            $table->text('answer')->nullable();
             $table->string('coordinate');
             $table->text('why');
             $table->text('affirmation');

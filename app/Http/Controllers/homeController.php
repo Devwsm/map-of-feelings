@@ -109,6 +109,7 @@ class homeController extends Controller
             'choice_2' => ['required', 'string', 'max:255'],
             'choice_3' => ['required', 'string', 'max:255'],
             'choice_4' => ['required', 'string', 'max:255'],
+            'answer' => ['nullable', 'string'],
             'coordinate' => ['required', 'string', 'max:255'],
             'why' => ['required', 'string'],
             'affirmation' => ['required', 'string'],

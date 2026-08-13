@@ -60,6 +60,15 @@
         </div>
 
         <div>
+            <label for="answer" class="block text-sm font-bold mb-2">Jawabanmu (contoh, di atas Koordinat)</label>
+            <textarea id="answer" name="answer" rows="2"
+                class="w-full rounded-2xl border border-white/15 bg-neutral-900 px-4 py-3 focus:outline-none focus:border-white/40">{{ old('answer', $mood->answer) }}</textarea>
+            @error('answer')
+                <p class="mt-1 text-xs text-rose-400">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div>
             <label for="coordinate" class="block text-sm font-bold mb-2">Nama Koordinat</label>
             <input id="coordinate" name="coordinate" type="text" value="{{ old('coordinate', $mood->coordinate) }}"
                 required
