@@ -7,6 +7,7 @@ use App\Http\Controllers\importExportController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\pressconController;
 use App\Http\Controllers\pressconGuestController;
+use App\Http\Controllers\visitorController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/')->group(function () {
@@ -57,6 +58,9 @@ Route::prefix('/dashboard')->middleware('auth')->group(function () {
         Route::post('/import/tamu/confirm', [importExportController::class, 'importGuestsConfirm'])->name('dashboard.import.tamu.confirm');
         Route::post('/import/tamu/cancel', [importExportController::class, 'importGuestsCancel'])->name('dashboard.import.tamu.cancel');
         Route::get('/import/logs', [importExportController::class, 'importLogs'])->name('dashboard.import.logs');
+
+        Route::get('/pengunjung', [visitorController::class, 'index'])->name('dashboard.pengunjung');
+        Route::get('/pengunjung/download', [visitorController::class, 'download'])->name('dashboard.pengunjung.download');
     });
 
     // panel & admin berdua boleh

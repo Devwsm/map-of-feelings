@@ -7,7 +7,7 @@
     Section/variable yang bisa di-override child:
     - title    -> @section('title', 'Nama Halaman') — muncul di identity bar
     - active   -> variable $active dioper dari CONTROLLER (bukan @section), value:
-        'home' | 'tamu' | 'tambah' | 'checkin' | 'panel' | 'panel-submissions' | 'export-import'
+        'home' | 'tamu' | 'tambah' | 'checkin' | 'panel' | 'panel-submissions' | 'export-import' | 'pengunjung'
         dipakai buat nge-highlight menu yang lagi aktif di drawer
     - body     -> @section('body') ... @endsection — isi utama halaman
 
@@ -103,6 +103,8 @@
                 <p class="px-3 pt-5 pb-1 text-[10px] font-bold uppercase tracking-widest text-white/30">Data</p>
                 <a href="{{ route('dashboard.export') }}"
                     class="block px-3 py-3 rounded-xl font-bold {{ $active === 'export-import' ? 'bg-white text-black' : 'text-white/70 hover:bg-white/5' }}">Export/Import</a>
+                <a href="{{ route('dashboard.pengunjung') }}"
+                    class="block px-3 py-3 rounded-xl font-bold {{ $active === 'pengunjung' ? 'bg-white text-black' : 'text-white/70 hover:bg-white/5' }}">Pengunjung</a>
             @endif
         </nav>
 

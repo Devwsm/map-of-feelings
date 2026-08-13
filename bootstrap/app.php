@@ -16,8 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\checkRole::class,
         ]);
+
+        $middleware->web(append: [
+            \App\Http\Middleware\logVisitor::class,
+        ]);
     })
-    
+
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
             fn(Request $request) => $request->is('api/*'),
