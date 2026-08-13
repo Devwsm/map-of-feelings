@@ -823,7 +823,7 @@
             async function submitCoordinateToServer(visitorName, visitorInstagram) {
                 try {
                     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-                    await fetch('{{ route('coordinate.store') }}', {
+                    const response = await fetch('{{ route('coordinate.store') }}', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -837,6 +837,13 @@
                             selected_answer: selectedAnswer || null,
                         }),
                     });
+
+                    // PNG tetap lanjut dibuat/didownload meski ini gagal (misal 429
+                    // kena rate limit) — cuma dicatat di console buat debugging,
+                    // gak mengganggu pengalaman user.
+                    if (!response.ok) {
+                        console.warn('Server menolak simpan data koordinat, status:', response.status);
+                    }
                 } catch (error) {
                     console.warn('Gagal menyimpan data koordinat ke server:', error);
                 }

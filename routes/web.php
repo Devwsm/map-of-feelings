@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('/')->group(function () {
     Route::get('/', [homeController::class, 'home'])->name('home');
-    Route::post('/coordinate', [homeController::class, 'storeCoordinate'])->name('coordinate.store');
+    Route::post('/coordinate', [homeController::class, 'storeCoordinate'])
+        ->middleware('throttle:coordinate')
+        ->name('coordinate.store');
 });
 
 Route::prefix('/')->group(function () {
