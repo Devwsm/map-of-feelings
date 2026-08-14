@@ -334,6 +334,16 @@
             </div>
         </aside>
 
+        {{-- Di luar #emotionPanel dengan sengaja: panel pakai `transform` buat animasi
+        slide-up, dan itu bikin descendant `position: fixed` ikut acuan ke box panel
+        (jadi ikut keseret pas discroll) alih-alih ke viewport asli. Ditaruh di luar
+        + show/hide via JS (openPanel/closePanel) biar bener-bener diem di pojok layar. --}}
+        <button id="resultAudioToggle" type="button" aria-label="Mute atau unmute lagu" aria-pressed="true"
+            style="display: none;"
+            class="fixed bottom-5 right-5 grid h-11 w-11 place-items-center rounded-full border border-black/10 bg-white/90 text-black shadow-lg backdrop-blur transition hover:-translate-y-0.5 sm:bottom-7 sm:right-7 sm:h-12 sm:w-12">
+            <i id="resultAudioIcon" class="bi bi-volume-up-fill text-base"></i>
+        </button>
+
         <footer
             class="flex flex-col gap-2 border-t border-black/10 bg-white/90 px-5 py-6 font-mono text-xs tracking-widest text-black/55 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
             <span>MAP OF FEELINGS &middot; WHISNU'S STORY TO EVERYONE'S STORY</span>
@@ -730,10 +740,41 @@
                 }
             }
 
+            // Mute/unmute lagu di result panel. Pakai .muted (bukan pause) biar
+            // playback & fade-in volume yang lagi jalan gak keganggu, cuma dibisukan.
+            const resultAudioToggle = document.getElementById('resultAudioToggle');
+            const resultAudioIcon = document.getElementById('resultAudioIcon');
+            let resultAudioMuted = false;
+
+            function updateResultAudioIcon() {
+                if (!resultAudioIcon) return;
+                resultAudioIcon.className = resultAudioMuted ?
+                    'bi bi-volume-mute-fill text-base' :
+                    'bi bi-volume-up-fill text-base';
+                if (resultAudioToggle) {
+                    resultAudioToggle.setAttribute('aria-pressed', resultAudioMuted ? 'false' : 'true');
+                }
+            }
+
+            if (resultAudioToggle && resultAudio) {
+                resultAudio.muted = resultAudioMuted;
+                resultAudioToggle.addEventListener('click', () => {
+                    resultAudioMuted = !resultAudioMuted;
+                    resultAudio.muted = resultAudioMuted;
+                    updateResultAudioIcon();
+                });
+            }
+
             function openPanel() {
                 panel.classList.add('open');
                 panel.setAttribute('aria-hidden', 'false');
                 document.body.style.overflow = 'hidden';
+                if (resultAudioToggle) resultAudioToggle.style.display = 'grid';
+
+                // Reset scroll ke atas tiap kali panel dibuka ulang (mis. abis
+                // "Petakan Perasaan Lain"), khususnya di mobile — sebelumnya panel
+                // nyangkut di posisi scroll terakhir karena elemennya dipakai ulang.
+                panel.scrollTop = 0;
 
                 // Biar gak numpuk sama audio result, audio landing di-pause
                 // otomatis dulu selama panel hasil lagunya kebuka.
@@ -754,6 +795,7 @@
                 panel.classList.remove('open');
                 panel.setAttribute('aria-hidden', 'true');
                 document.body.style.overflow = '';
+                if (resultAudioToggle) resultAudioToggle.style.display = 'none';
                 stopResultAudio();
 
                 // Lanjutin lagi audio landing kalau sebelum panel dibuka dia lagi main.

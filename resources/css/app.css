@@ -890,6 +890,13 @@
     transform: translateY(0);
 }
 
+/* Tombol mute/unmute lagu result panel ditaruh sebagai sibling #emotionPanel
+   (biar position:fixed-nya gak keacak transform panel), jadi z-index-nya
+   perlu ditentukan manual di sini biar tetap di atas panel (z-index: 90). */
+#resultAudioToggle {
+    z-index: 95;
+}
+
 .mof-artwork-frame {
     width: min(520px, 76vw);
     aspect-ratio: 1;
