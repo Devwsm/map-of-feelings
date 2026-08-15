@@ -15,6 +15,7 @@ Route::prefix('/')->group(function () {
     Route::post('/coordinate', [homeController::class, 'storeCoordinate'])
         ->middleware('throttle:coordinate')
         ->name('coordinate.store');
+    Route::view('/privacy-policy', 'pages.privacy-policy')->name('privacy-policy');
 });
 
 Route::prefix('/')->group(function () {
