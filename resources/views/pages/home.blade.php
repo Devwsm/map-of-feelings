@@ -346,13 +346,17 @@
 
         <footer
             class="flex flex-col gap-2 border-t border-black/10 bg-white/90 px-5 py-6 font-mono text-xs tracking-widest text-black/55 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
-            <span>MAP OF FEELINGS &middot; WHISNU'S STORY TO EVERYONE'S STORY</span>
+            <span>MAP OF FEELINGS &middot; FROM WHISNU'S STORY TO EVERYONE'S STORY</span>
             <div class="flex flex-col md:flex-row">
                 <div class="flex gap-2">
                     <a href="{{ route('dashboard') }}">
                         <span>PANEL</span>
                     </a>
-                    <span>&middot; PRIVACY POLICY &middot;</span>
+                    <span>&middot;</span>
+                    <a href="{{ route('privacy-policy') }}">
+                        <span>PRIVACY POLICY</span>
+                    </a>
+                    <span>&middot;</span>
                 </div>
                 <div class="flex">
                     <span>&copy; WAHSUDAH MONDAY 2026 &middot;</span>
@@ -674,6 +678,8 @@
 
                 document.getElementById('mofLink').href = mood.mof || '#';
                 liveCoordinate.textContent = coords[mood.index];
+
+                preloadArtwork(mood);
             }
 
             let audioPlayToken = 0; // penanda sesi audio aktif
@@ -841,7 +847,7 @@
                 }
             }
 
-            function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+            function wrapTextLines(ctx, text, maxWidth) {
                 const words = text.split(' ');
                 const lines = [];
                 let line = '';
@@ -855,7 +861,12 @@
                     }
                 });
                 lines.push(line);
-                lines.forEach((item, index) => ctx.fillText(item, x, y + index * lineHeight));
+                return lines;
+            }
+
+            function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+                wrapTextLines(ctx, text, maxWidth).forEach((item, index) => ctx.fillText(item, x, y + index *
+                    lineHeight));
             }
 
             function showDownloadFeedback(message) {
@@ -880,6 +891,28 @@
                     image.onerror = reject;
                     image.src = src;
                 });
+            }
+
+            // Artwork di-preload di background begitu koordinat ketemu (jauh sebelum
+            // user klik "Simpan Koordinat"), bukan pas tombolnya diklik. Ini penting
+            // buat navigator.share(): kalau buildCoordinateCardBlob() masih harus
+            // nunggu network fetch gambar saat itu juga, jeda antara klik tombol asli
+            // dan pemanggilan share() jadi kepanjangan — beberapa browser (terutama
+            // Safari/iOS) langsung nolak share() begitu dianggap gak lagi "respons
+            // langsung" ke gesture user. Dengan di-preload duluan, pas tombol diklik
+            // gambarnya kemungkinan besar sudah siap di cache ini.
+            let cachedArtworkImage = null;
+            let cachedArtworkSrc = null;
+
+            function preloadArtwork(mood) {
+                if (!mood || !mood.artwork || cachedArtworkSrc === mood.artwork) return;
+                cachedArtworkSrc = mood.artwork;
+                cachedArtworkImage = null;
+                loadImage(mood.artwork)
+                    .then((img) => {
+                        if (cachedArtworkSrc === mood.artwork) cachedArtworkImage = img;
+                    })
+                    .catch(() => {});
             }
 
             function normalizeInstagram(value) {
@@ -940,68 +973,198 @@
 
             // Gambar kartu koordinat ke canvas lalu balikin sebagai Blob PNG.
             // Dipakai bareng sama tombol simpan (download) dan tombol bagikan (Web Share API).
+            // Ukuran 1080x1920 (9:16) biar pas kalau di-upload langsung ke IG Story
+            // tanpa ada crop/letterbox.
+            //
+            // Konten disusun sebagai list "block" berurutan (masing-masing punya
+            // `gap` = jarak sebelum block itu, dan `height` = tinggi visualnya).
+            // Dua manfaatnya:
+            // 1. Block nama & instagram cuma dimasukkan ke list kalau memang diisi
+            //    user — kalau kosong, block-nya (termasuk gap-nya) beneran hilang
+            //    dari perhitungan, bukan cuma teksnya yang disembunyikan.
+            // 2. Semua teks digambar pakai textBaseline 'top' (bukan default
+            //    alphabetic), jadi tinggi tiap block bisa dihitung apa adanya dari
+            //    ujung atas teksnya. Ini bikin padding atas card (sebelum block
+            //    pertama) dan padding bawah card (sesudah block terakhir) sama-sama
+            //    persis PAD — sebelumnya beda karena baseline default naruh titik
+            //    acuan teks di garis bawah huruf, bukan di tengah/atas glyph, jadi
+            //    jarak kosong di atas vs di bawah kelihatan gak konsisten.
             async function buildCoordinateCardBlob(visitorName, visitorInstagram) {
                 const canvas = document.createElement('canvas');
                 canvas.width = 1080;
-                canvas.height = 1350;
+                canvas.height = 1920;
                 const ctx = canvas.getContext('2d');
 
                 const colors = getHexMatches(selectedMood.pageGradient);
-                const bg = ctx.createLinearGradient(0, 0, 1080, 1350);
+                const bg = ctx.createLinearGradient(0, 0, 1080, 1920);
                 bg.addColorStop(0, colors[0] || '#ffffff');
                 bg.addColorStop(.55, colors[1] || getMoodPrimaryHex(selectedMood));
                 bg.addColorStop(1, colors[colors.length - 1] || getMoodSecondaryHex(selectedMood));
                 ctx.fillStyle = bg;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                ctx.fillStyle = 'rgba(255,255,255,.92)';
-                roundedRect(ctx, 70, 70, 940, 1210, 50);
-                ctx.fill();
+                // Padding sama rata di 4 sisi: MARGIN (canvas -> tepi card), PAD (tepi card -> konten)
+                const MARGIN = 56;
+                const PAD = 56;
+                const cardLeft = MARGIN;
+                const cardWidth = canvas.width - MARGIN * 2;
+                const contentLeft = cardLeft + PAD;
+                const contentWidth = cardWidth - PAD * 2;
+                const contentCenterX = cardLeft + cardWidth / 2;
+                const artworkSize = contentWidth;
 
                 ctx.textAlign = 'center';
-                ctx.fillStyle = '#0c0d0f';
-                ctx.font = '24px monospace';
-                ctx.fillText('MAP OF FEELINGS', 540, 125);
+                ctx.textBaseline = 'top';
 
-                try {
-                    const artwork = await loadImage(selectedMood.artwork);
-                    ctx.save();
-                    roundedRect(ctx, 180, 170, 720, 720, 24);
-                    ctx.clip();
-                    ctx.drawImage(artwork, 180, 170, 720, 720);
-                    ctx.restore();
-                } catch (error) {
-                    ctx.strokeStyle = `rgba(${hexToRgb(getMoodPrimaryHex(selectedMood))}, .75)`;
-                    ctx.lineWidth = 4;
-                    ctx.beginPath();
-                    ctx.arc(540, 530, 84, 0, Math.PI * 2);
-                    ctx.stroke();
-                    ctx.fillStyle = '#0c0d0f';
-                    ctx.font = '600 42px Arial';
-                    ctx.fillText(selectedMood.feeling, 540, 555);
-                }
+                // Pakai gambar yang sudah di-preload kalau ada (lihat preloadArtwork),
+                // biar gak perlu nunggu network fetch lagi pas tombol simpan diklik.
+                const artwork = await (async () => {
+                    if (cachedArtworkSrc === selectedMood.artwork && cachedArtworkImage) {
+                        return cachedArtworkImage;
+                    }
+                    try {
+                        return await loadImage(selectedMood.artwork);
+                    } catch (error) {
+                        return null;
+                    }
+                })();
 
-                ctx.font = '20px monospace';
-                ctx.fillText(selectedMood.coordinate.toUpperCase(), 540, 940);
                 ctx.font = '700 60px Arial';
-                wrapText(ctx, selectedMood.song, 540, 1020, 780, 66);
-                ctx.font = '25px Arial';
-                ctx.fillText(`${selectedMood.feeling} \u00b7 ${selectedMood.nuance}`, 540, 1122);
-                if (selectedAnswer) {
-                    ctx.fillStyle = '#55585e';
-                    ctx.font = '17px Arial';
-                    wrapText(ctx, `\u201c${selectedAnswer}\u201d`, 540, 1152, 760, 22);
+                const songLines = wrapTextLines(ctx, selectedMood.song, contentWidth);
+
+                ctx.font = '17px Arial';
+                const answerLines = selectedAnswer ?
+                    wrapTextLines(ctx, `\u201c${selectedAnswer}\u201d`, contentWidth - 40) : [];
+
+                const blocks = [];
+
+                blocks.push({
+                    gap: 0,
+                    height: 30,
+                    draw: (y) => {
+                        ctx.fillStyle = '#0c0d0f';
+                        ctx.font = '24px monospace';
+                        ctx.fillText('MAP OF FEELINGS', contentCenterX, y);
+                    }
+                });
+
+                blocks.push({
+                    gap: 46,
+                    height: artworkSize,
+                    draw: (y) => {
+                        if (artwork) {
+                            ctx.save();
+                            roundedRect(ctx, contentLeft, y, artworkSize, artworkSize, 28);
+                            ctx.clip();
+                            ctx.drawImage(artwork, contentLeft, y, artworkSize, artworkSize);
+                            ctx.restore();
+                        } else {
+                            ctx.strokeStyle = `rgba(${hexToRgb(getMoodPrimaryHex(selectedMood))}, .75)`;
+                            ctx.lineWidth = 4;
+                            ctx.beginPath();
+                            ctx.arc(contentCenterX, y + artworkSize / 2, 100, 0, Math.PI * 2);
+                            ctx.stroke();
+                            ctx.fillStyle = '#0c0d0f';
+                            ctx.font = '600 48px Arial';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillText(selectedMood.feeling, contentCenterX, y + artworkSize / 2);
+                            ctx.textBaseline = 'top';
+                        }
+                    }
+                });
+
+                blocks.push({
+                    gap: 46,
+                    height: 26,
+                    draw: (y) => {
+                        ctx.fillStyle = '#0c0d0f';
+                        ctx.font = '20px monospace';
+                        ctx.fillText(selectedMood.coordinate.toUpperCase(), contentCenterX, y);
+                    }
+                });
+
+                blocks.push({
+                    gap: 70,
+                    height: songLines.length * 66,
+                    draw: (y) => {
+                        ctx.fillStyle = '#0c0d0f';
+                        ctx.font = '700 60px Arial';
+                        songLines.forEach((line, i) => ctx.fillText(line, contentCenterX, y + i * 66));
+                    }
+                });
+
+                blocks.push({
+                    gap: 38,
+                    height: 32,
+                    draw: (y) => {
+                        ctx.fillStyle = '#0c0d0f';
+                        ctx.font = '25px Arial';
+                        ctx.fillText(`${selectedMood.feeling} \u00b7 ${selectedMood.nuance}`,
+                            contentCenterX, y);
+                    }
+                });
+
+                if (answerLines.length) {
+                    blocks.push({
+                        gap: 28,
+                        height: answerLines.length * 22,
+                        draw: (y) => {
+                            ctx.fillStyle = '#55585e';
+                            ctx.font = '17px Arial';
+                            answerLines.forEach((line, i) => ctx.fillText(line, contentCenterX, y + i *
+                                22));
+                        }
+                    });
                 }
 
-                ctx.fillStyle = '#6d6d73';
-                ctx.font = '20px Arial';
-                ctx.fillText(visitorName, 540, 1194);
-                ctx.font = '18px monospace';
-                ctx.fillText(visitorInstagram, 540, 1224);
+                if (visitorName) {
+                    blocks.push({
+                        gap: 40,
+                        height: 26,
+                        draw: (y) => {
+                            ctx.fillStyle = '#6d6d73';
+                            ctx.font = '20px Arial';
+                            ctx.fillText(visitorName, contentCenterX, y);
+                        }
+                    });
+                }
 
-                ctx.fillStyle = '#0c0d0f';
-                ctx.font = '18px monospace';
-                ctx.fillText('SETIAP PERASAAN PUNYA KOORDINAT.', 540, 1262);
+                if (visitorInstagram) {
+                    blocks.push({
+                        gap: 28,
+                        height: 24,
+                        draw: (y) => {
+                            ctx.fillStyle = '#6d6d73';
+                            ctx.font = '18px monospace';
+                            ctx.fillText(visitorInstagram, contentCenterX, y);
+                        }
+                    });
+                }
+
+                blocks.push({
+                    gap: 40,
+                    height: 24,
+                    draw: (y) => {
+                        ctx.fillStyle = '#0c0d0f';
+                        ctx.font = '18px monospace';
+                        ctx.fillText("FROM WHISNU'S STORY TO EVERYONE'S STORY", contentCenterX, y);
+                    }
+                });
+
+                const contentHeight = blocks.reduce((sum, block) => sum + block.gap + block.height, 0);
+                const cardHeight = contentHeight + PAD * 2;
+                const cardTop = (canvas.height - cardHeight) / 2;
+
+                ctx.fillStyle = 'rgba(255,255,255,.92)';
+                roundedRect(ctx, cardLeft, cardTop, cardWidth, cardHeight, 50);
+                ctx.fill();
+
+                let cursorY = cardTop + PAD;
+                blocks.forEach((block) => {
+                    cursorY += block.gap;
+                    block.draw(cursorY);
+                    cursorY += block.height;
+                });
 
                 return canvasToBlob(canvas);
             }
@@ -1024,32 +1187,34 @@
                 saveButton.disabled = true;
                 saveButton.textContent = 'MENYIAPKAN PNG...';
 
-                // 1. Simpan data pengunjung ke server
-                await submitCoordinateToServer(visitorName, visitorInstagram);
+                // 1. Simpan data pengunjung ke server. Sengaja gak di-`await` di sini:
+                //    kalau ditunggu duluan, waktu network request ini ikut "memakan"
+                //    masa berlaku user-activation dari klik tombol simpan — dan
+                //    beberapa browser (terutama Safari/iOS) langsung menolak
+                //    navigator.share() di bawah begitu dianggap gak lagi respons
+                //    langsung ke gesture user. submitCoordinateToServer sudah punya
+                //    try/catch sendiri, jadi aman dibiarkan jalan di background.
+                submitCoordinateToServer(visitorName, visitorInstagram);
 
                 try {
                     // 2. Bikin gambar PNG-nya
                     const blob = await buildCoordinateCardBlob(visitorName, visitorInstagram);
                     const fileName = coordinateFileName(visitorName);
-
-                    // 3. Download PNG-nya ke device user
-                    const objectUrl = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.download = fileName;
-                    link.href = objectUrl;
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-                    setTimeout(() => URL.revokeObjectURL(objectUrl), 1500);
-                    showDownloadFeedback('KOORDINAT BERHASIL DISIMPAN');
-
-                    // 4. Langsung buka share sheet kalau device/browser-nya dukung (kebanyakan HP).
-                    //    Kalau gak didukung (misal browser desktop), lewati aja — PNG-nya
-                    //    sudah aman tersimpan dari langkah download di atas.
                     const file = new File([blob], fileName, {
                         type: 'image/png'
                     });
+
+                    // 3. Coba buka share sheet DULUAN, sebelum trigger download.
+                    //    Urutan ini sengaja: navigator.share() butuh dipanggil sedekat
+                    //    mungkin ke klik tombol asli (user-activation). Kalau download
+                    //    (link.click() di bawah) dipicu lebih dulu — apalagi sampai
+                    //    memunculkan dialog "Save As" di sebagian browser — itu bisa
+                    //    dianggap "menyela" gesture user, dan share() sesudahnya jadi
+                    //    ditolak diam-diam. canShare({files}) sendiri juga cuma balik
+                    //    true di sebagian browser (kebanyakan Android Chrome & iOS
+                    //    Safari 15+) — di desktop Chrome/Firefox umumnya memang belum
+                    //    dukung share file sama sekali, jadi share bakal dilewati dan
+                    //    itu wajar, bukan bug.
                     if (navigator.canShare && navigator.canShare({
                             files: [file]
                         })) {
@@ -1061,12 +1226,25 @@
                                     selectedMood.song,
                             });
                         } catch (shareError) {
-                            // AbortError = user cancel share sheet-nya sendiri, PNG tetap sudah tersimpan.
+                            // AbortError = user cancel share sheet-nya sendiri, PNG tetap lanjut didownload.
                             if (shareError?.name !== 'AbortError') {
                                 console.warn('Gagal membuka share sheet:', shareError);
                             }
                         }
                     }
+
+                    // 4. Download PNG-nya ke device user, terlepas dari berhasil/gagal/
+                    //    dilewatinya share di atas.
+                    const objectUrl = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.download = fileName;
+                    link.href = objectUrl;
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    setTimeout(() => URL.revokeObjectURL(objectUrl), 1500);
+                    showDownloadFeedback('KOORDINAT BERHASIL DISIMPAN');
                 } catch (error) {
                     console.error(error);
                     showDownloadFeedback('GAGAL MENYIMPAN');
