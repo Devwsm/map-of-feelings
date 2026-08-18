@@ -109,7 +109,7 @@ class moodSeeder extends Seeder
             ],
             [
                 'mood_key' => "kesepian",
-                'sort_order' => 5,
+                'sort_order' => 10,
                 'feeling' => "Kesepian",
                 'nuance' => "Emosi yang paling kosong",
                 'song' => "Sumpah Percuma",
@@ -133,7 +133,7 @@ class moodSeeder extends Seeder
             ],
             [
                 'mood_key' => "berduka",
-                'sort_order' => 6,
+                'sort_order' => 5,
                 'feeling' => "Berduka",
                 'nuance' => "Emosi yang paling pilu",
                 'song' => "Pesan Rindu",
@@ -157,7 +157,7 @@ class moodSeeder extends Seeder
             ],
             [
                 'mood_key' => "nyaman",
-                'sort_order' => 7,
+                'sort_order' => 6,
                 'feeling' => "Berbunga-bunga",
                 'nuance' => "Emosi yang paling manis",
                 'song' => "YTTA",
@@ -181,7 +181,7 @@ class moodSeeder extends Seeder
             ],
             [
                 'mood_key' => "terharu",
-                'sort_order' => 8,
+                'sort_order' => 7,
                 'feeling' => "Nostalgia",
                 'nuance' => "Emosi yang paling membekas",
                 'song' => "Sedih Harus Kau Buang",
@@ -205,7 +205,7 @@ class moodSeeder extends Seeder
             ],
             [
                 'mood_key' => "penuh-harap",
-                'sort_order' => 9,
+                'sort_order' => 8,
                 'feeling' => "Penuh Harap",
                 'nuance' => "Emosi yang paling sulit dipahami",
                 'song' => "Fatamorgana",
@@ -229,7 +229,7 @@ class moodSeeder extends Seeder
             ],
             [
                 'mood_key' => "hampa",
-                'sort_order' => 10,
+                'sort_order' => 9,
                 'feeling' => "Hampa",
                 'nuance' => "Emosi yang paling kosong",
                 'song' => "Sorak Sepi",
