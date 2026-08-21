@@ -154,6 +154,14 @@
                 <p class="mt-3 text-sm font-semibold text-red-600">{{ $message }}</p>
             @enderror
         </div>
+
+        {{-- BACK TO HOME --}}
+        <div class="mt-6 text-center">
+            <a href="{{ url('/') }}"
+                class="inline-block rounded-full border border-black/15 bg-white px-6 py-3 text-sm font-bold text-black hover:bg-neutral-100 transition-colors">
+                ← Kembali ke Home
+            </a>
+        </div>
     </main>
 
     <footer class="text-center px-5 py-8 text-sm sm:px-14 sm:py-14">copyright &copy; WahSudah Monday {{ date('Y') }}
