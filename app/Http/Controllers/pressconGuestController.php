@@ -136,6 +136,44 @@ class pressconGuestController extends Controller
     }
 
     /**
+     * POST /dashboard/tamu/generate-qr-bulk
+     * Generate QR buat SEMUA tamu yang belum punya QR sekaligus (dipakai abis
+     * import massal, misal 200 tamu, biar gak perlu klik generate satu-satu).
+     * Masih sinkron (bukan queue) karena tiap QR-nya ringan (SVG, gak butuh
+     * Imagick/GD) — generate ratusan QR biasanya tetap kelar dalam hitungan
+     * detik. set_time_limit dinaikkan jaga-jaga kalau datanya makin banyak ke
+     * depannya dan default PHP time limit di hosting kepotong duluan.
+     */
+    public function generateQrBulk(): RedirectResponse
+    {
+        set_time_limit(180);
+
+        $guests = pressconGuest::where('qr_generated', false)
+            ->orWhereNull('qr_path')
+            ->get();
+
+        foreach ($guests as $guest) {
+            if ($guest->qr_path) {
+                Storage::disk('public')->delete($guest->qr_path);
+            }
+
+            $filename = 'qrcodes/' . Str::random(40) . '.svg';
+            $svg = QrCode::format('svg')->size(400)->generate($guest->slug);
+
+            Storage::disk('public')->put($filename, $svg);
+
+            $guest->update([
+                'qr_path' => $filename,
+                'qr_generated' => true,
+            ]);
+        }
+
+        return redirect()
+            ->back()
+            ->with('status', 'QR berhasil digenerate untuk ' . $guests->count() . ' tamu.');
+    }
+
+    /**
      * POST /dashboard/tamu/{guest}/generate-qr
      * Isi QR = check-in code (slug), nama file random & gak ketebak — beda dari
      * slug yang sengaja gampang dibaca manusia. Aman digenerate sinkron karena

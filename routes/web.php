@@ -41,6 +41,7 @@ Route::prefix('/dashboard')->middleware('auth')->group(function () {
         Route::get('/tamu/{guest}/edit', [pressconGuestController::class, 'edit'])->name('dashboard.tamu.edit');
         Route::put('/tamu/{guest}', [pressconGuestController::class, 'update'])->name('dashboard.tamu.update');
         Route::delete('/tamu/{guest}', [pressconGuestController::class, 'destroy'])->name('dashboard.tamu.destroy');
+        Route::post('/dashboard/tamu/generate-qr-bulk', [pressconGuestController::class, 'generateQrBulk'])->name('dashboard.tamu.generate-qr-bulk');
         Route::post('/dashboard/tamu/{guest}/generate-qr', [pressconGuestController::class, 'generateQr'])->name('dashboard.tamu.generate-qr');
 
         Route::get('/export', [importExportController::class, 'index'])->name('dashboard.export');

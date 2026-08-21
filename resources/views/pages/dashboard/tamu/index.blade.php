@@ -11,9 +11,19 @@
             <p class="text-xs font-bold uppercase tracking-widest text-white/40 mb-2">Kelola Data</p>
             <h1 class="text-3xl font-bold">Tamu</h1>
         </div>
-        <a href="{{ route('dashboard.tamu.create') }}"
-            class="rounded-full bg-white text-black font-bold px-5 py-3 text-sm hover:bg-neutral-200 transition-colors">+
-            Tambah Tamu</a>
+        <div class="flex gap-2">
+            <form action="{{ route('dashboard.tamu.generate-qr-bulk') }}" method="POST"
+                onsubmit="return confirm('Generate QR buat semua tamu yang belum punya QR? Ini bisa makan waktu beberapa detik kalau datanya banyak.')">
+                @csrf
+                <button type="submit"
+                    class="rounded-full border border-white/20 px-5 py-3 text-sm font-bold hover:bg-white/10 transition-colors">
+                    Generate Semua QR
+                </button>
+            </form>
+            <a href="{{ route('dashboard.tamu.create') }}"
+                class="rounded-full bg-white text-black font-bold px-5 py-3 text-sm hover:bg-neutral-200 transition-colors">+
+                Tambah Tamu</a>
+        </div>
     </div>
 
     {{-- SEARCH + FILTER --}}
@@ -108,9 +118,37 @@
     </div>
 
     @if ($guests->hasPages())
-        <div class="bg-white rounded-2xl p-2 inline-block">
-            {{ $guests->links() }}
-        </div>
+        <nav class="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6">
+            <p class="text-sm text-white/50">
+                Menampilkan {{ $guests->firstItem() }}&ndash;{{ $guests->lastItem() }} dari {{ $guests->total() }}
+                tamu
+            </p>
+            <div class="flex items-center gap-2">
+                @if ($guests->onFirstPage())
+                    <span
+                        class="rounded-full border border-white/10 px-4 py-2 text-sm font-bold text-white/25 cursor-not-allowed">&larr;
+                        Sebelumnya</span>
+                @else
+                    <a href="{{ $guests->previousPageUrl() }}"
+                        class="rounded-full border border-white/20 px-4 py-2 text-sm font-bold hover:bg-white/10 transition-colors">&larr;
+                        Sebelumnya</a>
+                @endif
+
+                <span class="px-3 text-sm font-mono text-white/60">
+                    Halaman {{ $guests->currentPage() }} / {{ $guests->lastPage() }}
+                </span>
+
+                @if ($guests->hasMorePages())
+                    <a href="{{ $guests->nextPageUrl() }}"
+                        class="rounded-full border border-white/20 px-4 py-2 text-sm font-bold hover:bg-white/10 transition-colors">Berikutnya
+                        &rarr;</a>
+                @else
+                    <span
+                        class="rounded-full border border-white/10 px-4 py-2 text-sm font-bold text-white/25 cursor-not-allowed">Berikutnya
+                        &rarr;</span>
+                @endif
+            </div>
+        </nav>
     @endif
 
     <script>
