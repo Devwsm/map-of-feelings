@@ -68,6 +68,8 @@
                         check-in), lengkap sama link undangan pribadi tiap tamu. Total {{ $totalGuests }} tamu.</p>
                 </div>
                 <div class="flex gap-2 shrink-0">
+                    <a href="{{ route('dashboard.export.guest-list.preview') }}" target="_blank"
+                        class="rounded-full border border-white/20 px-5 py-3 text-sm font-bold hover:bg-white/10 transition-colors">Preview</a>
                     <a href="{{ route('dashboard.export.guest-list.excel') }}"
                         class="rounded-full border border-white/20 px-5 py-3 text-sm font-bold hover:bg-white/10 transition-colors">Excel</a>
                 </div>

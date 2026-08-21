@@ -84,6 +84,16 @@ class importExportController extends Controller
     }
 
     /**
+     * GET /dashboard/export/guest-list/preview
+     */
+    public function previewGuestList(): View
+    {
+        $guests = pressconGuest::orderBy('category')->orderBy('name')->get();
+
+        return view('exports.pdf.guest-list', ['guests' => $guests]);
+    }
+
+    /**
      * GET /dashboard/export/guest-list/excel
      * Beda sama exportGuestCheckinExcel: ini SEMUA tamu (bukan cuma yang
      * sudah check-in), fokusnya buat dapetin daftar link undangan tiap tamu
