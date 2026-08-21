@@ -59,6 +59,21 @@
             </div>
         </div>
 
+        {{-- DATA TAMU & LINK UNDANGAN --}}
+        <div class="rounded-3xl bg-neutral-900 border border-white/10 p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <p class="font-bold mb-1">Data Tamu &amp; Link Undangan</p>
+                    <p class="text-sm text-white/50">Semua tamu yang sudah ditambahkan (bukan cuma yang sudah
+                        check-in), lengkap sama link undangan pribadi tiap tamu. Total {{ $totalGuests }} tamu.</p>
+                </div>
+                <div class="flex gap-2 shrink-0">
+                    <a href="{{ route('dashboard.export.guest-list.excel') }}"
+                        class="rounded-full border border-white/20 px-5 py-3 text-sm font-bold hover:bg-white/10 transition-colors">Excel</a>
+                </div>
+            </div>
+        </div>
+
         {{-- DATA TAMU CHECK-IN --}}
         <div class="rounded-3xl bg-neutral-900 border border-white/10 p-6">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

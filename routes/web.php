@@ -54,6 +54,7 @@ Route::prefix('/dashboard')->middleware('auth')->group(function () {
         Route::get('/export/guest-checkin/excel', [importExportController::class, 'exportGuestCheckinExcel'])->name('dashboard.export.guest-checkin.excel');
         Route::get('/export/guest-checkin/pdf', [importExportController::class, 'exportGuestCheckinPdf'])->name('dashboard.export.guest-checkin.pdf');
         Route::get('/export/guest-checkin/preview', [importExportController::class, 'previewGuestCheckin'])->name('dashboard.export.guest-checkin.preview');
+        Route::get('/export/guest-list/excel', [importExportController::class, 'exportGuestListExcel'])->name('dashboard.export.guest-list.excel');
 
         Route::get('/import', [importExportController::class, 'importIndex'])->name('dashboard.import');
         Route::get('/import/tamu/template', [importExportController::class, 'downloadGuestTemplate'])->name('dashboard.import.tamu.template');

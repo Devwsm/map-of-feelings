@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\GuestCheckinExport;
+use App\Exports\GuestListExport;
 use App\Exports\GuestImportTemplateExport;
 use App\Exports\MoodSubmissionsExport;
 use App\Imports\GuestImport;
@@ -34,6 +35,7 @@ class importExportController extends Controller
             'active' => 'export-import',
             'totalSubmissions' => mood_submissions::count(),
             'totalCheckedIn' => pressconGuest::where('checked_in', true)->count(),
+            'totalGuests' => pressconGuest::count(),
         ]);
     }
 
@@ -79,6 +81,17 @@ class importExportController extends Controller
     public function exportGuestCheckinExcel()
     {
         return Excel::download(new GuestCheckinExport, 'mof_tamu_checkin_' . now()->format('Y-m-d') . '.xlsx');
+    }
+
+    /**
+     * GET /dashboard/export/guest-list/excel
+     * Beda sama exportGuestCheckinExcel: ini SEMUA tamu (bukan cuma yang
+     * sudah check-in), fokusnya buat dapetin daftar link undangan tiap tamu
+     * yang sudah ditambahkan di dashboard Tamu.
+     */
+    public function exportGuestListExcel()
+    {
+        return Excel::download(new GuestListExport, 'mof_daftar_tamu_' . now()->format('Y-m-d') . '.xlsx');
     }
 
     /**
